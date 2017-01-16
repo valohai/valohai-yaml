@@ -3,7 +3,16 @@
 - step:
     name: run training
     image: busybox
-    command: 'foo'
+    command:
+     - cd /tmp/code
+     - conda env create -q
+     - source activate ladder
+     - conda install -y -q libgfortran==1
+     - 'echo "data_path: /root/ladder" > /root/.fuelrc'
+     - fuel-download mnist
+     - fuel-convert mnist --dtype float32
+     - mv mnist_float32.hdf5 mnist.hdf5
+     - 'python run.py train {params} -- mnist_all_full'
     params:
       - name: num-epochs
         pass-as: --num-epochs {v}
