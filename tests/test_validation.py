@@ -8,34 +8,7 @@ from jsonschema.exceptions import ValidationError
 from valohai_yaml.__main__ import main
 from valohai_yaml.validate import validate
 
-examples_path = os.path.realpath(
-    os.path.join(os.path.dirname(__file__), '..', 'examples')
-)
-
-valid_bytes = b'''
-- step:
-    name: foo
-    command: foo
-    image: foo
-'''
-
-invalid_obj = [
-    {
-        'step': {
-            'nerm': 'blerp',
-        }
-    },
-]
-
-valid_obj = [
-    {
-        'step': {
-            'name': 'foo',
-            'command': 'foo',
-            'image': 'foo',
-        }
-    },
-]
+from .consts import examples_path, invalid_obj, valid_bytes, valid_obj
 
 
 @pytest.mark.parametrize('path', glob.glob(os.path.join(examples_path, '*.yaml')))
