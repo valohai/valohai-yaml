@@ -19,11 +19,14 @@ Usage
 Programmatic usage:
 
 ```python
-from valohai_yaml import validate
+from valohai_yaml import validate, ValidationErrors
 
-errors = validate(open('my_yaml.yaml'))
-if errors:
-	print('oh no')
+try:
+    validate(open('my_yaml.yaml'))
+except ValidationErrors as errors:
+    print('oh no!')
+    for err in errors:
+        print(err)
 ```
 
 Command-line usage:

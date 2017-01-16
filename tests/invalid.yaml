@@ -1,0 +1,8 @@
+---
+
+- step:
+    image: yes
+- step:
+    name: hiiii
+    image: busybox
+    command: 8

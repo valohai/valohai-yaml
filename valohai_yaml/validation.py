@@ -5,9 +5,19 @@ from codecs import open  # required for Python 2, doesn't hurt for Python 3
 
 from jsonschema import Draft4Validator, RefResolver
 from jsonschema.compat import lru_cache
-from yaml import safe_load
+
+from .utils import read_yaml
 
 SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
+
+
+class ValidationErrors(ValueError):
+    def __init__(self, errors):
+        self.errors = errors
+        super(ValidationErrors, self).__init__('There were %d validation errors' % len(errors))
+
+    def __iter__(self):
+        return iter(self.errors)
 
 
 class LocalRefResolver(RefResolver):
@@ -44,33 +54,23 @@ def get_validator():
     return cls(schema, resolver=LocalRefResolver.from_schema(schema))
 
 
-def parse_yaml(yaml):
-    if isinstance(yaml, (dict, list)):  # Smells already parsed
-        return yaml
-    if isinstance(yaml, bytes):
-        yaml = yaml.decode('utf-8')
-    return safe_load(yaml)  # can be a stream or a string
-
-
-def validate(yaml, raise_exc=False):
+def validate(yaml, raise_exc=True):
     """
     Validate the given YAML document and return a list of errors.
 
     :param yaml: YAML data (either a string, a stream, or pre-parsed Python dict/list)
     :type yaml: list|dict|str|file
-    :param raise_exc: Whether to raise an exception at the first discovered error.
+    :param raise_exc: Whether to raise a meta-exception containing all discovered errors after validation.
     :type raise_exc: bool
     :return: A list of errors encountered.
     :rtype: list[jsonschema.exceptions.ValidationError]
     """
-    data = parse_yaml(yaml)
+    data = read_yaml(yaml)
     validator = get_validator()
     # Nb: this uses a list instead of being a generator function in order to be
     # easier to call correctly. (Were it a generator function, a plain
     # `validate(..., raise_exc=True)` would not do anything.
-    errors = []
-    for error in validator.iter_errors(data):
-        if raise_exc:
-            raise error
-        errors.append(error)
+    errors = list(validator.iter_errors(data))
+    if errors and raise_exc:
+        raise ValidationErrors(errors)
     return errors
