@@ -32,4 +32,3 @@ Command-line usage:
 valohai-yaml my_yaml.yaml
 echo $?  # 1 if errors, 0 if ok
 ```
->>>>>>> 98b7e1b... Initial code
