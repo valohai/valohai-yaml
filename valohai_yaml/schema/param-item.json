@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "required": [
+    "pass-as",
+    "name"
+  ],
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "pass-as": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "integer",
+        "string"
+      ]
+    },
+    "min": {
+      "type": "number"
+    },
+    "max": {
+      "type": "number"
+    },
+    "optional": {
+      "type": "boolean"
+    },
+    "name": {
+      "type": "string"
+    }
+  }
+}

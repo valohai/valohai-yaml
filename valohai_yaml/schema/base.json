@@ -1,0 +1,12 @@
+{
+  "id": "http://valohai.com/base.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "step": {
+        "$ref": "./step.json"
+      }
+    }
+  }
+}
