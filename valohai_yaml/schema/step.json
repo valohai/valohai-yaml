@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": [
+    "command",
+    "name",
+    "image"
+  ],
+  "properties": {
+    "command": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "params": {
+      "type": "array",
+      "items": {
+        "$ref": "./param-item.json"
+      }
+    }
+  }
+}

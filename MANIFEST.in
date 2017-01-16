@@ -1,0 +1,2 @@
+recursive-include valohai_yaml *.json
+recursive-include valohai_yaml *.yaml
