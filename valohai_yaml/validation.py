@@ -14,7 +14,12 @@ SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
 class ValidationErrors(ValueError):
     def __init__(self, errors):
         self.errors = errors
-        super(ValidationErrors, self).__init__('There were %d validation errors' % len(errors))
+        super(ValidationErrors, self).__init__(
+            '%d errors: %s' % (
+                len(errors),
+                ', '.join(getattr(e, 'message', e) for e in self.errors)
+            )
+        )
 
     def __iter__(self):
         return iter(self.errors)

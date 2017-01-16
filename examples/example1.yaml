@@ -13,7 +13,11 @@
      - fuel-convert mnist --dtype float32
      - mv mnist_float32.hdf5 mnist.hdf5
      - 'python run.py train {params} -- mnist_all_full'
-    params:
+    inputs:
+      - foo
+    outputs:
+      - bar
+    parameters:
       - name: num-epochs
         pass-as: --num-epochs {v}
         description: Number of training epochs, 150 if not specified
