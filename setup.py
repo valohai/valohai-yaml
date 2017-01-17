@@ -10,8 +10,8 @@ dev_dependencies = [
 if __name__ == '__main__':
     setuptools.setup(
         name='valohai-yaml',
-        description='Validation for Valohai YAML specifications',
-        version='0.1',
+        description='Valohai.yaml validation and parsing',
+        version='0.2',
         url='https://github.com/valohai/valohai-yaml',
         author='Valohai',
         maintainer='Aarni Koskela',
