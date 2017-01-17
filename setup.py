@@ -17,7 +17,7 @@ if __name__ == '__main__':
         maintainer='Aarni Koskela',
         maintainer_email='akx@iki.fi',
         license='MIT',
-        install_requires=['jsonschema', 'PyYAML'],
+        install_requires=['jsonschema', 'PyYAML', 'six'],
         tests_require=dev_dependencies,
         extras_require={'dev': dev_dependencies},
         packages=setuptools.find_packages('.', exclude=('*tests*',)),

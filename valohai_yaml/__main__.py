@@ -1,8 +1,9 @@
+from __future__ import unicode_literals, print_function
 import argparse
 import sys
 from collections import defaultdict
 
-from .validate import validate
+from .validation import validate
 
 
 def main(args=None):
@@ -19,7 +20,7 @@ def main(args=None):
 def process_file(file):
     header_printed = False
     with open(file, 'rb') as stream:
-        for error in validate(stream):
+        for error in validate(stream, raise_exc=False):
             if not header_printed:
                 print('>>>', file)
                 header_printed = True

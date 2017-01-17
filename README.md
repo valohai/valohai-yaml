@@ -13,17 +13,20 @@ Installation
 pip install valohai-yaml
 ```
 
-Usage
------
+Usage (validation)
+------------------
 
 Programmatic usage:
 
 ```python
-from valohai_yaml import validate
+from valohai_yaml import validate, ValidationErrors
 
-errors = validate(open('my_yaml.yaml'))
-if errors:
-	print('oh no')
+try:
+    validate(open('my_yaml.yaml'))
+except ValidationErrors as errors:
+    print('oh no!')
+    for err in errors:
+        print(err)
 ```
 
 Command-line usage:
@@ -31,4 +34,13 @@ Command-line usage:
 ```
 valohai-yaml my_yaml.yaml
 echo $?  # 1 if errors, 0 if ok
+```
+
+Usage (parsing)
+---------------
+
+```python
+from valohai_yaml import parse
+config = parse(open('my_yaml.yaml'))
+print(config.steps['cool step'].command)
 ```
