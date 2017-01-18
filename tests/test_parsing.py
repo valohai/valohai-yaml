@@ -6,15 +6,28 @@ from tests.consts import examples_path
 from valohai_yaml import parse
 
 
+def _load_config(filename, roundtrip):
+    with open(os.path.join(examples_path, filename), 'r') as infp:
+        config = parse(infp)
+    if roundtrip:
+        config = parse(config.serialize())
+    return config
+
+
 @pytest.fixture(params=[False, True])
 def example1_config(request):
-    with open(os.path.join(examples_path, 'example1.yaml'), 'r') as infp:
-        config = parse(infp)
+    return _load_config('example1.yaml', request.param)
 
-    if request.param:
-        config = parse(config.serialize())
 
-    return config
+@pytest.fixture(params=[False, True])
+def example2_config(request):
+    return _load_config('example2.yaml', request.param)
+
+
+def test_parse_inputs(example2_config):
+    config = example2_config
+    step = config.steps['run training']
+    assert len(step.inputs) == 4
 
 
 def test_parse(example1_config):
@@ -22,9 +35,6 @@ def test_parse(example1_config):
     # test that we can access a step by name
     step = config.steps['run training']
 
-    # test that we have inputs and outputs
-    assert step.inputs
-    assert step.outputs
     # test that we parsed all params
     parameters = step.parameters
     assert len(parameters) == 7
