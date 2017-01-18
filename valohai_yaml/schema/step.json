@@ -5,6 +5,7 @@
     "name",
     "image"
   ],
+  "additionalProperties": false,
   "properties": {
     "command": {
       "oneOf": [
@@ -25,7 +26,13 @@
     "image": {
       "type": "string"
     },
-    "params": {
+    "inputs": {
+      "type": "array"
+    },
+    "outputs": {
+      "type": "array"
+    },
+    "parameters": {
       "type": "array",
       "items": {
         "$ref": "./param-item.json"

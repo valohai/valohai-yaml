@@ -44,5 +44,6 @@ def test_raise():
 
 
 def test_error_list():
-    err = validate(invalid_obj, raise_exc=False)[0]
-    assert 'required property' in (u'%s' % err)
+    errs = [u'%s' % err for err in validate(invalid_obj, raise_exc=False)]
+    assert any('Additional properties are not allowed' for err in errs)
+    assert any('required property' for err in errs)

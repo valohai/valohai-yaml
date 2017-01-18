@@ -19,37 +19,31 @@
       - bar
     parameters:
       - name: num-epochs
-        pass-as: --num-epochs {v}
         description: Number of training epochs, 150 if not specified
         type: integer
         min: 1
         optional: true
 
       - name: seed
-        pass-as: --seed {v}
         type: integer
         default: 1
 
       - name: labeled-samples
-        pass-as: --labeled-samples {v}
         description: How many supervised samples are used
         type: integer
         default: 60000
 
       - name: unlabeled-samples
-        pass-as: --unlabeled-samples {v}
         description: How many unsupervised samples are used
         type: integer
         default: 60000
 
       - name: encoder-layers
-        pass-as: --encoder-layers {v}
         description: List of layers for f
         type: string
         default: 1000-500-250-250-250-10
 
       - name: denoising-cost-x
-        pass-as: --denoising-cost-x {v}
         description: Weight of the denoising cost
         type: string
         default: 1000,1,0.01,0.01,0.01,0.01,0.01
