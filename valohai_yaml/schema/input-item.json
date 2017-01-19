@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The symbolic name of this input. This must be unique within a Step."
+    },
+    "default": {
+      "type": "string",
+      "description": "The default URL for the input."
+    }
+  }
+}

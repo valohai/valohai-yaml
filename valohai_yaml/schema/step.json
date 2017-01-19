@@ -27,7 +27,10 @@
       "type": "string"
     },
     "inputs": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "$ref": "./input-item.json"
+      }
     },
     "outputs": {
       "type": "array"
