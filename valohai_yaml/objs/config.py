@@ -59,7 +59,7 @@ class Config(object):
                 return step
         return None
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return '<Config with %d steps: %r>' % (
             len(self.steps),
             sorted(self.steps)

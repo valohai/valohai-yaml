@@ -1,14 +1,12 @@
 from __future__ import unicode_literals
+
 from collections import OrderedDict
 
 import six
 
 from valohai_yaml.commands import build_command
-from .base import _SimpleObject
-
-
-class Parameter(_SimpleObject):
-    pass
+from .input import Input
+from .parameter import Parameter
 
 
 class Step(object):
@@ -16,15 +14,20 @@ class Step(object):
         self.name = name
         self.image = image
         self.command = command
-        self.inputs = list(inputs)  # TODO: Improve handling
+
         self.outputs = list(outputs)  # TODO: Improve handling
+
+        assert all(isinstance(i, Input) for i in inputs)
+        self.inputs = OrderedDict((input.name, input) for input in inputs)
+
         assert all(isinstance(p, Parameter) for p in parameters)
         self.parameters = OrderedDict((param.name, param) for param in parameters)
 
     @classmethod
     def parse(cls, data):
         kwargs = data.copy()
-        kwargs['parameters'] = [Parameter(p_data) for p_data in kwargs.pop('parameters', ())]
+        kwargs['parameters'] = [Parameter.parse(p_data) for p_data in kwargs.pop('parameters', ())]
+        kwargs['inputs'] = [Input.parse(i_data) for i_data in kwargs.pop('inputs', ())]
         return cls(**kwargs)
 
     def serialize(self):
@@ -36,7 +39,7 @@ class Step(object):
         if self.parameters:
             val['parameters'] = list(p.serialize() for p in self.parameters.values())
         if self.inputs:
-            val['inputs'] = self.inputs
+            val['inputs'] = list(i.serialize() for i in self.inputs.values())
         if self.outputs:
             val['outputs'] = self.outputs
         return val
@@ -50,7 +53,7 @@ class Step(object):
             name: parameter.default
             for (name, parameter)
             in self.parameters.items()
-            if ('default' in parameter)
+            if parameter.default is not None
             }
 
     def build_parameters(self, param_values):
@@ -67,8 +70,8 @@ class Step(object):
             value = param_values.get(name)
             if value is None:
                 continue
-            pass_as_bits = six.text_type(param.get('pass-as', '--{name}={value}')).split()
-            env = dict(param, value=value, v=value)
+            pass_as_bits = six.text_type(param.pass_as or '--{name}={value}').split()
+            env = dict(name=name, value=value, v=value)
             param_bits.extend(bit.format(**env) for bit in pass_as_bits)
         return param_bits
 

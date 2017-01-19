@@ -1,8 +1,13 @@
-class _SimpleObject(dict):
-    "Simple dict-backed object with attribute read access"
-
-    def __getattr__(self, item):
-        return self[item]
+class _SimpleObject(object):
+    def get_data(self):
+        """
+        Get data for serialization.
+        """
+        return vars(self)
 
     def serialize(self):
-        return dict(self)
+        return {key.replace('_', '-'): value for (key, value) in self.get_data().items() if value is not None}
+
+    @classmethod
+    def parse(cls, data):
+        return cls(**{key.replace('-', '_'): value for (key, value) in data.items()})

@@ -15,7 +15,7 @@ def parse(yaml, validate=True):
     :rtype: valohai_yaml.objs.Config
     """
     data = read_yaml(yaml)
-    if validate:
+    if validate:  # pragma: no branch
         from .validation import validate
         validate(data, raise_exc=True)
     return Config.parse(data)

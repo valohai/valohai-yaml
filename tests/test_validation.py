@@ -39,10 +39,12 @@ def test_popo_validation():
 
 
 def test_raise():
-    with pytest.raises(ValidationErrors):
+    with pytest.raises(ValidationErrors) as ei:
         validate(invalid_obj, raise_exc=True)
+    assert list(ei.value)  # test iteration over errors
 
 
 def test_error_list():
-    err = validate(invalid_obj, raise_exc=False)[0]
-    assert 'required property' in (u'%s' % err)
+    errs = [u'%s' % err for err in validate(invalid_obj, raise_exc=False)]
+    assert any(('Additional properties are not allowed' in err) for err in errs)  # pragma: no branch
+    assert any(('required property' in err) for err in errs)  # pragma: no branch
