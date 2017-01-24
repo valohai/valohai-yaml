@@ -6,6 +6,8 @@ class Input(_SimpleObject):
         self,
         name,
         default=None,
+        optional=False,
     ):
         self.name = name
         self.default = default
+        self.optional = optional
