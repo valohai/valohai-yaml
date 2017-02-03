@@ -34,11 +34,9 @@ class LocalRefResolver(RefResolver):
     def resolve_from_url(self, url):
         local_match = self.local_scope_re.match(url)
         if local_match:
-            local_filename = os.path.join(SCHEMATA_DIRECTORY, local_match.group(1))
-            with open(local_filename, 'r', encoding='utf-8') as infp:
-                schema = json.load(infp)
-                self.store[url] = schema
-                return schema
+            schema = get_schema(name=local_match.group(1))
+            self.store[url] = schema
+            return schema
         raise NotImplementedError('remote URL resolution is not supported for security reasons')  # pragma: no cover
 
 
