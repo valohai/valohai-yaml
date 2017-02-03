@@ -48,5 +48,5 @@ def build_command(command, parameters):
                     'failed to interpolate parameters into %r: %s' % (command, exc),
                     CommandInterpolationWarning
                 )
-        out_commands.append(command)
+        out_commands.append(command.strip())
     return out_commands

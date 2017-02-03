@@ -10,10 +10,13 @@ properties:
   pass-as:
     type: string
     default: "--{name}={value}"
-    description: How to pass the parameter to the command. Defaults to `--{name}={value}`.
+    description: |
+      How to pass the parameter to the command.
+      Defaults to `--{name}={value}` (or `--{name}` for flags).
   type:
     type: string
     enum:
+    - flag
     - float
     - integer
     - string
@@ -34,6 +37,7 @@ properties:
     description: |
       Whether this parameter is optional.
       Optional parameters may be disabled in the user interface.
+      Not applicable to flag parameters; they're always optional in a sense.
   name:
     type: string
     description: The symbolic name of this parameter. This must be unique within a Step.
@@ -41,5 +45,6 @@ properties:
     type: array
     description: |
       If choices are set, the user may only choose from these choices for the parameter.
+      Not applicable to flag parameters.
   default:
     description: The default value for the parameter.
