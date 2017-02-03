@@ -1,6 +1,7 @@
 import six
 
 from valohai_yaml.validation import ValidationErrors
+
 from .base import _SimpleObject
 
 

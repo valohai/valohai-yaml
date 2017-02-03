@@ -5,6 +5,7 @@ from collections import OrderedDict
 import six
 
 from valohai_yaml.commands import build_command
+
 from .input import Input
 from .parameter import Parameter
 

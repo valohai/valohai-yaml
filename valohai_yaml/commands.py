@@ -1,12 +1,14 @@
 from __future__ import unicode_literals
+
 import warnings
+
+from valohai_yaml.utils import listify
 
 try:
     from shlex import quote
 except ImportError:  # pragma: no cover
     from pipes import quote
 
-from valohai_yaml.utils import listify
 
 
 class CommandInterpolationWarning(UserWarning):
