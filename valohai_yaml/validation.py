@@ -13,6 +13,7 @@ SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
 
 
 class ValidationErrors(ValueError):
+
     def __init__(self, errors):
         self.errors = errors
         super(ValidationErrors, self).__init__(

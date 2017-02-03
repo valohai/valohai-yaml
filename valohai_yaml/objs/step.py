@@ -11,6 +11,7 @@ from .parameter import Parameter
 
 
 class Step(object):
+
     def __init__(self, name, image, command, parameters=(), inputs=(), outputs=()):
         self.name = name
         self.image = image
@@ -55,7 +56,7 @@ class Step(object):
             for (name, parameter)
             in self.parameters.items()
             if parameter.default is not None
-            }
+        }
 
     def build_parameters(self, param_values):
         """

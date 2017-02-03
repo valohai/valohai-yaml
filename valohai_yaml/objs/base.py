@@ -1,4 +1,5 @@
 class _SimpleObject(object):
+
     def get_data(self):
         """
         Get data for serialization.

@@ -6,6 +6,7 @@ from .base import _SimpleObject
 
 
 class Parameter(_SimpleObject):
+
     def __init__(
         self,
         name,

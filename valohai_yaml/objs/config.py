@@ -10,6 +10,7 @@ class Config(object):
     """
     Represents a `valohai.yaml` file.
     """
+
     def __init__(self, steps=()):
         assert all(isinstance(step, Step) for step in steps)
         self.steps = OrderedDict((step.name, step) for step in steps)
@@ -28,7 +29,7 @@ class Config(object):
             datum['step']
             for datum in data
             if isinstance(datum, dict) and datum.get('step')
-            ]
+        ]
         return cls(steps=[Step.parse(step_data) for step_data in step_datas])
 
     def serialize(self):

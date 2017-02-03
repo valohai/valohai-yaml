@@ -2,6 +2,7 @@ from .base import _SimpleObject
 
 
 class Input(_SimpleObject):
+
     def __init__(
         self,
         name,

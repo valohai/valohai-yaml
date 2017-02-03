@@ -10,7 +10,6 @@ except ImportError:  # pragma: no cover
     from pipes import quote
 
 
-
 class CommandInterpolationWarning(UserWarning):
     pass
 

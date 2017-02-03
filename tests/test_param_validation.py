@@ -19,6 +19,7 @@ def test_integer(case):
         param.validate(case)
     param.validate(5)
 
+
 @pytest.mark.parametrize('case', ('hello',))
 def test_float(case):
     param = Parameter(name='test', type='float')
