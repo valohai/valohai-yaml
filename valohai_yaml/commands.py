@@ -1,12 +1,13 @@
 from __future__ import unicode_literals
+
 import warnings
+
+from valohai_yaml.utils import listify
 
 try:
     from shlex import quote
 except ImportError:  # pragma: no cover
     from pipes import quote
-
-from valohai_yaml.utils import listify
 
 
 class CommandInterpolationWarning(UserWarning):
@@ -48,5 +49,5 @@ def build_command(command, parameters):
                     'failed to interpolate parameters into %r: %s' % (command, exc),
                     CommandInterpolationWarning
                 )
-        out_commands.append(command)
+        out_commands.append(command.strip())
     return out_commands

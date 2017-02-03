@@ -1,0 +1,28 @@
+---
+type: object
+required:
+- command
+- name
+- image
+additionalProperties: false
+properties:
+  command:
+    oneOf:
+    - type: string
+    - type: array
+      items:
+        type: string
+  name:
+    type: string
+  image:
+    type: string
+  inputs:
+    type: array
+    items:
+      "$ref": "./input-item.json"
+  outputs:
+    type: array
+  parameters:
+    type: array
+    items:
+      "$ref": "./param-item.json"

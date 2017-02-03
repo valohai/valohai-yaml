@@ -1,10 +1,12 @@
 import six
 
 from valohai_yaml.validation import ValidationErrors
+
 from .base import _SimpleObject
 
 
 class Parameter(_SimpleObject):
+
     def __init__(
         self,
         name,
@@ -26,6 +28,16 @@ class Parameter(_SimpleObject):
         self.default = default
         self.pass_as = pass_as
         self.choices = (list(choices) if choices else None)
+        if self.type == 'flag':
+            self.optional = True
+            self.choices = (True, False)
+
+    def get_data(self):
+        data = super(Parameter, self).get_data()
+        if self.type == 'flag':
+            data.pop('optional', None)
+            data.pop('choices', None)
+        return data
 
     def _validate_value(self, value, errors):
         if self.min is not None and value < self.min:
@@ -64,3 +76,9 @@ class Parameter(_SimpleObject):
             raise ValidationErrors(errors)
 
         return value
+
+    @property
+    def default_pass_as(self):
+        if self.type == 'flag':
+            return '--{name}'
+        return '--{name}={value}'

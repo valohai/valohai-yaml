@@ -1,0 +1,17 @@
+---
+type: object
+required:
+- name
+additionalProperties: false
+properties:
+  name:
+    type: string
+    description: The symbolic name of this input. This must be unique within a Step.
+  default:
+    type: string
+    description: The default URL for the input.
+  optional:
+    type: boolean
+    description: |
+      Whether this input is optional.
+      Optional inputs may be disabled in the user interface.

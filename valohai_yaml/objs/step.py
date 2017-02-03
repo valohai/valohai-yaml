@@ -5,11 +5,13 @@ from collections import OrderedDict
 import six
 
 from valohai_yaml.commands import build_command
+
 from .input import Input
 from .parameter import Parameter
 
 
 class Step(object):
+
     def __init__(self, name, image, command, parameters=(), inputs=(), outputs=()):
         self.name = name
         self.image = image
@@ -54,7 +56,7 @@ class Step(object):
             for (name, parameter)
             in self.parameters.items()
             if parameter.default is not None
-            }
+        }
 
     def build_parameters(self, param_values):
         """
@@ -68,9 +70,9 @@ class Step(object):
         param_bits = []
         for name, param in self.parameters.items():
             value = param_values.get(name)
-            if value is None:
+            if value is None or (param.type == 'flag' and not value):
                 continue
-            pass_as_bits = six.text_type(param.pass_as or '--{name}={value}').split()
+            pass_as_bits = six.text_type(param.pass_as or param.default_pass_as).split()
             env = dict(name=name, value=value, v=value)
             param_bits.extend(bit.format(**env) for bit in pass_as_bits)
         return param_bits

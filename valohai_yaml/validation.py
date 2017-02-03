@@ -3,6 +3,7 @@ import os
 import re
 from codecs import open  # required for Python 2, doesn't hurt for Python 3
 
+import yaml
 from jsonschema import Draft4Validator, RefResolver
 from jsonschema.compat import lru_cache
 
@@ -12,6 +13,7 @@ SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
 
 
 class ValidationErrors(ValueError):
+
     def __init__(self, errors):
         self.errors = errors
         super(ValidationErrors, self).__init__(
@@ -34,22 +36,24 @@ class LocalRefResolver(RefResolver):
     def resolve_from_url(self, url):
         local_match = self.local_scope_re.match(url)
         if local_match:
-            local_filename = os.path.join(SCHEMATA_DIRECTORY, local_match.group(1))
-            with open(local_filename, 'r', encoding='utf-8') as infp:
-                schema = json.load(infp)
-                self.store[url] = schema
-                return schema
+            schema = get_schema(name=local_match.group(1))
+            self.store[url] = schema
+            return schema
         raise NotImplementedError('remote URL resolution is not supported for security reasons')  # pragma: no cover
 
 
 @lru_cache()
 def get_schema(name):
-    with open(
-        os.path.join(SCHEMATA_DIRECTORY, name),
-        'r',
-        encoding='utf-8'
-    ) as infp:
-        return json.load(infp)
+    json_filename = os.path.join(SCHEMATA_DIRECTORY, name)
+    yaml_filename = os.path.splitext(json_filename)[0] + '.yaml'
+    for filename, loader in [
+        (json_filename, json.load),
+        (yaml_filename, yaml.safe_load),
+    ]:
+        if os.path.isfile(filename):
+            with open(filename, 'r', encoding='utf-8') as infp:
+                return loader(infp)
+    raise ValueError('unable to read schema %s' % name)  # pragma: no cover
 
 
 def get_validator():
