@@ -11,7 +11,7 @@ if __name__ == '__main__':
     setuptools.setup(
         name='valohai-yaml',
         description='Valohai.yaml validation and parsing',
-        version='0.3.1',
+        version='0.4',
         url='https://github.com/valohai/valohai-yaml',
         author='Valohai',
         maintainer='Aarni Koskela',
