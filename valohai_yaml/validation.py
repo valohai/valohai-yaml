@@ -3,6 +3,7 @@ import os
 import re
 from codecs import open  # required for Python 2, doesn't hurt for Python 3
 
+import yaml
 from jsonschema import Draft4Validator, RefResolver
 from jsonschema.compat import lru_cache
 
@@ -42,12 +43,16 @@ class LocalRefResolver(RefResolver):
 
 @lru_cache()
 def get_schema(name):
-    with open(
-        os.path.join(SCHEMATA_DIRECTORY, name),
-        'r',
-        encoding='utf-8'
-    ) as infp:
-        return json.load(infp)
+    json_filename = os.path.join(SCHEMATA_DIRECTORY, name)
+    yaml_filename = os.path.splitext(json_filename)[0] + '.yaml'
+    for filename, loader in [
+        (json_filename, json.load),
+        (yaml_filename, yaml.safe_load),
+    ]:
+        if os.path.isfile(filename):
+            with open(filename, 'r', encoding='utf-8') as infp:
+                return loader(infp)
+    raise ValueError('unable to read schema %s' % name)  # pragma: no cover
 
 
 def get_validator():
