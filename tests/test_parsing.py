@@ -1,27 +1,7 @@
-import os
+from tests.utils import config_fixture
 
-import pytest
-
-from tests.consts import examples_path
-from valohai_yaml import parse
-
-
-def _load_config(filename, roundtrip):
-    with open(os.path.join(examples_path, filename), 'r') as infp:
-        config = parse(infp)
-    if roundtrip:
-        config = parse(config.serialize())
-    return config
-
-
-@pytest.fixture(params=[False, True])
-def example1_config(request):
-    return _load_config('example1.yaml', request.param)
-
-
-@pytest.fixture(params=[False, True])
-def example2_config(request):
-    return _load_config('example2.yaml', request.param)
+example1_config = config_fixture('example1.yaml')
+example2_config = config_fixture('example2.yaml')
 
 
 def test_parse_inputs(example2_config):
