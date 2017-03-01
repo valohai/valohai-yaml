@@ -3,6 +3,7 @@ from tests.utils import config_fixture
 example1_config = config_fixture('example1.yaml')
 example2_config = config_fixture('example2.yaml')
 boolean_param_config = config_fixture('flag-param-example.yaml')
+mount_config = config_fixture('mount-example.yaml')
 
 
 def test_parse_inputs(example2_config):
@@ -77,3 +78,8 @@ def test_boolean_param_parse(boolean_param_config):
     assert step.parameters['case-insensitive'].choices == (True, False)
     assert step.build_command({'case-insensitive': True}) == ['foo --case-insensitive']
     assert step.build_command({'case-insensitive': False}) == ['foo']
+
+
+def test_mount_parse(mount_config):
+    step = mount_config.steps['test']
+    assert len(step.mounts) == 2
