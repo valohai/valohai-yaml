@@ -7,17 +7,21 @@ import six
 from valohai_yaml.commands import build_command
 
 from .input import Input
+from .mount import Mount
 from .parameter import Parameter
 
 
 class Step(object):
 
-    def __init__(self, name, image, command, parameters=(), inputs=(), outputs=()):
+    def __init__(self, name, image, command, parameters=(), inputs=(), outputs=(), mounts=()):
         self.name = name
         self.image = image
         self.command = command
 
         self.outputs = list(outputs)  # TODO: Improve handling
+
+        assert all(isinstance(m, Mount) for m in mounts)
+        self.mounts = list(mounts)
 
         assert all(isinstance(i, Input) for i in inputs)
         self.inputs = OrderedDict((input.name, input) for input in inputs)
@@ -30,6 +34,7 @@ class Step(object):
         kwargs = data.copy()
         kwargs['parameters'] = [Parameter.parse(p_data) for p_data in kwargs.pop('parameters', ())]
         kwargs['inputs'] = [Input.parse(i_data) for i_data in kwargs.pop('inputs', ())]
+        kwargs['mounts'] = [Mount.parse(m_data) for m_data in kwargs.pop('mounts', ())]
         return cls(**kwargs)
 
     def serialize(self):
@@ -42,6 +47,8 @@ class Step(object):
             val['parameters'] = list(p.serialize() for p in self.parameters.values())
         if self.inputs:
             val['inputs'] = list(i.serialize() for i in self.inputs.values())
+        if self.mounts:
+            val['mounts'] = [m.serialize() for m in self.mounts]
         if self.outputs:
             val['outputs'] = self.outputs
         return val

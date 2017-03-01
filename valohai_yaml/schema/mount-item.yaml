@@ -1,0 +1,23 @@
+---
+anyOf:
+  - type: string
+    pattern: ^/.+:/.+$
+    description: A simple source:destination mount string. Note both parts must be absolute.
+  - type: object
+    required:
+    - source
+    - destination
+    additionalProperties: false
+    properties:
+      source:
+        type: string
+        pattern: ^/.+$
+        description: Host path for data
+      destination:
+        type: string
+        pattern: ^/.+$
+        description: Container path for data
+      readonly:
+        type: boolean
+        description: Whether to mount the volume read-only
+        default: false

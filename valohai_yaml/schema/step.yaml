@@ -26,3 +26,7 @@ properties:
     type: array
     items:
       "$ref": "./param-item.json"
+  mounts:
+    type: array
+    items:
+      "$ref": "./mount-item.json"
