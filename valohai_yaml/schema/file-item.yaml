@@ -1,0 +1,18 @@
+---
+type: object
+required:
+- name
+- path
+additionalProperties: false
+properties:
+  name:
+    type: string
+    description: The symbolic name of this file.
+  description:
+    type: string
+    description: The description of the file.
+  path:
+    type: string
+    description:
+      Relative path of the file from the endpoint's working directory.
+      For example "data/serialized_model.hdf5".
