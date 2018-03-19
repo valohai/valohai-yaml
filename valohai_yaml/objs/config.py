@@ -4,6 +4,7 @@ from collections import OrderedDict
 from itertools import chain
 
 from .step import Step
+from .endpoint import Endpoint
 
 
 class Config(object):
@@ -11,9 +12,11 @@ class Config(object):
     Represents a `valohai.yaml` file.
     """
 
-    def __init__(self, steps=()):
+    def __init__(self, steps=(), endpoints=()):
         assert all(isinstance(step, Step) for step in steps)
         self.steps = OrderedDict((step.name, step) for step in steps)
+        assert all(isinstance(endpoint, Endpoint) for endpoint in endpoints)
+        self.endpoints = OrderedDict((endpoint.name, endpoint) for endpoint in endpoints)
 
     @classmethod
     def parse(cls, data):
@@ -25,16 +28,27 @@ class Config(object):
         :return: Config object
         :rtype: valohai_yaml.objs.Config
         """
-        step_datas = [
-            datum['step']
-            for datum in data
-            if isinstance(datum, dict) and datum.get('step')
-        ]
-        return cls(steps=[Step.parse(step_data) for step_data in step_datas])
+        parsers = {
+            'step': ([], Step.parse),
+            'endpoint': ([], Endpoint.parse),
+        }
+        for datum in data:
+            assert isinstance(datum, dict)
+            for type, (items, parse) in parsers.items():
+                if type in datum:
+                    items.append(parse(datum[type]))
+                    break
+            else:
+                raise ValueError('No parser for {0}'.format(datum))
+        return cls(
+            steps=parsers['step'][0],
+            endpoints=parsers['endpoint'][0],
+        )
 
     def serialize(self):
         return list(chain(
-            ({'step': step.serialize()} for step in self.steps.values())
+            ({'step': step.serialize()} for step in self.steps.values()),
+            ({'endpoint': endpoint.serialize()} for endpoint in self.endpoints.values()),
         ))
 
     def get_step_by(self, **kwargs):
@@ -62,7 +76,9 @@ class Config(object):
         return None
 
     def __repr__(self):  # pragma: no cover
-        return '<Config with %d steps: %r>' % (
+        return '<Config with %d steps (%r) and %d endpoints (%r)>' % (
             len(self.steps),
-            sorted(self.steps)
+            sorted(self.steps),
+            len(self.endpoints),
+            sorted(self.endpoints),
         )

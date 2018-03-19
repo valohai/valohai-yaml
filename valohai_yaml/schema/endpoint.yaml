@@ -1,0 +1,47 @@
+---
+type: object
+required:
+- name
+- image
+additionalProperties: false
+properties:
+  name:
+    type: string
+    description:
+      Name of the endpoint, which is used as part of
+      the URL (i.e. /project/version/name) of the deployed endpoint.
+      Endpoint names must be lowercase, start with a letter and may contain letters,
+      numbers, dashes and underscores thereafter.
+  description:
+    type: string
+  image:
+    type: string
+    description: Docker image used to run the deployment code in.
+  files:
+    type: array
+    items:
+      "$ref": "./file-item.json"
+    description: Files that will be loaded into the image, for example the trained model.
+  port:
+    type: number
+    minimum: 1025
+    maximum: 65535
+    description: Port used for the HTTP server. Defaults to 8000.
+  server-command:
+    oneOf:
+    - type: string
+    - type: array
+      items:
+        type: string
+    description: Command that runs a HTTP server.
+  wsgi:
+    type: string
+    description:
+      Specifies the WSGI application to serve (e.g. a Flask application).
+      Specify the module (i.e. `package.app`) or
+      the module and the WSGI callable (i.e. `package.app:wsgi_callable`).
+oneOf:
+    - required:
+      - server-command
+    - required:
+      - wsgi

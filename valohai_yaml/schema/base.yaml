@@ -6,3 +6,5 @@ items:
   properties:
     step:
       "$ref": "./step.json"
+    endpoint:
+      "$ref": "./endpoint.json"

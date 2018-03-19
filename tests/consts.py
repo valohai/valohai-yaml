@@ -8,6 +8,15 @@ valid_bytes = b'''
     name: foo
     command: foo
     image: foo
+- endpoint:
+    name: xyz
+    image: xyz
+    port: 1453
+    server-command: ./hs.sh
+- endpoint:
+    name: xyz
+    image: xyz
+    wsgi: hs:sh
 '''
 
 invalid_obj = [
@@ -24,6 +33,21 @@ valid_obj = [
             'name': 'foo',
             'command': 'foo',
             'image': 'foo',
+        }
+    },
+    {
+        'endpoint': {
+            'name': 'xyz',
+            'image': 'xyz',
+            'port': 1453,
+            'server-command': './hs.sh',
+        }
+    },
+    {
+        'endpoint': {
+            'name': 'xyz',
+            'image': 'xyz',
+            'wsgi': 'hs:sh',
         }
     },
 ]

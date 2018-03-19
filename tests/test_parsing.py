@@ -1,9 +1,13 @@
+import pytest
+
 from tests.utils import config_fixture
+from valohai_yaml import parse
 
 example1_config = config_fixture('example1.yaml')
 example2_config = config_fixture('example2.yaml')
 boolean_param_config = config_fixture('flag-param-example.yaml')
 mount_config = config_fixture('mount-example.yaml')
+endpoint_config = config_fixture('endpoint-example.yaml')
 
 
 def test_parse_inputs(example2_config):
@@ -83,3 +87,26 @@ def test_boolean_param_parse(boolean_param_config):
 def test_mount_parse(mount_config):
     step = mount_config.steps['test']
     assert len(step.mounts) == 2
+
+
+def test_endpoint_parse(endpoint_config):
+    server_endpoint = endpoint_config.endpoints['server-endpoint']
+    assert server_endpoint.image == 'python:3.6'
+    assert server_endpoint.port == 1453
+    assert server_endpoint.server_command == 'python run_server.py'
+    wsgi_endpoint = endpoint_config.endpoints['wsgi-endpoint']
+    assert wsgi_endpoint.description == 'predict digits from image inputs'
+    assert wsgi_endpoint.image == 'gcr.io/tensorflow/tensorflow:1.3.0-py3'
+    assert wsgi_endpoint.wsgi == 'predict_wsgi:predict_wsgi'
+    assert len(wsgi_endpoint.files) == 1
+    file = wsgi_endpoint.files[0]
+    assert file.name == 'model'
+    assert file.description == 'Model output file from TensorFlow'
+    assert file.path == 'model.pb'
+
+
+def test_unknown_parse():
+    with pytest.raises(ValueError) as e:
+        fail_config = '[{ city_name: Constantinople }]'
+        parse(fail_config)
+    assert e.value.args[0] == "No parser for {'city_name': 'Constantinople'}"
