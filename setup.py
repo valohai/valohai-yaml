@@ -1,5 +1,7 @@
 import setuptools
 
+from valohai_yaml import __version__
+
 dev_dependencies = [
     'flake8',
     'isort',
@@ -11,7 +13,7 @@ if __name__ == '__main__':
     setuptools.setup(
         name='valohai-yaml',
         description='Valohai.yaml validation and parsing',
-        version='0.5',
+        version=__version__,
         url='https://github.com/valohai/valohai-yaml',
         author='Valohai',
         author_email='info@valohai.com',
