@@ -1,6 +1,10 @@
+import ast
+import os
+import re
 import setuptools
 
-from valohai_yaml import __version__
+with open(os.path.join(os.path.dirname(__file__), 'valohai_yaml', '__init__.py')) as infp:
+    version = ast.literal_eval(re.search('__version__ = (.+?)$', infp.read(), re.M).group(1))
 
 dev_dependencies = [
     'flake8',
@@ -13,7 +17,7 @@ if __name__ == '__main__':
     setuptools.setup(
         name='valohai-yaml',
         description='Valohai.yaml validation and parsing',
-        version=__version__,
+        version=version,
         url='https://github.com/valohai/valohai-yaml',
         author='Valohai',
         author_email='info@valohai.com',
