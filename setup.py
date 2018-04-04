@@ -14,6 +14,7 @@ if __name__ == '__main__':
         version='0.5',
         url='https://github.com/valohai/valohai-yaml',
         author='Valohai',
+        author_email='info@valohai.com',
         maintainer='Aarni Koskela',
         maintainer_email='akx@iki.fi',
         license='MIT',
