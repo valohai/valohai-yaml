@@ -1,3 +1,6 @@
+from valohai_yaml.commands import build_command
+
+
 def test_command_generation(example1_config):
     config = example1_config
     step = config.steps['run training']
@@ -26,3 +29,8 @@ def test_command_override(example1_config):
     command = ' && '.join(command)
     assert command.startswith('asdf')
     assert '--decoder-spec hello' in command
+
+
+def test_nonexistent_interpolation_keys():
+    interp_command = build_command(['Where are the ${shell_unicorns}? The {parameters} are here!'], ['ponies'])
+    assert interp_command == ['Where are the ${shell_unicorns}? The ponies are here!']
