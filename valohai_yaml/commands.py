@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import re
 import warnings
 
 from valohai_yaml.utils import listify
@@ -43,7 +44,11 @@ def build_command(command, parameters):
 
         if any('{%s}' % key in command for key in env):
             try:
-                command = command.format(**env)
+                command = re.sub(
+                    r'{(.+?)}',
+                    lambda match: env.get(match.group(1), '{%s}' % match.group(1)),
+                    command,
+                )
             except ValueError as exc:  # pragma: no cover
                 warnings.warn(
                     'failed to interpolate parameters into %r: %s' % (command, exc),

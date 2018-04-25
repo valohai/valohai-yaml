@@ -7,7 +7,7 @@
 *.py[cod]
 *.so
 *.spec
-.cache
+*cache
 .coverage
 .idea/
 .tox/
