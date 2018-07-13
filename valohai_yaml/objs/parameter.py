@@ -82,3 +82,16 @@ class Parameter(_SimpleObject):
         if self.type == 'flag':
             return '--{name}'
         return '--{name}={value}'
+
+    def format_cli(self, value):
+        """
+        Build a single parameter argument.
+
+        :return: list of CLI strings -- not escaped. If the parameter should not be expressed, returns None.
+        :rtype: list[str]|None
+        """
+        if value is None or (self.type == 'flag' and not value):
+            return None
+        pass_as_bits = six.text_type(self.pass_as or self.default_pass_as).split()
+        env = dict(name=self.name, value=value, v=value)
+        return [bit.format(**env) for bit in pass_as_bits]
