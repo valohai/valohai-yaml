@@ -59,7 +59,7 @@ def test_endpoint_parse(endpoint_config):
     assert server_endpoint.server_command == 'python run_server.py'
     wsgi_endpoint = endpoint_config.endpoints['wsgi-endpoint']
     assert wsgi_endpoint.description == 'predict digits from image inputs'
-    assert wsgi_endpoint.image == 'gcr.io/tensorflow/tensorflow:1.3.0-py3'
+    assert wsgi_endpoint.image == 'tensorflow/tensorflow:1.3.0-py3'
     assert wsgi_endpoint.wsgi == 'predict_wsgi:predict_wsgi'
     assert len(wsgi_endpoint.files) == 1
     file = wsgi_endpoint.files[0]

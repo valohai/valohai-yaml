@@ -2,7 +2,7 @@
 
 - step:
     name: run training
-    image: gcr.io/tensorflow/tensorflow
+    image: tensorflow/tensorflow
     command: python -u /tmp/code/my_mnist.py
     inputs:
       - name: training-set-images
