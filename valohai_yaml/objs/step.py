@@ -2,9 +2,8 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
-import six
-
 from valohai_yaml.commands import build_command
+from valohai_yaml.objs.parameter_map import ParameterMap
 
 from .input import Input
 from .mount import Mount
@@ -65,24 +64,9 @@ class Step(object):
             if parameter.default is not None
         }
 
-    def build_parameters(self, param_values):
-        """
-        Build the CLI command line from the given parameter values.
-
-        :param param_values: mapping from parameter name to value
-        :type param_values: dict[str, object]
-        :return: list of CLI strings -- not escaped!
-        :rtype: list[str]
-        """
-        param_bits = []
-        for name, param in self.parameters.items():
-            value = param_values.get(name)
-            if value is None or (param.type == 'flag' and not value):
-                continue
-            pass_as_bits = six.text_type(param.pass_as or param.default_pass_as).split()
-            env = dict(name=name, value=value, v=value)
-            param_bits.extend(bit.format(**env) for bit in pass_as_bits)
-        return param_bits
+    def build_parameters(self, param_values):  # pragma: no cover
+        # TODO: Legacy; no longer used internally. Remove at 1.0.
+        return ParameterMap(self.parameters, param_values).build_parameters()
 
     def build_command(self, parameter_values, command=None):
         """
@@ -105,5 +89,5 @@ class Step(object):
         command = (command or self.command)
         # merge defaults with passed values
         values = dict(self.get_parameter_defaults(), **parameter_values)
-        parameters = self.build_parameters(values)
-        return build_command(command, parameters)
+        parameter_map = ParameterMap(parameters=self.parameters, values=values)
+        return build_command(command, parameter_map)
