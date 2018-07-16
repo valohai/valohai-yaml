@@ -58,7 +58,7 @@ def build_command(command, parameter_map):
     :rtype: list[str]
     """
 
-    if isinstance(parameter_map, list):  # Partially emulate old (pre-0.6) API for this function.
+    if isinstance(parameter_map, list):  # Partially emulate old (pre-0.7) API for this function.
         parameter_map = LegacyParameterMap(parameter_map)
 
     out_commands = []
