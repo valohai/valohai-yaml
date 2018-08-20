@@ -7,6 +7,9 @@ properties:
   name:
     type: string
     description: The symbolic name of this input. This must be unique within a Step.
+  description:
+    type: string
+    description: Describes the input. This is shown as a help text in the user interface.
   default:
     type: string
     description: The default URL for the input.

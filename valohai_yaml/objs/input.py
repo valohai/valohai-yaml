@@ -8,7 +8,9 @@ class Input(_SimpleObject):
         name,
         default=None,
         optional=False,
+        description=None,
     ):
         self.name = name
         self.default = default
         self.optional = bool(optional)
+        self.description = description
