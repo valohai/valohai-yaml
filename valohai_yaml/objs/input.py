@@ -11,4 +11,4 @@ class Input(_SimpleObject):
     ):
         self.name = name
         self.default = default
-        self.optional = optional
+        self.optional = bool(optional)

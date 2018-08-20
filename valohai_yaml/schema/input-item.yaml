@@ -12,6 +12,7 @@ properties:
     description: The default URL for the input.
   optional:
     type: boolean
+    default: false
     description: |
       Whether this input is optional.
       Optional inputs may be disabled in the user interface.
