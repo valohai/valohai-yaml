@@ -7,6 +7,7 @@ def test_parse_inputs(example2_config):
     config = example2_config
     step = config.steps['run training']
     assert len(step.inputs) == 5
+    assert len([inp.description for inp in step.inputs.values() if inp.description]) == 4
 
 
 def test_parse(example1_config):
