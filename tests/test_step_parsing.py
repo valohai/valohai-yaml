@@ -5,6 +5,14 @@ def test_parse_inputs(example2_config):
     assert len([inp.description for inp in step.inputs.values() if inp.description]) == 4
 
 
+def test_parse_input_defaults(example3_config):
+    config = example3_config
+    step = config.steps['batch inference']
+    assert len(step.inputs) == 2
+    assert step.inputs['model'].default == 's3://foo/model.pb'
+    assert isinstance(step.inputs['images'].default, list) and len(step.inputs['images'].default) == 2
+
+
 def test_parse(example1_config):
     config = example1_config
     # test that we can access a step by name

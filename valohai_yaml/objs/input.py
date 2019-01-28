@@ -11,6 +11,6 @@ class Input(_SimpleObject):
         description=None,
     ):
         self.name = name
-        self.default = default
+        self.default = default  # may be None, a string or a list of strings
         self.optional = bool(optional)
         self.description = description

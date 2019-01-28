@@ -11,8 +11,12 @@ properties:
     type: string
     description: Describes the input. This is shown as a help text in the user interface.
   default:
-    type: string
-    description: The default URL for the input.
+    oneOf:
+      - type: string
+      - type: array
+        items:
+          type: string
+    description: The default URL(s) for the input.
   optional:
     type: boolean
     default: false
