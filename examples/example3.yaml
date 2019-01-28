@@ -3,6 +3,7 @@
 - step:
     name: batch inference
     image: busybox
+    environment: g2.superduperlarge
     command:
      - ls -laR /valohai/inputs
     environment-variables:

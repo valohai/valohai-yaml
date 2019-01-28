@@ -24,6 +24,7 @@ class Step(object):
         outputs=(),
         mounts=(),
         environment_variables=(),
+        environment=None,
     ):
         self.name = name
         self.image = image
@@ -41,6 +42,7 @@ class Step(object):
         self.parameters = OrderedDict((param.name, param) for param in parameters)
 
         self.environment_variables = OrderedDict((ev.name, ev) for ev in environment_variables)
+        self.environment = (str(environment) if environment else None)
 
     @classmethod
     def parse(cls, data):
@@ -62,6 +64,7 @@ class Step(object):
         serialize_into(val, 'mounts', self.mounts)
         serialize_into(val, 'outputs', self.outputs)
         serialize_into(val, 'environment-variables', self.environment_variables)
+        serialize_into(val, 'environment', self.environment)
         return val
 
     def get_parameter_defaults(self):

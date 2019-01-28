@@ -66,3 +66,8 @@ def test_parse_environment_variables(example3_config):
     assert step.environment_variables['foo'].optional
     assert not step.environment_variables['baz'].optional
 
+
+def test_parse_environment(example3_config):
+    config = example3_config
+    step = config.steps['batch inference']
+    assert step.environment == 'g2.superduperlarge'
