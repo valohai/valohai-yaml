@@ -30,3 +30,8 @@ properties:
     type: array
     items:
       "$ref": "./mount-item.json"
+  environment-variables:
+    type: array
+    items:
+      "$ref": "./environment-variable-item.json"
+    description: Environment variables and their default values for the step.

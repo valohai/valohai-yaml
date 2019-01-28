@@ -46,3 +46,15 @@ def test_boolean_param_parse(boolean_param_config):
 def test_mount_parse(mount_config):
     step = mount_config.steps['test']
     assert len(step.mounts) == 2
+
+
+def test_parse_environment_variables(example3_config):
+    config = example3_config
+    step = config.steps['batch inference']
+    assert {ev.name: ev.default for ev in step.environment_variables.values()} == {
+        'foo': 'bar',
+        'baz': '850',
+    }
+    assert step.environment_variables['foo'].optional
+    assert not step.environment_variables['baz'].optional
+
