@@ -17,6 +17,6 @@ def _load_config(filename, roundtrip):
 def config_fixture(name):
     @pytest.fixture(params=[False, True])
     def _config_fixture(request):
-        return _load_config(name, request.param)
+        return _load_config(name, roundtrip=request.param)
 
     return _config_fixture
