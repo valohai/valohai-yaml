@@ -31,7 +31,7 @@ class LocalRefResolver(RefResolver):
     """
     Loads relative URLs (as it were) from the `schema` directory.
     """
-    local_scope_re = re.compile('^https?://valohai.com/(.+\.json)$')
+    local_scope_re = re.compile(r'^https?://valohai.com/(.+\.json)$')
 
     def resolve_from_url(self, url):
         local_match = self.local_scope_re.match(url)

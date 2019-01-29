@@ -7,6 +7,7 @@ required:
 additionalProperties: false
 properties:
   command:
+    description: The command or commands to run.
     oneOf:
     - type: string
     - type: array
@@ -14,19 +15,32 @@ properties:
         type: string
   name:
     type: string
+    description: The unique name for this step.
   image:
     type: string
+    description: The Docker image to use for this step.
   inputs:
     type: array
+    description: The inputs expected by the step.
     items:
       "$ref": "./input-item.json"
   outputs:
     type: array
   parameters:
+    description: The parameter definitions and default values to be interpolated into the command.
     type: array
     items:
       "$ref": "./param-item.json"
   mounts:
+    description: Custom mounts to enable, for private environments allowing them.
     type: array
     items:
       "$ref": "./mount-item.json"
+  environment-variables:
+    type: array
+    items:
+      "$ref": "./environment-variable-item.json"
+    description: Environment variables and their default values for the step.
+  environment:
+    type: string
+    description: Default execution environment (ID or substring of environment name)

@@ -1,0 +1,23 @@
+---
+type: object
+required:
+- name
+additionalProperties: false
+properties:
+  name:
+    type: string
+    description: The environment variable. This must be unique within a Step.
+  description:
+    type: string
+    description: Describes the environment variable's meaning. This can be shown as a help text in the user interface.
+  default:
+    type: string
+    description: The default value for the environment variable.
+  optional:
+    type: boolean
+    default: true
+    description: |
+      Whether this environment variable is optional.
+      All environment variables are optional by default.
+      Executions may not be created unless all required environment variables have a value,
+      configured either explicitly in the step or trickled down from project-level settings.

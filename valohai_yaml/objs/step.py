@@ -3,7 +3,9 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 from valohai_yaml.commands import build_command
+from valohai_yaml.objs.environment_variable import EnvironmentVariable
 from valohai_yaml.objs.parameter_map import ParameterMap
+from valohai_yaml.objs.utils import consume_array_of, serialize_into
 
 from .input import Input
 from .mount import Mount
@@ -12,7 +14,18 @@ from .parameter import Parameter
 
 class Step(object):
 
-    def __init__(self, name, image, command, parameters=(), inputs=(), outputs=(), mounts=()):
+    def __init__(
+        self,
+        name,
+        image,
+        command,
+        parameters=(),
+        inputs=(),
+        outputs=(),
+        mounts=(),
+        environment_variables=(),
+        environment=None,
+    ):
         self.name = name
         self.image = image
         self.command = command
@@ -28,12 +41,16 @@ class Step(object):
         assert all(isinstance(p, Parameter) for p in parameters)
         self.parameters = OrderedDict((param.name, param) for param in parameters)
 
+        self.environment_variables = OrderedDict((ev.name, ev) for ev in environment_variables)
+        self.environment = (str(environment) if environment else None)
+
     @classmethod
     def parse(cls, data):
         kwargs = data.copy()
-        kwargs['parameters'] = [Parameter.parse(p_data) for p_data in kwargs.pop('parameters', ())]
-        kwargs['inputs'] = [Input.parse(i_data) for i_data in kwargs.pop('inputs', ())]
-        kwargs['mounts'] = [Mount.parse(m_data) for m_data in kwargs.pop('mounts', ())]
+        kwargs['parameters'] = consume_array_of(kwargs, 'parameters', Parameter)
+        kwargs['inputs'] = consume_array_of(kwargs, 'inputs', Input)
+        kwargs['mounts'] = consume_array_of(kwargs, 'mounts', Mount)
+        kwargs['environment_variables'] = consume_array_of(kwargs, 'environment-variables', EnvironmentVariable)
         return cls(**kwargs)
 
     def serialize(self):
@@ -42,14 +59,12 @@ class Step(object):
             'image': self.image,
             'command': self.command,
         }
-        if self.parameters:
-            val['parameters'] = list(p.serialize() for p in self.parameters.values())
-        if self.inputs:
-            val['inputs'] = list(i.serialize() for i in self.inputs.values())
-        if self.mounts:
-            val['mounts'] = [m.serialize() for m in self.mounts]
-        if self.outputs:
-            val['outputs'] = self.outputs
+        serialize_into(val, 'parameters', self.parameters)
+        serialize_into(val, 'inputs', self.inputs)
+        serialize_into(val, 'mounts', self.mounts)
+        serialize_into(val, 'outputs', self.outputs)
+        serialize_into(val, 'environment-variables', self.environment_variables)
+        serialize_into(val, 'environment', self.environment)
         return val
 
     def get_parameter_defaults(self):
