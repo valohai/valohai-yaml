@@ -67,7 +67,7 @@ class Step(object):
         serialize_into(val, 'environment', self.environment)
         return val
 
-    def get_parameter_defaults(self):
+    def get_parameter_defaults(self, include_flags=True):
         """
         Get a dict mapping parameter names to their defaults (if set).
         :rtype: dict[str, object]
@@ -76,7 +76,7 @@ class Step(object):
             name: parameter.default
             for (name, parameter)
             in self.parameters.items()
-            if parameter.default is not None
+            if parameter.default is not None and (include_flags or parameter.type != 'flag')
         }
 
     def build_parameters(self, param_values):  # pragma: no cover
@@ -102,7 +102,11 @@ class Step(object):
         :rtype: list[str]
         """
         command = (command or self.command)
+
         # merge defaults with passed values
-        values = dict(self.get_parameter_defaults(), **parameter_values)
+        # ignore flag default values as they are special
+        # undefined flag will remain undefined regardless of default value
+        values = dict(self.get_parameter_defaults(include_flags=False), **parameter_values)
+
         parameter_map = ParameterMap(parameters=self.parameters, values=values)
         return build_command(command, parameter_map)
