@@ -47,8 +47,13 @@ def test_boolean_param_parse(boolean_param_config):
     step = boolean_param_config.steps['test']
     assert step.parameters['case-insensitive'].optional
     assert step.parameters['case-insensitive'].choices == (True, False)
+    assert step.parameters['defaults-to-true'].optional
+    assert step.parameters['defaults-to-true'].choices == (True, False)
     assert step.build_command({'case-insensitive': True}) == ['foo --case-insensitive']
     assert step.build_command({'case-insensitive': False}) == ['foo']
+    assert step.build_command({'defaults-to-true': True}) == ['foo --defaults-to-true']
+    assert step.build_command({'defaults-to-true': False}) == ['foo']
+    assert step.build_command({}) == ['foo']
 
 
 def test_mount_parse(mount_config):
