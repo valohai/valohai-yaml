@@ -56,6 +56,22 @@ def test_boolean_param_parse(boolean_param_config):
     assert step.build_command({}) == ['foo']
 
 
+def test_optional_default_param_parse(optional_default_param_config):
+    step = optional_default_param_config.steps['test']
+    assert step.parameters['varA'].optional
+    assert step.parameters['varA'].default == 123
+    assert step.parameters['varB'].optional
+    assert not step.parameters['varB'].default
+    assert not step.parameters['varC'].optional
+    assert step.parameters['varC'].default == 456
+    assert not step.parameters['varD'].optional
+    assert not step.parameters['varD'].default
+
+    assert step.build_command({'varA': 666}) == ['foo --varA=666 --varC=456']
+    assert step.build_command({'varB': 666}) == ['foo --varA=123 --varB=666 --varC=456']
+    assert step.build_command({}) == ['foo --varA=123 --varC=456']
+
+
 def test_mount_parse(mount_config):
     step = mount_config.steps['test']
     assert len(step.mounts) == 2

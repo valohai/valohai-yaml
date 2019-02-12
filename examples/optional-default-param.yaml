@@ -1,0 +1,21 @@
+---
+
+- step:
+    name: test
+    image: busybox
+    command: foo {parameters}
+    parameters:
+      - name: varA
+        type: integer
+        default: 123
+        optional: true
+      - name: varB
+        type: integer
+        optional: true
+      - name: varC
+        type: integer
+        default: 456
+        optional: false
+      - name: varD
+        type: integer
+        optional: false
