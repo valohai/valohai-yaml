@@ -1,7 +1,7 @@
-from .base import _SimpleObject
+from .base import Item
 
 
-class EnvironmentVariable(_SimpleObject):
+class EnvironmentVariable(Item):
 
     def __init__(
         self,

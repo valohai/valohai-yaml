@@ -1,7 +1,7 @@
-from .base import _SimpleObject
+from .base import Item
 
 
-class File(_SimpleObject):
+class File(Item):
 
     def __init__(
         self,

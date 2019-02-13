@@ -1,7 +1,7 @@
-from .base import _SimpleObject
+from .base import Item
 
 
-class Input(_SimpleObject):
+class Input(Item):
 
     def __init__(
         self,

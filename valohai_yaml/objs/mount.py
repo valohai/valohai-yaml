@@ -1,9 +1,9 @@
 from six import string_types, text_type
 
-from .base import _SimpleObject
+from .base import Item
 
 
-class Mount(_SimpleObject):
+class Mount(Item):
     def __init__(
         self,
         source,

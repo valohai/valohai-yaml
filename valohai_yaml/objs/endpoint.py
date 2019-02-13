@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
 
-from .base import _SimpleObject
+from .base import Item
 from .file import File
 
 
-class Endpoint(_SimpleObject):
+class Endpoint(Item):
 
     def __init__(self, name, image, description=None, files=(), port=None, server_command=None, wsgi=None):
         self.name = name
