@@ -2,10 +2,10 @@ import six
 
 from valohai_yaml.validation import ValidationErrors
 
-from .base import _SimpleObject
+from .base import Item
 
 
-class Parameter(_SimpleObject):
+class Parameter(Item):
 
     def __init__(
         self,

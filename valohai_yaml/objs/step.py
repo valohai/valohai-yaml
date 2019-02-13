@@ -3,16 +3,16 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 from valohai_yaml.commands import build_command
-from valohai_yaml.objs.environment_variable import EnvironmentVariable
-from valohai_yaml.objs.parameter_map import ParameterMap
-from valohai_yaml.objs.utils import consume_array_of, serialize_into
-
+from .base import Item
+from .environment_variable import EnvironmentVariable
+from .parameter_map import ParameterMap
+from .utils import consume_array_of, serialize_into
 from .input import Input
 from .mount import Mount
 from .parameter import Parameter
 
 
-class Step(object):
+class Step(Item):
 
     def __init__(
         self,
@@ -51,7 +51,9 @@ class Step(object):
         kwargs['inputs'] = consume_array_of(kwargs, 'inputs', Input)
         kwargs['mounts'] = consume_array_of(kwargs, 'mounts', Mount)
         kwargs['environment_variables'] = consume_array_of(kwargs, 'environment-variables', EnvironmentVariable)
-        return cls(**kwargs)
+        inst = cls(**kwargs)
+        inst._original_data = data
+        return inst
 
     def serialize(self):
         val = {

@@ -3,11 +3,12 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 from itertools import chain
 
+from .base import Item
 from .step import Step
 from .endpoint import Endpoint
 
 
-class Config(object):
+class Config(Item):
     """
     Represents a `valohai.yaml` file.
     """
@@ -40,10 +41,12 @@ class Config(object):
                     break
             else:
                 raise ValueError('No parser for {0}'.format(datum))
-        return cls(
+        inst = cls(
             steps=parsers['step'][0],
             endpoints=parsers['endpoint'][0],
         )
+        inst._original_data = data
+        return inst
 
     def serialize(self):
         return list(chain(
