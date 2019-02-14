@@ -1,0 +1,11 @@
+---
+
+- step:
+    name: test
+    image: busybox
+    command: foo {parameters}
+    parameters:
+      - name: case-insensitive
+        type: flag
+        optional: true
+        description: whether to be case insensitive
