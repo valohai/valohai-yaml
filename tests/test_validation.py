@@ -11,7 +11,6 @@ from valohai_yaml.__main__ import main
 
 from .consts import examples_path, invalid_obj, valid_bytes, valid_obj
 
-
 @pytest.mark.parametrize('path', glob.glob(os.path.join(examples_path, '*.yaml')))
 def test_valid_file_cli(path):
     "Test that known-good files validate via the CLI."

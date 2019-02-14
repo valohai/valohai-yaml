@@ -1,3 +1,4 @@
+from valohai_yaml.objs import Config
 from valohai_yaml.utils import read_yaml
 from valohai_yaml.utils.terminal import style
 from valohai_yaml.validation import get_validator
@@ -22,23 +23,37 @@ class LintResult:
     def error_count(self):
         return sum(1 for m in self.messages if m['type'] == 'error')
 
+    @property
+    def warnings(self):
+        return (m for m in self.messages if m['type'] == 'warning')
 
-def lint_file(filename):
+    @property
+    def errors(self):
+        return (m for m in self.messages if m['type'] == 'error')
+
+
+def lint_file(file_path):
     """
-    Validate `filename` and return a LintResult.
+    Validate & lint `file_path` and return a LintResult.
 
-    :param filename: YAML filename
-    :type filename: str
+    :param file_path: YAML filename
+    :type file_path: str
     :return: LintResult object
     """
-    lr = LintResult()
-    with open(filename, 'r') as infp:
+
+    with open(file_path, 'r') as yaml:
         try:
-            data = read_yaml(infp)
+            return lint(yaml)
         except Exception as e:
+            lr = LintResult()
             lr.add_error('could not parse YAML: %s' % e, exception=e)
             return lr
 
+
+def lint(yaml):
+    lr = LintResult()
+
+    data = read_yaml(yaml)
     validator = get_validator()
     errors = sorted(
         validator.iter_errors(data),
@@ -58,4 +73,18 @@ def lint_file(filename):
             message=style(error.message, fg='red'),
             path=style('.'.join(obj_path), bold=True),
         ))
+
+    if len(errors) > 0:
+        return lr
+
+    config = Config.parse(data)
+    for step in config.steps.values():
+        for param in step.parameters.values():
+            if param.type == 'flag' and param._original_data.get('optional'):
+                lr.add_warning(
+                    'Step {step}, parameter {param}: `optional` has no effect on flag-type parameters'.format(
+                        step=step.name,
+                        param=param.name,
+                    )
+                )
     return lr

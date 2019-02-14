@@ -2,32 +2,33 @@ from __future__ import print_function, unicode_literals
 
 import argparse
 import sys
-from collections import defaultdict
 
-from .validation import validate
+from valohai_yaml.lint import lint
 
 
 def main(args=None):
     ap = argparse.ArgumentParser()
     ap.add_argument('file', nargs='+', help='file(s) to validate')
     args = ap.parse_args(args)
-    errors_by_file = defaultdict(list)
+    errors = 0
     for file in args.file:
-        for error in process_file(file):
-            errors_by_file[file].append(error)
-    return (1 if errors_by_file else 0)
+        errors += process_file(file)
+    return (1 if errors > 0 else 0)
 
 
 def process_file(file):
     header_printed = False
+
     with open(file, 'rb') as stream:
-        for error in validate(stream, raise_exc=False):
+        result = lint(stream)
+        for item in result.messages:
             if not header_printed:
                 print('>>>', file)
                 header_printed = True
-            print(error)
+            print(item['message'])
             print('-' * 60)
-            yield error
+        return result.error_count
+    return 0
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ _ansi_colors = ('black', 'red', 'green', 'yellow', 'blue', 'magenta',
 _ansi_reset_all = '\033[0m'
 
 
-def style(text, fg=None, bg=None, bold=None, dim=None, underline=None,
+def style(text, fg=None, bg=None, bold=None, dim=None, underline=None,  # noqa: C901
           blink=None, reverse=None, reset=True):
     """Styles a text with ANSI styles and returns the new string."""
     bits = []
