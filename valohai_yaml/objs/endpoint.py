@@ -17,12 +17,6 @@ class Endpoint(Item):
         assert all(isinstance(f, File) for f in files)
         self.files = files
 
-    def serialize(self):
-        val = super(Endpoint, self).serialize()
-        if self.files:
-            val['files'] = [f.serialize() for f in self.files]
-        return val
-
     @classmethod
     def parse(cls, kwargs):
         kwargs = kwargs.copy()

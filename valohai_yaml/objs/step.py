@@ -61,12 +61,12 @@ class Step(Item):
             'image': self.image,
             'command': self.command,
         }
-        serialize_into(val, 'parameters', self.parameters)
-        serialize_into(val, 'inputs', self.inputs)
-        serialize_into(val, 'mounts', self.mounts)
-        serialize_into(val, 'outputs', self.outputs)
-        serialize_into(val, 'environment-variables', self.environment_variables)
-        serialize_into(val, 'environment', self.environment)
+        serialize_into(val, 'parameters', self.parameters, flatten_dicts=True)
+        serialize_into(val, 'inputs', self.inputs, flatten_dicts=True)
+        serialize_into(val, 'mounts', self.mounts, flatten_dicts=True)
+        serialize_into(val, 'outputs', self.outputs, flatten_dicts=True)
+        serialize_into(val, 'environment-variables', self.environment_variables, flatten_dicts=True)
+        serialize_into(val, 'environment', self.environment, flatten_dicts=True)
         return val
 
     def get_parameter_defaults(self, include_flags=True):
