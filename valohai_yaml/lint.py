@@ -78,13 +78,5 @@ def lint(yaml):
         return lr
 
     config = Config.parse(data)
-    for step in config.steps.values():
-        for param in step.parameters.values():
-            if param.type == 'flag' and param._original_data.get('optional'):
-                lr.add_warning(
-                    'Step {step}, parameter {param}: `optional` has no effect on flag-type parameters'.format(
-                        step=step.name,
-                        param=param.name,
-                    )
-                )
+    config.lint(lr, context={})
     return lr

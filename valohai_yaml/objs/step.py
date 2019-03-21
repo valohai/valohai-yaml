@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 from valohai_yaml.commands import build_command
+from valohai_yaml.utils.lint import lint_iterables
 from .base import Item
 from .environment_variable import EnvironmentVariable
 from .parameter_map import ParameterMap
@@ -112,3 +113,14 @@ class Step(Item):
 
         parameter_map = ParameterMap(parameters=self.parameters, values=values)
         return build_command(command, parameter_map)
+
+    def lint(self, lint_result, context):
+        context = dict(context, step=self)
+
+        lint_iterables(lint_result, context, (
+            self.parameters,
+            self.inputs,
+            self.mounts,
+            self.environment_variables,
+            self.outputs,
+        ))

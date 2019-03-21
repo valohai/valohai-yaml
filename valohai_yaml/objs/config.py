@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 from itertools import chain
 
+from ..utils.lint import lint_iterables
 from .base import Item
 from .step import Step
 from .endpoint import Endpoint
@@ -52,6 +53,13 @@ class Config(Item):
         return list(chain(
             ({'step': step.serialize()} for step in self.steps.values()),
             ({'endpoint': endpoint.serialize()} for endpoint in self.endpoints.values()),
+        ))
+
+    def lint(self, lint_result, context):
+        context = dict(context, config=self)
+        lint_iterables(lint_result, context, (
+            self.steps,
+            self.endpoints,
         ))
 
     def get_step_by(self, **kwargs):

@@ -36,3 +36,6 @@ class Item(object):
         })
         inst._original_data = data
         return inst
+
+    def lint(self, lint_result, context):
+        pass
