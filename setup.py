@@ -24,7 +24,7 @@ if __name__ == '__main__':
         maintainer='Aarni Koskela',
         maintainer_email='akx@iki.fi',
         license='MIT',
-        install_requires=['jsonschema', 'PyYAML', 'six'],
+        install_requires=['jsonschema', 'PyYAML'],
         tests_require=dev_dependencies,
         extras_require={'dev': dev_dependencies},
         packages=setuptools.find_packages('.', exclude=('*tests*',)),
@@ -34,4 +34,14 @@ if __name__ == '__main__':
                 'valohai-yaml = valohai_yaml.__main__:main',
             ],
         },
+        classifiers=[
+            'Development Status :: 5 - Production/Stable',
+            'Environment :: Console',
+            'License :: OSI Approved :: MIT License',
+            'Natural Language :: English',
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
+            'Programming Language :: Python :: 3.7',
+            'Topic :: Software Development :: Libraries',
+        ]
     )
