@@ -1,0 +1,50 @@
+- pipeline:
+    name: My little pipeline
+    nodes:
+      - name: batch1
+        type: execution
+        step: Batch feature extraction
+      - name: batch2
+        type: execution
+        step: Batch feature extraction
+      - name: train
+        type: execution
+        step: Train model
+    edges:
+      #  node.entity_type.entity_name    node.entity_type.entity_name
+      - [batch1.parameter.aspect-ratio, batch2.parameter.aspect-ratio]
+      - [batch1.output.processed-images, batch2.input.training-images]
+      - [batch2.output.processed-images, train.input.training-images]
+      - [batch2.metadata.optimal_learning_rate, train.parameter.learning_rate]
+      - [batch1.input.training-labels, batch2.input.training-labels]
+      - [batch2.input.training-labels, train.input.training-labels]
+- pipeline:
+    name: My medium pipeline
+    nodes:
+      - name: batch1
+        type: execution
+        step: Batch feature extraction
+      - name: batch2
+        type: execution
+        step: Batch feature extraction
+        override:
+          command: python batch_feature_extraction.py --minify
+      - name: train
+        type: execution
+        step: Train model
+    edges:
+      #         node.entity_type.entity_name
+      - source: batch1.parameter.aspect-ratio
+        target: batch2.parameter.aspect-ratio
+      - source: batch1.output.processed-images
+        target: batch2.input.training-images
+      - source: batch2.output.processed-images
+        target: train.input.training-images
+      - source: batch2.metadata.optimal_learning_rate
+        target: train.parameter.learning_rate
+      - source: batch1.input.training-labels
+        target: batch2.input.training-labels
+        configuration:
+          hello: world
+      - source: batch2.input.training-labels
+        target: train.input.training-labels

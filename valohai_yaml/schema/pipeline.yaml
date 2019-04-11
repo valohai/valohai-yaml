@@ -1,0 +1,39 @@
+---
+title: Pipeline Blueprint
+type: object
+additionalProperties: false
+properties:
+  name:
+    type: string
+  nodes:
+    type: array
+    items:
+      anyOf:
+        - "$ref": "./execution-node.json"
+  edges:
+    type: array
+    items:
+      anyOf:
+        - type: array
+          title: ShorthandEdge
+          additionalItems: false
+          items:
+            - type: string
+            - type: string
+        - type: object
+          title: FullEdge
+          additionalProperties: false
+          properties:
+            source:
+              type: string
+            target:
+              type: string
+            configuration:
+              type: object
+          required:
+            - source
+            - target
+required:
+  - edges
+  - name
+  - nodes

@@ -1,0 +1,20 @@
+type: object
+additionalProperties: false
+properties:
+  type:
+    type: string
+    const: execution
+  name:
+    type: string
+  step:
+    type: string
+  override:
+    # This is really Partial<Step>, but that's currently not expressible in JSON Schema.
+    # TODO: add validation/lint in valohai-yaml that attempts to merge this override
+    #       with the content of the step, then validate it against step.yaml
+    type: object
+required:
+  - name
+  - step
+  - type
+title: ExecutionNode

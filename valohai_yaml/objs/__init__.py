@@ -3,4 +3,8 @@ from .endpoint import Endpoint  # noqa
 from .file import File  # noqa
 from .mount import Mount  # noqa
 from .parameter import Parameter  # noqa
+from .pipelines.node import Node  # noqa
+from .pipelines.edge import Edge  # noqa
+from .pipelines.execution_node import ExecutionNode  # noqa
+from .pipelines.pipeline import Pipeline  # noqa
 from .step import Step  # noqa
