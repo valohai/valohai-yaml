@@ -1,3 +1,6 @@
+from valohai_yaml.objs.utils import serialize_into
+
+
 class Item(object):
     """
     Base class for all objects represented in a valohai.yaml file.
@@ -15,7 +18,13 @@ class Item(object):
         return data
 
     def serialize(self):
-        return {key.replace('_', '-'): value for (key, value) in self.get_data().items() if value is not None}
+        out = {}
+        for key, value in self.get_data().items():
+            if value is None:
+                continue
+            key = key.replace('_', '-')
+            serialize_into(out, key, value)
+        return out
 
     @classmethod
     def parse(cls, data):
@@ -27,3 +36,6 @@ class Item(object):
         })
         inst._original_data = data
         return inst
+
+    def lint(self, lint_result, context):
+        pass

@@ -94,3 +94,12 @@ class Parameter(Item):
         pass_as_bits = text_type(self.pass_as or self.default_pass_as).split()
         env = dict(name=self.name, value=value, v=value)
         return [bit.format(**env) for bit in pass_as_bits]
+
+    def lint(self, lint_result, context):
+        if self.type == 'flag' and self._original_data.get('optional'):
+            lint_result.add_warning(
+                'Step {step}, parameter {param}: `optional` has no effect on flag-type parameters'.format(
+                    step=context['step'].name,
+                    param=self.name,
+                )
+            )

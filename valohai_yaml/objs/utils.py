@@ -2,11 +2,11 @@ def consume_array_of(source, key, type):
     return [type.parse(datum) for datum in source.pop(key, ())]
 
 
-def serialize_into(dest, key, value):
-    if not value:
+def serialize_into(dest, key, value, flatten_dicts=False):
+    if value is None:
         return
 
-    if isinstance(value, dict):
+    if flatten_dicts and isinstance(value, dict):
         value = list(value.values())
 
     if isinstance(value, (tuple, list)):  # can't use collections.Collection :(
