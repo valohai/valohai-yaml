@@ -14,7 +14,7 @@
      - mv mnist_float32.hdf5 mnist.hdf5
      - 'python run.py train {params} -- mnist_all_full'
     outputs:
-      - bar
+      - name: bar
     parameters:
       - name: num-epochs
         description: Number of training epochs, 150 if not specified

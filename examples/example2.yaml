@@ -21,12 +21,5 @@
         optional: true
     outputs:
       - name: layer-0
-        files:
-          - biases-0.csv
-          - weights-0.csv
       - name: layer-1-biases
-        files:
-          - layer-1/biases-1.csv
       - name: layer-1-weights
-        files:
-          - layer-1/weights-1.csv
