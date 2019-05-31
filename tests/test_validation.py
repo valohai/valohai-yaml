@@ -34,6 +34,13 @@ def test_invalid_file_missing_properties_cli(capsys):
     assert "8 is not valid under any of the given schemas" in out
 
 
+def test_invalid_file_too_long_input_name_cli(capsys):
+    assert main([get_bad_example_path('input-name-too-long.yaml')]) == 1
+    out, err = capsys.readouterr()
+    assert "input-name-too-long.yaml" in out
+    assert "'this-input-name-is-way-too-long-and-will-cause-the-validation-to-fail' is too long" in out
+
+
 def test_bytes_validation():
     "Test that you can pass in bytestring YAML and validate it."
     assert not validate(valid_bytes)
