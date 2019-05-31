@@ -1,18 +1,18 @@
 ---
 type: object
 required:
-- command
-- name
-- image
+  - command
+  - name
+  - image
 additionalProperties: false
 properties:
   command:
     description: The command or commands to run.
     oneOf:
-    - type: string
-    - type: array
-      items:
-        type: string
+      - type: string
+      - type: array
+        items:
+          type: string
   name:
     type: string
     description: The unique name for this step.

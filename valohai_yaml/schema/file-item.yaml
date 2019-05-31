@@ -1,8 +1,8 @@
 ---
 type: object
 required:
-- name
-- path
+  - name
+  - path
 additionalProperties: false
 properties:
   name:

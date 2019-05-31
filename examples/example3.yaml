@@ -5,7 +5,7 @@
     image: busybox
     environment: g2.superduperlarge
     command:
-     - ls -laR /valohai/inputs
+      - ls -laR /valohai/inputs
     environment-variables:
       - name: foo
         default: bar
