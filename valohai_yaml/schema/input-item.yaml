@@ -1,12 +1,13 @@
 ---
 type: object
 required:
-- name
+  - name
 additionalProperties: false
 properties:
   name:
     type: string
     description: The symbolic name of this input. This must be unique within a Step.
+    maxLength: 64
   description:
     type: string
     description: Describes the input. This is shown as a help text in the user interface.

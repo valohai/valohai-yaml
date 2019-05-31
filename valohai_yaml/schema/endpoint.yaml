@@ -1,8 +1,8 @@
 ---
 type: object
 required:
-- name
-- image
+  - name
+  - image
 additionalProperties: false
 properties:
   name:
@@ -29,10 +29,10 @@ properties:
     description: Port used for the HTTP server. Defaults to 8000.
   server-command:
     oneOf:
-    - type: string
-    - type: array
-      items:
-        type: string
+      - type: string
+      - type: array
+        items:
+          type: string
     description: Command that runs a HTTP server.
   wsgi:
     type: string
@@ -41,7 +41,7 @@ properties:
       Specify the module (i.e. `package.app`) or
       the module and the WSGI callable (i.e. `package.app:wsgi_callable`).
 oneOf:
-    - required:
+  - required:
       - server-command
-    - required:
+  - required:
       - wsgi

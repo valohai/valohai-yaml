@@ -5,8 +5,8 @@ anyOf:
     description: A simple source:destination mount string. Note both parts must be absolute.
   - type: object
     required:
-    - source
-    - destination
+      - source
+      - destination
     additionalProperties: false
     properties:
       source:

@@ -2,10 +2,11 @@
 
 - step:
     name: batch inference
+    description: Does inference on the given dataset producing a prediction report.
     image: busybox
     environment: g2.superduperlarge
     command:
-     - ls -laR /valohai/inputs
+      - ls -laR /valohai/inputs
     environment-variables:
       - name: foo
         default: bar

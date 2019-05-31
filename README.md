@@ -6,15 +6,17 @@
 
 Parses and validates `valohai.yaml` files.
 
-Installation
-------------
+Valohai YAML files are used to define how your machine learning project workloads and pipelines are ran on the [Valohai](https://valohai.com/) ecosystem. Refer to [Valohai Documentation](https://docs.valohai.com/) to learn how to write the actual YAML files and for more in-depth usage examples.
 
-```
+## Installation
+
+```bash
 pip install valohai-yaml
 ```
 
-Usage (validation)
-------------------
+## Usage
+
+### Validation
 
 Programmatic usage:
 
@@ -22,7 +24,8 @@ Programmatic usage:
 from valohai_yaml import validate, ValidationErrors
 
 try:
-    validate(open('my_yaml.yaml'))
+    with open('path/to/valohai.yaml') as f:
+        validate(f)
 except ValidationErrors as errors:
     print('oh no!')
     for err in errors:
@@ -31,16 +34,25 @@ except ValidationErrors as errors:
 
 Command-line usage:
 
-```
+```bash
 valohai-yaml my_yaml.yaml
 echo $?  # 1 if errors, 0 if ok
 ```
 
-Usage (parsing)
----------------
+### Parsing
 
 ```python
 from valohai_yaml import parse
-config = parse(open('my_yaml.yaml'))
+
+with open('path/to/valohai.yaml') as f:
+    config = parse(f)
+
 print(config.steps['cool step'].command)
+```
+
+# Development
+
+```bash
+pip install -e .[dev]
+pytest
 ```

@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from tests.consts import examples_path
+from tests.consts import examples_path, bad_examples_path
 from valohai_yaml import parse
 
 
@@ -20,3 +20,7 @@ def config_fixture(name):
         return _load_config(name, roundtrip=request.param)
 
     return _config_fixture
+
+
+def get_bad_example_path(filename):
+    return os.path.join(bad_examples_path, filename)

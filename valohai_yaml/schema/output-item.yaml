@@ -1,0 +1,12 @@
+---
+type: object
+required:
+  - name
+additionalProperties: false
+properties:
+  name:
+    type: string
+    description: The symbolic name of this output. This must be unique within a Step.
+  description:
+    type: string
+    description: Describes the output.

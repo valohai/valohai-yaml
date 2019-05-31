@@ -92,3 +92,10 @@ def test_parse_environment(example3_config):
     config = example3_config
     step = config.steps['batch inference']
     assert step.environment == 'g2.superduperlarge'
+
+
+def test_parse_step_description(example1_config):
+    config = example1_config
+    step = config.steps['run training']
+    assert 'Also, if hangs' in step.description
+    assert step.description.count('\n') == 3  # it keeps newlines

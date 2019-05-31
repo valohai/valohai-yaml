@@ -2,19 +2,23 @@
 
 - step:
     name: run training
+    description: |
+      Trains our core model. Remember to preprocess the dataset before training.
+      Also, if hangs for more than 15 minutes without logs, kill the training,
+      most likely has ran out of memory.
     image: busybox
     command:
-     - cd /tmp/code
-     - conda env create -q
-     - source activate ladder
-     - conda install -y -q libgfortran==1
-     - 'echo "data_path: /root/ladder" > /root/.fuelrc'
-     - fuel-download mnist
-     - fuel-convert mnist --dtype float32
-     - mv mnist_float32.hdf5 mnist.hdf5
-     - 'python run.py train {params} -- mnist_all_full'
+      - cd /tmp/code
+      - conda env create -q
+      - source activate ladder
+      - conda install -y -q libgfortran==1
+      - 'echo "data_path: /root/ladder" > /root/.fuelrc'
+      - fuel-download mnist
+      - fuel-convert mnist --dtype float32
+      - mv mnist_float32.hdf5 mnist.hdf5
+      - 'python run.py train {params} -- mnist_all_full'
     outputs:
-      - bar
+      - name: bar
     parameters:
       - name: num-epochs
         description: Number of training epochs, 150 if not specified

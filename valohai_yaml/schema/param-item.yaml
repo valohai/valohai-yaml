@@ -1,7 +1,7 @@
 ---
 type: object
 required:
-- name
+  - name
 additionalProperties: false
 properties:
   description:
@@ -16,10 +16,10 @@ properties:
   type:
     type: string
     enum:
-    - flag
-    - float
-    - integer
-    - string
+      - flag
+      - float
+      - integer
+      - string
     default: string
     description: The type of the parameter.
   min:

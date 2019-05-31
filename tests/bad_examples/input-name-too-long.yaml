@@ -1,0 +1,8 @@
+---
+
+- step:
+    name: very-bad-example
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    inputs:
+      - name: this-input-name-is-way-too-long-and-will-cause-the-validation-to-fail
