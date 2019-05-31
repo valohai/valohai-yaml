@@ -2,6 +2,7 @@
 
 - step:
     name: batch inference
+    description: Does inference on the given dataset producing a prediction report.
     image: busybox
     environment: g2.superduperlarge
     command:

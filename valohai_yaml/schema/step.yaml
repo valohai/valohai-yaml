@@ -19,6 +19,9 @@ properties:
   image:
     type: string
     description: The Docker image to use for this step.
+  description:
+    type: string
+    description: Describes the step. This is shown as a help text in the user interface.
   inputs:
     type: array
     description: The inputs expected by the step.

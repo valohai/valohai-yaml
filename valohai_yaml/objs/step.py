@@ -26,10 +26,12 @@ class Step(Item):
         mounts=(),
         environment_variables=(),
         environment=None,
+        description=None,
     ):
         self.name = name
         self.image = image
         self.command = command
+        self.description = description
 
         self.outputs = list(outputs)  # TODO: Improve handling
 
@@ -69,6 +71,7 @@ class Step(Item):
             ('outputs', self.outputs),
             ('environment', self.environment),
             ('environment-variables', self.environment_variables),
+            ('description', self.description),
         ]:
             serialize_into(val, key, source, flatten_dicts=True, elide_empty_iterables=True)
         return val
