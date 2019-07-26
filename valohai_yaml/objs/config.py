@@ -5,8 +5,9 @@ from itertools import chain
 
 from ..utils.lint import lint_iterables
 from .base import Item
-from .step import Step
 from .endpoint import Endpoint
+from .pipelines.pipeline import Pipeline
+from .step import Step
 
 
 class Config(Item):
@@ -14,11 +15,13 @@ class Config(Item):
     Represents a `valohai.yaml` file.
     """
 
-    def __init__(self, steps=(), endpoints=()):
+    def __init__(self, steps=(), endpoints=(), pipelines=()):
         assert all(isinstance(step, Step) for step in steps)
         self.steps = OrderedDict((step.name, step) for step in steps)
         assert all(isinstance(endpoint, Endpoint) for endpoint in endpoints)
         self.endpoints = OrderedDict((endpoint.name, endpoint) for endpoint in endpoints)
+        assert all(isinstance(pipeline, Pipeline) for pipeline in pipelines)
+        self.pipelines = OrderedDict((pipeline.name, pipeline) for pipeline in pipelines)
 
     @classmethod
     def parse(cls, data):
@@ -30,9 +33,14 @@ class Config(Item):
         :return: Config object
         :rtype: valohai_yaml.objs.Config
         """
+        pipelines = []
+        endpoints = []
+        steps = []
         parsers = {
-            'step': ([], Step.parse),
-            'endpoint': ([], Endpoint.parse),
+            'step': (steps, Step.parse),
+            'endpoint': (endpoints, Endpoint.parse),
+            'pipeline': (pipelines, Pipeline.parse),
+            'blueprint': (pipelines, Pipeline.parse),  # Alias allowed for now
         }
         for datum in data:
             assert isinstance(datum, dict)
@@ -43,8 +51,9 @@ class Config(Item):
             else:
                 raise ValueError('No parser for {0}'.format(datum))
         inst = cls(
-            steps=parsers['step'][0],
-            endpoints=parsers['endpoint'][0],
+            steps=steps,
+            endpoints=endpoints,
+            pipelines=pipelines,
         )
         inst._original_data = data
         return inst
@@ -53,6 +62,7 @@ class Config(Item):
         return list(chain(
             ({'step': step.serialize()} for step in self.steps.values()),
             ({'endpoint': endpoint.serialize()} for endpoint in self.endpoints.values()),
+            ({'pipeline': pipeline.serialize()} for pipeline in self.pipelines.values()),
         ))
 
     def lint(self, lint_result, context):
@@ -60,6 +70,7 @@ class Config(Item):
         lint_iterables(lint_result, context, (
             self.steps,
             self.endpoints,
+            self.pipelines,
         ))
 
     def get_step_by(self, **kwargs):
@@ -87,9 +98,11 @@ class Config(Item):
         return None
 
     def __repr__(self):  # pragma: no cover
-        return '<Config with %d steps (%r) and %d endpoints (%r)>' % (
+        return '<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>' % (
             len(self.steps),
             sorted(self.steps),
             len(self.endpoints),
             sorted(self.endpoints),
+            len(self.pipelines),
+            sorted(self.pipelines),
         )

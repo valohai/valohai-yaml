@@ -8,3 +8,5 @@ items:
       "$ref": "./step.json"
     endpoint:
       "$ref": "./endpoint.json"
+    pipeline:
+      "$ref": "./pipeline.json"
