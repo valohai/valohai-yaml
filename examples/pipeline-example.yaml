@@ -1,3 +1,27 @@
+- step:
+    name: Batch feature extraction
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: training-images
+      - name: training-labels
+- step:
+    name: Train model
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: training-images
+      - name: training-labels
+- step:
+    name: Test model
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: model
+      - name: test-data
 - pipeline:
     name: My little pipeline
     nodes:
@@ -12,12 +36,12 @@
         step: Train model
     edges:
       #  node.entity_type.entity_name    node.entity_type.entity_name
+      - [batch1.input.training-labels*, batch2.input.training-labels]
+      - [batch1.output.processed-images*, batch2.input.training-images]
       - [batch1.parameter.aspect-ratio, batch2.parameter.aspect-ratio]
-      - [batch1.output.processed-images, batch2.input.training-images]
-      - [batch2.output.processed-images, train.input.training-images]
+      - [batch2.input.training-labels*, train.input.training-labels]
       - [batch2.metadata.optimal_learning_rate, train.parameter.learning_rate]
-      - [batch1.input.training-labels, batch2.input.training-labels]
-      - [batch2.input.training-labels, train.input.training-labels]
+      - [batch2.output.processed-images*, train.input.training-images]
 - pipeline:
     name: My medium pipeline
     nodes:
@@ -32,19 +56,23 @@
       - name: train
         type: execution
         step: Train model
+      - name: test
+        type: execution
+        step: Test model
     edges:
       #         node.entity_type.entity_name
       - source: batch1.parameter.aspect-ratio
         target: batch2.parameter.aspect-ratio
-      - source: batch1.output.processed-images
+      - source: batch1.output.processed-images*
         target: batch2.input.training-images
-      - source: batch2.output.processed-images
+      - source: batch2.output.processed-images*
         target: train.input.training-images
       - source: batch2.metadata.optimal_learning_rate
         target: train.parameter.learning_rate
-      - source: batch1.input.training-labels
+      - source: batch1.input.training-labels*
         target: batch2.input.training-labels
         configuration:
           hello: world
-      - source: batch2.input.training-labels
+      - source: batch2.input.training-labels*
         target: train.input.training-labels
+      - [train.output.model.pb, test.input.model]
