@@ -84,14 +84,3 @@ class Edge(Item):
                     target_node=self.target_node,
                     type=self.target_type,
                 ))
-
-    def serialize_expanded(self):
-        return {
-            'source_node': self.source_node,
-            'source_type': self.source_type,
-            'source_key': self.source_key,
-            'target_node': self.target_node,
-            'target_type': self.target_type,
-            'target_key': self.target_key,
-            'configuration': self.configuration,
-        }
