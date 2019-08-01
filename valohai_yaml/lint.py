@@ -31,6 +31,9 @@ class LintResult:
     def errors(self):
         return (m for m in self.messages if m['type'] == 'error')
 
+    def is_valid(self):
+        return (self.warning_count == 0 and self.error_count == 0)
+
 
 def lint_file(file_path):
     """
