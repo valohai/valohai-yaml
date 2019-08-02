@@ -65,13 +65,26 @@ class Config(Item):
             ({'pipeline': pipeline.serialize()} for pipeline in self.pipelines.values()),
         ))
 
-    def lint(self, lint_result, context):
+    def lint(self, lint_result=None, context=None):
+        """
+        Lint the configuration.
+
+        :param lint_result: LintResult object. Optional; if not passed in, one is constructed.
+        :param context: Optional context dictionary; should likely not be passed in at top level.
+        :return: The lint result object used.
+        """
+        if context is None:
+            context = {}
+        if lint_result is None:
+            from valohai_yaml.lint import LintResult
+            lint_result = LintResult()
         context = dict(context, config=self)
         lint_iterables(lint_result, context, (
             self.steps,
             self.endpoints,
             self.pipelines,
         ))
+        return lint_result
 
     def get_step_by(self, **kwargs):
         """
