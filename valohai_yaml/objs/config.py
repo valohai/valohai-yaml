@@ -15,6 +15,9 @@ class Config(Item):
     Represents a `valohai.yaml` file.
     """
 
+    # Warnings that may be stuck on the top-level config during its parsing.
+    _parse_warnings = None
+
     def __init__(self, steps=(), endpoints=(), pipelines=()):
         assert all(isinstance(step, Step) for step in steps)
         self.steps = OrderedDict((step.name, step) for step in steps)
@@ -33,15 +36,8 @@ class Config(Item):
         :return: Config object
         :rtype: valohai_yaml.objs.Config
         """
-        pipelines = []
-        endpoints = []
-        steps = []
-        parsers = {
-            'step': (steps, Step.parse),
-            'endpoint': (endpoints, Endpoint.parse),
-            'pipeline': (pipelines, Pipeline.parse),
-            'blueprint': (pipelines, Pipeline.parse),  # Alias allowed for now
-        }
+        parsers = cls.get_top_level_parsers()
+        parse_warnings = []
         for datum in data:
             assert isinstance(datum, dict)
             for type, (items, parse) in parsers.items():
@@ -49,14 +45,31 @@ class Config(Item):
                     items.append(parse(datum[type]))
                     break
             else:
-                raise ValueError('No parser for {0}'.format(datum))
+                parse_warnings.append('No parser for {0}'.format(datum))
         inst = cls(
-            steps=steps,
-            endpoints=endpoints,
-            pipelines=pipelines,
+            steps=parsers['step'][0],
+            endpoints=parsers['endpoint'][0],
+            pipelines=parsers['pipeline'][0],
         )
         inst._original_data = data
+        inst._parse_warnings = parse_warnings
         return inst
+
+    @classmethod
+    def get_top_level_parsers(cls):
+        """
+        Get the parsers for top-level elements in a configuration file.
+
+        The return value is a little baroque due to the alias for `pipeline`/`blueprint`:
+        it's a dict that maps top-level element names to a 2-tuple of target list objects and parse functions.
+        """
+        pipeline_tuple = ([], Pipeline.parse)
+        return {
+            'step': ([], Step.parse),
+            'endpoint': ([], Endpoint.parse),
+            'pipeline': pipeline_tuple,
+            'blueprint': pipeline_tuple,  # Alias allowed for now
+        }
 
     def serialize(self):
         return list(chain(
@@ -79,6 +92,11 @@ class Config(Item):
             from valohai_yaml.lint import LintResult
             lint_result = LintResult()
         context = dict(context, config=self)
+
+        if self._parse_warnings:
+            for warning in self._parse_warnings:
+                lint_result.add_warning(warning)
+
         lint_iterables(lint_result, context, (
             self.steps,
             self.endpoints,
