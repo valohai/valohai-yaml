@@ -36,11 +36,17 @@ def test_nonexistent_interpolation_keys():
     assert interp_command == ['Where are the ${shell_unicorns}? The ponies are here!']
 
 
+parameter_test_values = {
+    'decoder-spec': 'hello',
+    'num-epochs': 840,
+}
+
+
 def test_parameter_interpolation(example1_config):
     config = example1_config
     step = config.steps['run training']
     command = step.build_command(
-        parameter_values={'decoder-spec': 'hello'},
+        parameter_values=parameter_test_values,
         command='asdf {parameter:decoder-spec} {parameter:hello} {parameter:decoder-spec}',
     )
     command = ' && '.join(command)
@@ -51,11 +57,12 @@ def test_parameter_value_interpolation(example1_config):
     config = example1_config
     step = config.steps['run training']
     command = step.build_command(
-        parameter_values={'decoder-spec': 'hello'},
+        parameter_values=parameter_test_values,
         command=[
             'asdf {parameter-value:decoder-spec} {parameter-value:hello} {parameter-value:decoder-spec}',
+            'dsfargeg {parameter-value:num-epochs}',
             '{parameter-value:decoder-spec}',
-        ]
+        ],
     )
     command = ' && '.join(command)
-    assert command == 'asdf hello {parameter-value:hello} hello && hello'
+    assert command == 'asdf hello {parameter-value:hello} hello && dsfargeg 840 && hello'
