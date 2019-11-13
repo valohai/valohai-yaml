@@ -1,8 +1,9 @@
+from jsonschema.exceptions import relevance
+
 from valohai_yaml.objs import Config
 from valohai_yaml.utils import read_yaml
 from valohai_yaml.utils.terminal import style
 from valohai_yaml.validation import get_validator
-from jsonschema.exceptions import relevance
 
 
 class LintResult:

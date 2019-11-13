@@ -4,13 +4,14 @@ from collections import OrderedDict
 
 from valohai_yaml.commands import build_command
 from valohai_yaml.utils.lint import lint_iterables
+
 from .base import Item
 from .environment_variable import EnvironmentVariable
-from .parameter_map import ParameterMap
-from .utils import consume_array_of, serialize_into
 from .input import Input
 from .mount import Mount
 from .parameter import Parameter
+from .parameter_map import ParameterMap
+from .utils import consume_array_of, serialize_into
 
 
 class Step(Item):

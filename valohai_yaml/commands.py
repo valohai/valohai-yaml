@@ -1,10 +1,9 @@
 import re
 import warnings
+from shlex import quote
 
 from valohai_yaml.objs.parameter_map import LegacyParameterMap
 from valohai_yaml.utils import listify
-
-from shlex import quote
 
 
 class CommandInterpolationWarning(UserWarning):

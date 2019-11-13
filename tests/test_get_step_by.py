@@ -1,4 +1,5 @@
 from valohai_yaml.objs import Config
+
 from .config_data import echo_step, endpoint_with_input, list_step
 
 

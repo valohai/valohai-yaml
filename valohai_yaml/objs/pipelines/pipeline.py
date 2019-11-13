@@ -4,8 +4,8 @@ from collections import OrderedDict
 
 from ...utils.lint import lint_iterables
 from ..base import Item
-from .node import Node
 from .edge import Edge
+from .node import Node
 
 
 class Pipeline(Item):

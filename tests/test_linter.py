@@ -1,5 +1,6 @@
 from valohai_yaml.lint import lint, lint_file
 
+
 # Parameters of 'flag' type do not logically support 'optional' property so we warn about it.
 def test_optional_flag():
     items = lint_file('./examples/flag-optional-example.yaml')
