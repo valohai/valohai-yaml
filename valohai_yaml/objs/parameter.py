@@ -1,4 +1,3 @@
-from valohai_yaml._compat import text_type
 from valohai_yaml.validation import ValidationErrors
 
 from .base import Item
@@ -49,12 +48,12 @@ class Parameter(Item):
     def _validate_type(self, value, errors):
         if self.type == 'integer':
             try:
-                value = int(text_type(value), 10)
+                value = int(str(value), 10)
             except ValueError:
                 errors.append('%s is not an integer' % value)
         elif self.type == 'float':
             try:
-                value = float(text_type(value))
+                value = float(str(value))
             except ValueError:
                 errors.append('%s is not a floating-point number' % value)
         return value
@@ -91,7 +90,7 @@ class Parameter(Item):
         """
         if value is None or (self.type == 'flag' and not value):
             return None
-        pass_as_bits = text_type(self.pass_as or self.default_pass_as).split()
+        pass_as_bits = str(self.pass_as or self.default_pass_as).split()
         env = dict(name=self.name, value=value, v=value)
         return [bit.format(**env) for bit in pass_as_bits]
 

@@ -1,16 +1,10 @@
-from __future__ import unicode_literals
-
 import re
 import warnings
 
-from valohai_yaml._compat import text_type
 from valohai_yaml.objs.parameter_map import LegacyParameterMap
 from valohai_yaml.utils import listify
 
-try:
-    from shlex import quote
-except ImportError:  # pragma: no cover
-    from pipes import quote
+from shlex import quote
 
 
 class CommandInterpolationWarning(UserWarning):
@@ -38,7 +32,7 @@ def _replace_interpolation(parameter_map, match):
         parameter_name = value.split(':', 1)[1]
         value = parameter_map.values.get(parameter_name)
         if value:
-            return quote(text_type(value))
+            return quote(str(value))
     return match.group(0)  # Return the original otherwise
 
 
