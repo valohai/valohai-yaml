@@ -18,7 +18,13 @@ class Config(Item):
     # Warnings that may be stuck on the top-level config during its parsing.
     _parse_warnings = None
 
-    def __init__(self, steps=(), endpoints=(), pipelines=()):
+    def __init__(
+        self,
+        *,
+        steps=(),
+        endpoints=(),
+        pipelines=()
+    ):
         assert all(isinstance(step, Step) for step in steps)
         self.steps = OrderedDict((step.name, step) for step in steps)
         assert all(isinstance(endpoint, Endpoint) for endpoint in endpoints)

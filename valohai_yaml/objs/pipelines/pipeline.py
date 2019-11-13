@@ -10,7 +10,12 @@ from .node import Node
 
 class Pipeline(Item):
 
-    def __init__(self, name, nodes, edges):
+    def __init__(self,
+        *,
+        name,
+        nodes,
+        edges
+    ):
         self.name = name
         self.nodes = nodes
         self.edges = edges

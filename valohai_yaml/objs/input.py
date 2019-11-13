@@ -5,6 +5,7 @@ class Input(Item):
 
     def __init__(
         self,
+        *,
         name,
         default=None,
         optional=False,

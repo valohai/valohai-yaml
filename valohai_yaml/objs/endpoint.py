@@ -6,7 +6,17 @@ from .file import File
 
 class Endpoint(Item):
 
-    def __init__(self, name, image, description=None, files=(), port=None, server_command=None, wsgi=None):
+    def __init__(
+        self,
+        *,
+        name,
+        image,
+        description=None,
+        files=(),
+        port=None,
+        server_command=None,
+        wsgi=None
+    ):
         self.name = name
         self.description = description
         self.image = image

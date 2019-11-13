@@ -5,6 +5,7 @@ class File(Item):
 
     def __init__(
         self,
+        *,
         name,
         path,
         description=None,

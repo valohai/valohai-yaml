@@ -15,7 +15,12 @@ edge_types = {
 
 class Edge(Item):
 
-    def __init__(self, source, target, configuration=None):
+    def __init__(self,
+        *,
+        source,
+        target,
+        configuration=None
+    ):
         if configuration is None:
             configuration = {}
         self.source = source

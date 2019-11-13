@@ -7,6 +7,7 @@ class Parameter(Item):
 
     def __init__(
         self,
+        *,
         name,
         type='string',
         optional=False,

@@ -18,6 +18,7 @@ class Step(Item):
 
     def __init__(
         self,
+        *,
         name,
         image,
         command,

@@ -1,5 +1,5 @@
 class ParameterMap:
-    def __init__(self, parameters, values):
+    def __init__(self, *, parameters, values):
         self.parameters = parameters
         self.values = values
 
