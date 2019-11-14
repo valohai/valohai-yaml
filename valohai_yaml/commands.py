@@ -1,9 +1,13 @@
 import re
 import warnings
 from shlex import quote
+from typing import List, TYPE_CHECKING, Union
 
-from valohai_yaml.objs.parameter_map import LegacyParameterMap
+from valohai_yaml.objs.parameter_map import LegacyParameterMap, ParameterMap
 from valohai_yaml.utils import listify
+
+if TYPE_CHECKING:
+    from re import Match
 
 
 class CommandInterpolationWarning(UserWarning):
@@ -13,13 +17,13 @@ class CommandInterpolationWarning(UserWarning):
 interpolable_re = re.compile(r'{(.+?)}')
 
 
-def quote_multiple(args):
+def quote_multiple(args: List[str]) -> str:
     if not args:
         return ''
     return ' '.join(quote(arg) for arg in args)
 
 
-def _replace_interpolation(parameter_map, match):
+def _replace_interpolation(parameter_map: Union[ParameterMap, LegacyParameterMap], match: 'Match') -> str:
     value = match.group(1)
     if value in ('parameters', 'params'):
         return quote_multiple(parameter_map.build_parameters())
@@ -35,7 +39,10 @@ def _replace_interpolation(parameter_map, match):
     return match.group(0)  # Return the original otherwise
 
 
-def build_command(command, parameter_map):
+def build_command(
+    command: Union[str, List[str]],
+    parameter_map: Union[ParameterMap, LegacyParameterMap, list],
+) -> List[str]:
     """
     Build command line(s) using the given parameter map.
 

@@ -8,8 +8,8 @@ class File(Item):
         *,
         name,
         path,
-        description=None,
-    ):
+        description=None
+    ) -> None:
         self.name = name
         self.path = path
         self.description = description

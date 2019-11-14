@@ -10,14 +10,14 @@ class ExecutionNode(Node):
         name,
         step,
         override=None
-    ):
+    ) -> None:
         if override is None:
             override = {}
         self.name = name
         self.step = step
         self.override = override
 
-    def lint(self, lint_result, context):
+    def lint(self, lint_result, context: dict) -> None:
         super().lint(lint_result, context)
         config = context['config']
         pipeline = context['pipeline']

@@ -1,6 +1,10 @@
+from typing import List, Optional, Union
+
 from valohai_yaml.validation import ValidationErrors
 
 from .base import Item
+
+ValueType = Union[float, str, int]
 
 
 class Parameter(Item):
@@ -16,8 +20,8 @@ class Parameter(Item):
         description=None,
         default=None,
         pass_as=None,
-        choices=None,
-    ):
+        choices=None
+    ) -> None:
         self.name = name
         self.type = type
         self.optional = bool(optional)
@@ -31,14 +35,14 @@ class Parameter(Item):
             self.optional = True
             self.choices = (True, False)
 
-    def get_data(self):
+    def get_data(self) -> dict:
         data = super(Parameter, self).get_data()
         if self.type == 'flag':
             data.pop('optional', None)
             data.pop('choices', None)
         return data
 
-    def _validate_value(self, value, errors):
+    def _validate_value(self, value: ValueType, errors: List[str]) -> None:
         if self.min is not None and value < self.min:
             errors.append('%s is less than the minimum allowed (%s)' % (value, self.min))
         if self.max is not None and value > self.max:
@@ -46,7 +50,7 @@ class Parameter(Item):
         if self.choices is not None and value not in self.choices:
             errors.append('%s is not among the choices allowed (%r)' % (value, self.choices))
 
-    def _validate_type(self, value, errors):
+    def _validate_type(self, value: ValueType, errors: list) -> ValueType:
         if self.type == 'integer':
             try:
                 value = int(str(value), 10)
@@ -59,7 +63,7 @@ class Parameter(Item):
                 errors.append('%s is not a floating-point number' % value)
         return value
 
-    def validate(self, value):
+    def validate(self, value: ValueType) -> ValueType:
         """
         Validate (and possibly typecast) the given parameter value value.
 
@@ -77,12 +81,12 @@ class Parameter(Item):
         return value
 
     @property
-    def default_pass_as(self):
+    def default_pass_as(self) -> str:
         if self.type == 'flag':
             return '--{name}'
         return '--{name}={value}'
 
-    def format_cli(self, value):
+    def format_cli(self, value: Optional[ValueType]) -> Optional[List[str]]:
         """
         Build a single parameter argument.
 
@@ -95,11 +99,14 @@ class Parameter(Item):
         env = dict(name=self.name, value=value, v=value)
         return [bit.format(**env) for bit in pass_as_bits]
 
-    def lint(self, lint_result, context):
+    def lint(
+        self,
+        lint_result,
+        context: dict
+    ) -> None:
         if self.type == 'flag' and self._original_data.get('optional'):
-            lint_result.add_warning(
-                'Step {step}, parameter {param}: `optional` has no effect on flag-type parameters'.format(
-                    step=context['step'].name,
-                    param=self.name,
-                )
+            message = 'Step {step}, parameter {param}: `optional` has no effect on flag-type parameters'.format(
+                step=context['step'].name,
+                param=self.name,
             )
+            lint_result.add_warning(message)

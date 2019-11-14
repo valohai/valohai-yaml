@@ -9,8 +9,8 @@ class Input(Item):
         name,
         default=None,
         optional=False,
-        description=None,
-    ):
+        description=None
+    ) -> None:
         self.name = name
         self.default = default  # may be None, a string or a list of strings
         self.optional = bool(optional)

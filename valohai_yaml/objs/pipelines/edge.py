@@ -1,7 +1,9 @@
+from typing import List, Union
+
 from ..base import Item
 
 
-def _split_prop(prop):
+def _split_prop(prop: str) -> List[str]:
     return prop.split('.', 2)
 
 
@@ -20,7 +22,7 @@ class Edge(Item):
         source,
         target,
         configuration=None
-    ):
+    ) -> None:
         if configuration is None:
             configuration = {}
         self.source = source
@@ -28,31 +30,31 @@ class Edge(Item):
         self.configuration = configuration
 
     @property
-    def source_node(self):
+    def source_node(self) -> str:
         return _split_prop(self.source)[0]
 
     @property
-    def source_type(self):
+    def source_type(self) -> str:
         return _split_prop(self.source)[1]
 
     @property
-    def source_key(self):
+    def source_key(self) -> str:
         return _split_prop(self.source)[2]
 
     @property
-    def target_node(self):
+    def target_node(self) -> str:
         return _split_prop(self.target)[0]
 
     @property
-    def target_type(self):
+    def target_type(self) -> str:
         return _split_prop(self.target)[1]
 
     @property
-    def target_key(self):
+    def target_key(self) -> str:
         return _split_prop(self.target)[2]
 
     @classmethod
-    def parse(cls, data):
+    def parse(cls, data: Union[dict, list]) -> 'Edge':
         if isinstance(data, list):  # Must be a shorthand
             data = {
                 'source': data[0],
@@ -60,7 +62,7 @@ class Edge(Item):
             }
         return super(Edge, cls).parse(data)
 
-    def lint(self, lint_result, context):
+    def lint(self, lint_result, context) -> None:
         pipeline = context['pipeline']
         node_map = pipeline.node_map
         if self.source_node not in node_map:

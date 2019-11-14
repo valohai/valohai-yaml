@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from jsonschema.exceptions import relevance
 
 from valohai_yaml.objs import Config
@@ -7,36 +9,36 @@ from valohai_yaml.validation import get_validator
 
 
 class LintResult:
-    def __init__(self):
+    def __init__(self) -> None:
         self.messages = []
 
-    def add_error(self, message, location=None, exception=None):
+    def add_error(self, message: str, location: None = None, exception: None = None) -> None:
         self.messages.append({'type': 'error', 'message': message, 'location': location, 'exception': exception})
 
-    def add_warning(self, message, location=None, exception=None):
+    def add_warning(self, message: str, location: None = None, exception: None = None) -> None:
         self.messages.append({'type': 'warning', 'message': message, 'location': location, 'exception': exception})
 
     @property
-    def warning_count(self):
+    def warning_count(self) -> int:
         return sum(1 for m in self.messages if m['type'] == 'warning')
 
     @property
-    def error_count(self):
+    def error_count(self) -> int:
         return sum(1 for m in self.messages if m['type'] == 'error')
 
     @property
-    def warnings(self):
+    def warnings(self) -> Iterator[dict]:
         return (m for m in self.messages if m['type'] == 'warning')
 
     @property
-    def errors(self):
+    def errors(self) -> Iterator[dict]:
         return (m for m in self.messages if m['type'] == 'error')
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return (self.warning_count == 0 and self.error_count == 0)
 
 
-def lint_file(file_path):
+def lint_file(file_path: str) -> LintResult:
     """
     Validate & lint `file_path` and return a LintResult.
 
@@ -54,7 +56,7 @@ def lint_file(file_path):
             return lr
 
 
-def lint(yaml):
+def lint(yaml) -> LintResult:
     lr = LintResult()
 
     data = read_yaml(yaml)
