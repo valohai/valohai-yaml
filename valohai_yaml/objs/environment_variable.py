@@ -5,10 +5,11 @@ class EnvironmentVariable(Item):
 
     def __init__(
         self,
+        *,
         name,
         default=None,
         optional=True,
-        description=None,
+        description=None
     ):
         self.name = name
         self.default = default  # may be None or a string

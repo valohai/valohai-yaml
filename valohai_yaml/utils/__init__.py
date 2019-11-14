@@ -9,7 +9,7 @@ def read_yaml(yaml):
     return safe_load(yaml)  # can be a stream or a string
 
 
-def listify(value):
+def listify(value) -> list:
     """
     Wrap the given value into a list, with the below provisions:
 

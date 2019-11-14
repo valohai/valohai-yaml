@@ -3,13 +3,34 @@
 #     :copyright: (c) 2014 by Armin Ronacher.
 #     :license: BSD, see LICENSE for more details.
 
-_ansi_colors = ('black', 'red', 'green', 'yellow', 'blue', 'magenta',
-                'cyan', 'white', 'reset')
+from typing import Optional
+
+_ansi_colors = (
+    'black',
+    'red',
+    'green',
+    'yellow',
+    'blue',
+    'magenta',
+    'cyan',
+    'white',
+    'reset',
+)
+
 _ansi_reset_all = '\033[0m'
 
 
-def style(text, fg=None, bg=None, bold=None, dim=None, underline=None,  # noqa: C901
-          blink=None, reverse=None, reset=True):
+def style(  # noqa: C901
+    text: str,
+    fg: Optional[str] = None,
+    bg: Optional[str] = None,
+    bold: Optional[bool] = None,
+    dim: Optional[bool] = None,
+    underline: Optional[bool] = None,
+    blink: Optional[bool] = None,
+    reverse: Optional[bool] = None,
+    reset: bool = True
+) -> str:
     """Styles a text with ANSI styles and returns the new string."""
     bits = []
     if fg:

@@ -1,10 +1,10 @@
 import json
 import os
 import re
-from codecs import open  # required for Python 2, doesn't hurt for Python 3
+from typing import List, Union
 
 import yaml
-from jsonschema import Draft4Validator, RefResolver
+from jsonschema import Draft4Validator, RefResolver, ValidationError
 from jsonschema.compat import lru_cache
 
 from .utils import read_yaml
@@ -14,7 +14,7 @@ SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
 
 class ValidationErrors(ValueError):
 
-    def __init__(self, errors):
+    def __init__(self, errors: List[Union[str, ValidationError]]) -> None:
         self.errors = errors
         super(ValidationErrors, self).__init__(
             '%d errors: %s' % (
@@ -33,7 +33,7 @@ class LocalRefResolver(RefResolver):
     """
     local_scope_re = re.compile(r'^https?://valohai.com/(.+\.json)$')
 
-    def resolve_from_url(self, url):
+    def resolve_from_url(self, url: str) -> dict:
         local_match = self.local_scope_re.match(url)
         if local_match:
             schema = get_schema(name=local_match.group(1))
@@ -43,7 +43,7 @@ class LocalRefResolver(RefResolver):
 
 
 @lru_cache()
-def get_schema(name):
+def get_schema(name: str) -> dict:
     json_filename = os.path.join(SCHEMATA_DIRECTORY, name)
     yaml_filename = os.path.splitext(json_filename)[0] + '.yaml'
     for filename, loader in [
@@ -56,14 +56,14 @@ def get_schema(name):
     raise ValueError('unable to read schema %s' % name)  # pragma: no cover
 
 
-def get_validator():
+def get_validator() -> Draft4Validator:
     schema = get_schema('base.json')
     cls = Draft4Validator
     cls.check_schema(schema)
     return cls(schema, resolver=LocalRefResolver.from_schema(schema))
 
 
-def validate(yaml, raise_exc=True):
+def validate(yaml, raise_exc: bool = True) -> List[ValidationError]:
     """
     Validate the given YAML document and return a list of errors.
 

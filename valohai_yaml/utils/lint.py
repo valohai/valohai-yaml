@@ -1,4 +1,4 @@
-def lint_iterables(lint_result, context, iterables):
+def lint_iterables(lint_result, context, iterables) -> None:
     for iterable in iterables:
         if isinstance(iterable, dict):
             iterable = iterable.values()

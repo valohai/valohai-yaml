@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+from typing import Dict, List, Union
 
 from .base import Item
 from .file import File
@@ -6,7 +6,17 @@ from .file import File
 
 class Endpoint(Item):
 
-    def __init__(self, name, image, description=None, files=(), port=None, server_command=None, wsgi=None):
+    def __init__(
+        self,
+        *,
+        name,
+        image,
+        description=None,
+        files=(),
+        port=None,
+        server_command=None,
+        wsgi=None
+    ) -> None:
         self.name = name
         self.description = description
         self.image = image
@@ -18,7 +28,7 @@ class Endpoint(Item):
         self.files = files
 
     @classmethod
-    def parse(cls, kwargs):
+    def parse(cls, kwargs: Dict[str, Union[str, List[Dict[str, str]], int]]) -> 'Endpoint':
         kwargs = kwargs.copy()
         kwargs['files'] = [File.parse(f) for f in kwargs.pop('files', ())]
         return super(Endpoint, cls).parse(kwargs)

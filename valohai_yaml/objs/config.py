@@ -1,7 +1,6 @@
-from __future__ import unicode_literals
-
 from collections import OrderedDict
 from itertools import chain
+from typing import Any, Optional
 
 from ..utils.lint import lint_iterables
 from .base import Item
@@ -18,7 +17,13 @@ class Config(Item):
     # Warnings that may be stuck on the top-level config during its parsing.
     _parse_warnings = None
 
-    def __init__(self, steps=(), endpoints=(), pipelines=()):
+    def __init__(
+        self,
+        *,
+        steps=(),
+        endpoints=(),
+        pipelines=()
+    ) -> None:
         assert all(isinstance(step, Step) for step in steps)
         self.steps = OrderedDict((step.name, step) for step in steps)
         assert all(isinstance(endpoint, Endpoint) for endpoint in endpoints)
@@ -27,7 +32,7 @@ class Config(Item):
         self.pipelines = OrderedDict((pipeline.name, pipeline) for pipeline in pipelines)
 
     @classmethod
-    def parse(cls, data):
+    def parse(cls, data: Any) -> 'Config':
         """
         Parse a Config structure out of a Python dict (that's likely deserialized from YAML).
 
@@ -71,7 +76,7 @@ class Config(Item):
             'blueprint': pipeline_tuple,  # Alias allowed for now
         }
 
-    def serialize(self):
+    def serialize(self) -> Any:
         return list(chain(
             ({'step': step.serialize()} for step in self.steps.values()),
             ({'endpoint': endpoint.serialize()} for endpoint in self.endpoints.values()),
@@ -104,7 +109,7 @@ class Config(Item):
         ))
         return lint_result
 
-    def get_step_by(self, **kwargs):
+    def get_step_by(self, **kwargs) -> Optional[Step]:
         """
         Get the first step that matches all the passed named arguments.
 

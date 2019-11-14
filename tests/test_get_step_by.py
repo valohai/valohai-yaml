@@ -1,5 +1,6 @@
 from valohai_yaml.objs import Config
-from .config_data import echo_step, endpoint_with_input, list_step
+
+from .config_data import echo_step, list_step
 
 
 def test_get_step_by_simple_name():

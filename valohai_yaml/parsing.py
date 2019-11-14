@@ -3,7 +3,7 @@ from valohai_yaml.objs import Config
 from .utils import read_yaml
 
 
-def parse(yaml, validate=True):
+def parse(yaml, validate: bool = True) -> Config:
     """
     Parse the given YAML data into a `Config` object, optionally validating it first.
 

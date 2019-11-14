@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from tests.consts import examples_path, bad_examples_path
+from tests.consts import bad_examples_path, examples_path
 from valohai_yaml import parse
 
 

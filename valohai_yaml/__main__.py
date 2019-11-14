@@ -1,12 +1,11 @@
-from __future__ import print_function, unicode_literals
-
 import argparse
 import sys
+from typing import List, Optional
 
 from valohai_yaml.lint import lint
 
 
-def main(args=None):
+def main(args: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('file', nargs='+', help='file(s) to validate')
     args = ap.parse_args(args)
@@ -16,7 +15,7 @@ def main(args=None):
     return (1 if errors > 0 else 0)
 
 
-def process_file(file):
+def process_file(file: str) -> int:
     header_printed = False
 
     with open(file, 'rb') as stream:
@@ -28,7 +27,6 @@ def process_file(file):
             print(item['message'])
             print('-' * 60)
         return result.error_count
-    return 0
 
 
 if __name__ == "__main__":

@@ -1,22 +1,22 @@
-from __future__ import unicode_literals
-
 from collections import OrderedDict
+from typing import Any, Dict, List, Optional, Union
 
-from valohai_yaml.commands import build_command
-from valohai_yaml.utils.lint import lint_iterables
+from ..commands import build_command
+from ..utils.lint import lint_iterables
 from .base import Item
 from .environment_variable import EnvironmentVariable
-from .parameter_map import ParameterMap
-from .utils import consume_array_of, serialize_into
 from .input import Input
 from .mount import Mount
 from .parameter import Parameter
+from .parameter_map import ParameterMap
+from .utils import consume_array_of, serialize_into
 
 
 class Step(Item):
 
     def __init__(
         self,
+        *,
         name,
         image,
         command,
@@ -26,8 +26,8 @@ class Step(Item):
         mounts=(),
         environment_variables=(),
         environment=None,
-        description=None,
-    ):
+        description=None
+    ) -> None:
         self.name = name
         self.image = image
         self.command = command
@@ -48,7 +48,7 @@ class Step(Item):
         self.environment = (str(environment) if environment else None)
 
     @classmethod
-    def parse(cls, data):
+    def parse(cls, data: Dict[str, Any]) -> 'Step':
         kwargs = data.copy()
         kwargs['parameters'] = consume_array_of(kwargs, 'parameters', Parameter)
         kwargs['inputs'] = consume_array_of(kwargs, 'inputs', Input)
@@ -58,7 +58,7 @@ class Step(Item):
         inst._original_data = data
         return inst
 
-    def serialize(self):
+    def serialize(self) -> Dict[str, Any]:
         val = {
             'name': self.name,
             'image': self.image,
@@ -76,7 +76,7 @@ class Step(Item):
             serialize_into(val, key, source, flatten_dicts=True, elide_empty_iterables=True)
         return val
 
-    def get_parameter_defaults(self, include_flags=True):
+    def get_parameter_defaults(self, include_flags: bool = True) -> Dict[str, Union[str, int]]:
         """
         Get a dict mapping parameter names to their defaults (if set).
         :rtype: dict[str, object]
@@ -92,7 +92,11 @@ class Step(Item):
         # TODO: Legacy; no longer used internally. Remove at 1.0.
         return ParameterMap(self.parameters, param_values).build_parameters()
 
-    def build_command(self, parameter_values, command=None):
+    def build_command(
+        self,
+        parameter_values: Dict[str, Any],
+        command: Optional[Union[List[str], str]] = None
+    ) -> List[str]:
         """
         Build the command for this step using the given parameter values.
 
@@ -120,7 +124,7 @@ class Step(Item):
         parameter_map = ParameterMap(parameters=self.parameters, values=values)
         return build_command(command, parameter_map)
 
-    def lint(self, lint_result, context):
+    def lint(self, lint_result, context: dict) -> None:
         context = dict(context, step=self)
 
         lint_iterables(lint_result, context, (
