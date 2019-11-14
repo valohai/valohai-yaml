@@ -1,4 +1,4 @@
-from valohai_yaml.lint import lint, lint_file
+from valohai_yaml.lint import lint_file
 
 
 # Parameters of 'flag' type do not logically support 'optional' property so we warn about it.

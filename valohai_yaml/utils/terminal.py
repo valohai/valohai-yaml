@@ -20,13 +20,13 @@ _ansi_colors = (
 _ansi_reset_all = '\033[0m'
 
 
-def style(
+def style(  # noqa: C901
     text: str,
     fg: Optional[str] = None,
     bg: Optional[str] = None,
     bold: Optional[bool] = None,
     dim: Optional[bool] = None,
-    underline: Optional[bool] = None,  # noqa: C901
+    underline: Optional[bool] = None,
     blink: Optional[bool] = None,
     reverse: Optional[bool] = None,
     reset: bool = True
