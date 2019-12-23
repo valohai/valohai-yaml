@@ -1,0 +1,39 @@
+---
+
+- step:
+    name: example
+    image: busybox
+    command: echo {parameters}
+    parameters:
+      - name: unlabeled-samples
+        description: How many unsupervised samples are used
+        type: integer
+        default: 60000
+
+      - name: encoder-layers
+        description: List of layers for f
+        type: integer
+        multiple: separate
+        multiple-separator: "-"
+        default: [1000, 500, 250, 250, 250, 10]
+
+      - name: denoising-cost-x
+        description: Weight of the denoising cost
+        type: float
+        multiple: separate
+        multiple-separator: ","
+        default: [1000, 1, 0.01, 0.01, 0.01, 0.01, 0.01]
+
+      - name: decoder-spec
+        pass-as: --decoder-spec {v}
+        description: List of decoding function types
+        type: string
+        multiple: repeat
+        default:
+          - gauss
+          - railgun
+        choices:
+          - gauss
+          - railgun
+          - marshmallow
+          - scaffolding

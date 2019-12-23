@@ -1,10 +1,27 @@
+from enum import Enum
 from typing import List, Optional, Union
 
+from valohai_yaml.utils import listify
 from valohai_yaml.validation import ValidationErrors
-
 from .base import Item
 
-ValueType = Union[float, str, int]
+
+class MultipleMode(Enum):
+    SEPARATE = 'separate'
+    REPEAT = 'repeat'
+
+    @classmethod
+    def cast(cls, value):
+        if not value:
+            return None
+        value = str(value).lower()
+        if value == 'none':
+            return None
+        return MultipleMode(value)
+
+
+ValueAtomType = Union[float, str, int, bool]
+ValueType = Union[List[ValueAtomType], ValueAtomType]
 
 
 class Parameter(Item):
@@ -22,7 +39,9 @@ class Parameter(Item):
         pass_as=None,
         pass_true_as=None,
         pass_false_as=None,
-        choices=None
+        choices=None,
+        multiple=None,
+        multiple_separator=','
     ) -> None:
         self.name = name
         self.type = type
@@ -30,14 +49,18 @@ class Parameter(Item):
         self.min = min
         self.max = max
         self.description = description
-        self.default = default
         self.pass_as = pass_as
         self.pass_true_as = pass_true_as
         self.pass_false_as = pass_false_as
         self.choices = (list(choices) if choices else None)
+        self.multiple = MultipleMode.cast(multiple)
+        self.multiple_separator = str(multiple_separator or ',')
+        self.default = (listify(default) if self.multiple else default)
         if self.type == 'flag':
             self.optional = True
             self.choices = (True, False)
+            if self.multiple:
+                raise ValueError('Flag parameters can\'t be multiple')
         else:
             self.pass_true_as = self.pass_false_as = None
 
@@ -46,17 +69,22 @@ class Parameter(Item):
         if self.type == 'flag':
             data.pop('optional', None)
             data.pop('choices', None)
+        if self.multiple:
+            data['multiple'] = data['multiple'].value
+        else:
+            data.pop('multiple-separator', None)
         return data
 
-    def _validate_value(self, value: ValueType, errors: List[str]) -> None:
+    def _validate_value(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
         if self.min is not None and value < self.min:
             errors.append('%s is less than the minimum allowed (%s)' % (value, self.min))
         if self.max is not None and value > self.max:
             errors.append('%s is greater than the maximum allowed (%s)' % (value, self.max))
         if self.choices is not None and value not in self.choices:
             errors.append('%s is not among the choices allowed (%r)' % (value, self.choices))
+        return value
 
-    def _validate_type(self, value: ValueType, errors: list) -> ValueType:
+    def _validate_type(self, value: ValueAtomType, errors: list) -> ValueAtomType:
         if self.type == 'integer':
             try:
                 value = int(str(value), 10)
@@ -71,20 +99,29 @@ class Parameter(Item):
 
     def validate(self, value: ValueType) -> ValueType:
         """
-        Validate (and possibly typecast) the given parameter value value.
+        Validate (and possibly typecast) the given parameter value.
 
         :param value: Parameter value
         :return: Typecast parameter value
         :raises ValidationErrors: if there were validation errors
         """
         errors = []
-        value = self._validate_type(value, errors)
-        self._validate_value(value, errors)
+        validated_values = []
+
+        if not self.multiple and isinstance(value, (list, tuple)):
+            errors.append('Only a single value is allowed')
+
+        for atom in listify(value):
+            atom = self._validate_type(atom, errors)
+            atom = self._validate_value(atom, errors)
+            validated_values.append(atom)
 
         if errors:
             raise ValidationErrors(errors)
 
-        return value
+        if self.multiple:
+            return validated_values
+        return validated_values[0]
 
     @property
     def default_pass_as(self) -> str:
@@ -106,7 +143,7 @@ class Parameter(Item):
 
     def format_cli(self, value: Optional[ValueType]) -> Optional[List[str]]:
         """
-        Build a single parameter argument.
+        Build a parameter argument (or multiple, if this is a multi-valued parameter).
 
         :return: list of CLI strings -- not escaped. If the parameter should not be expressed, returns None.
         :rtype: list[str]|None
@@ -116,8 +153,26 @@ class Parameter(Item):
             return None
 
         pass_as_bits = pass_as_template.split()
-        env = dict(name=self.name, value=value, v=value)
-        return [bit.format(**env) for bit in pass_as_bits]
+
+        def _format_atom(value: ValueAtomType) -> List[str]:
+            env = dict(name=self.name, value=value, v=value)
+            return [bit.format(**env) for bit in pass_as_bits]
+
+        if self.multiple == MultipleMode.REPEAT:
+            out = []
+            for atom in listify(value):
+                out.extend(_format_atom(atom))
+            return out
+        elif self.multiple == MultipleMode.SEPARATE:
+            value_list = listify(value)
+            # Guard against generating a `--foo=` when there are no values.
+            if value_list:
+                return _format_atom(self.multiple_separator.join(str(atom) for atom in value_list))
+            return None
+        elif not self.multiple:
+            return _format_atom(value)
+        else:
+            raise NotImplementedError('unknown multiple type %r' % self.multiple)
 
     def lint(
         self,
