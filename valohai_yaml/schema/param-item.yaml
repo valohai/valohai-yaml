@@ -49,3 +49,13 @@ properties:
       Not applicable to flag parameters.
   default:
     description: The default value for the parameter.
+  pass-true-as:
+    type: string
+    description: |
+      How to pass flag (boolean) parameters when the flag is true.
+      If either pass-true-as or pass-false-as are set, pass-as is not used.
+  pass-false-as:
+    type: string
+    description: |
+      How to pass flag (boolean) parameters when the flag is false.
+      If either pass-true-as or pass-false-as are set, pass-as is not used.
