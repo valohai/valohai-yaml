@@ -1,0 +1,19 @@
+---
+
+- step:
+    name: test
+    image: busybox
+    command: foo {parameters}
+    parameters:
+      - name: case-insensitive
+        type: flag
+        pass-true-as: --ignore-case
+        pass-false-as: --case-sensitive
+        description: whether to be case insensitive
+      - name: nice
+        type: flag
+        pass-true-as: --behave-nice
+      - name: naughty
+        type: flag
+        # test that placeholders work in pass-*-as too:
+        pass-false-as: --{name}=not-naughty

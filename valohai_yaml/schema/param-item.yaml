@@ -49,3 +49,32 @@ properties:
       Not applicable to flag parameters.
   default:
     description: The default value for the parameter.
+  pass-true-as:
+    type: string
+    description: |
+      How to pass flag (boolean) parameters when the flag is true.
+      If either pass-true-as or pass-false-as are set, pass-as is not used.
+  pass-false-as:
+    type: string
+    description: |
+      How to pass flag (boolean) parameters when the flag is false.
+      If either pass-true-as or pass-false-as are set, pass-as is not used.
+  multiple:
+    type: string
+    enum:
+      - none
+      - repeat
+      - separate
+    default: none
+    description: |
+      Whether to allow multiple values for this parameter, and how to pass them on the
+      command line. Parameters set to `repeat` will be repeated using the `--pass-as`
+      pattern, while `separate` will interpolate all values into a single `--pass-as` value
+      placeholder using the `multiple-separator`.
+      `multiple` is not available for flag parameters.
+  multiple-separator:
+    type: string
+    default: ","
+    description: |
+      The separator to use when interpolating multiple values into a command parameter.
+      Defaults to a comma.
