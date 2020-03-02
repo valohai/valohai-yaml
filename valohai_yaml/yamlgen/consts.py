@@ -1,0 +1,1 @@
+DEFAULT_DOCKER_IMAGE = "python:3.7"
