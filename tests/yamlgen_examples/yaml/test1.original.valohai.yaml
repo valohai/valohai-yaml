@@ -1,0 +1,4 @@
+- step:
+    command: python ./yomama.py {parameters}
+    image: busybox
+    name: herpderp
