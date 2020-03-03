@@ -4,19 +4,19 @@ import shutil
 
 import pytest
 
-from valohai_yaml.yamlgen.yamlgen import update_yaml_from_source, yaml_needs_update
+from valohai_yaml.generator.generator import update_yaml_from_source, yaml_needs_update
 
 
 def read_test_data():
     """
-    Expected files (tests/test_yaml):
+    Expected files (tests/generator_examples/yaml):
         mytest.py -- Python file calling valohai.prepare()
         mytest.original.valohai.yaml -- Original valohai.yaml
         mytest.expected.valohai.yaml -- Expected valohai.yaml after update
 
     """
     test_data = []
-    for source_path in glob.glob("tests/yamlgen_examples/yaml/*.py"):
+    for source_path in glob.glob("tests/generator_examples/yaml/*.py"):
         dirname = os.path.dirname(source_path)
         name, extension = os.path.splitext(os.path.basename(source_path))
         test_data.append((

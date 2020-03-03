@@ -8,8 +8,8 @@ from valohai_yaml import parse as yaml_parse
 from valohai_yaml.objs import Config, Parameter, Step
 from valohai_yaml.objs.input import Input
 from valohai_yaml.utils.merge import _merge_config
-from valohai_yaml.yamlgen.consts import DEFAULT_DOCKER_IMAGE
-from valohai_yaml.yamlgen.parser import parse
+from valohai_yaml.generator.consts import DEFAULT_DOCKER_IMAGE
+from valohai_yaml.generator.parser import parse
 
 ParameterDict = Dict[str, Any]
 InputDict = Dict[str, str]

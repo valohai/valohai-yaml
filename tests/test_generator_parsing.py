@@ -5,12 +5,12 @@ from collections import namedtuple
 
 import pytest
 
-from valohai_yaml.yamlgen.parser import parse
+from valohai_yaml.generator.parser import parse
 
 
 def read_test_data():
     """
-    Expected files (tests/test_parsing):
+    Expected files (tests/generator_examples/parsing):
         mytest.py -- Python file calling valohai.prepare()
         mytest.inputs.json -- Expected parsed inputs
         mytest.parameters.json -- Expected parsed parameters
@@ -18,7 +18,7 @@ def read_test_data():
 
     """
     test_data = []
-    for source_path in glob.glob("tests/yamlgen_examples/parsing/*.py"):
+    for source_path in glob.glob("tests/generator_examples/parsing/*.py"):
         dirname = os.path.dirname(source_path)
         name, extension = os.path.splitext(os.path.basename(source_path))
         prefix = os.path.join(dirname, name)
