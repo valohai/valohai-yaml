@@ -58,12 +58,12 @@ class Step(Item):
         inst._original_data = data
         return inst
 
-    def serialize(self) -> Dict[str, Any]:
-        val = {
-            'name': self.name,
-            'image': self.image,
-            'command': self.command,
-        }
+    def serialize(self) -> OrderedDict:
+        val = OrderedDict([
+            ('name', self.name),
+            ('image', self.image),
+            ('command', self.command),
+        ])
         for key, source in [
             ('parameters', self.parameters),
             ('inputs', self.inputs),

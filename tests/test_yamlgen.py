@@ -35,6 +35,7 @@ def test_update_yaml_from_source(local_repository_path, original_yaml, source_py
     # Build repository with test.py and valohai.yaml
     if os.path.isfile(original_yaml):
         shutil.copy(original_yaml, yaml_path)
+
     shutil.copy(source_python, source_path)
 
     # Update valohai.yaml based on test.py

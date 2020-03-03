@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from valohai_yaml.objs.utils import serialize_into
 
 
@@ -17,9 +19,13 @@ class Item(object):
         data.pop('_original_data', None)
         return data
 
-    def serialize(self) -> dict:
-        out = {}
-        for key, value in self.get_data().items():
+    def serialize(self) -> OrderedDict:
+        out = OrderedDict()
+        data = self.get_data()
+        
+        # Default sorting except always start with 'name'
+        for key in sorted(data, key=lambda x: x if x != 'name' else '\t'):
+            value = data[key]
             if value is None:
                 continue
             key = key.replace('_', '-')

@@ -24,16 +24,6 @@ def test_parse(example1_config):
     # test that we can access them by name
     assert parameters['seed'].default == 1
     assert parameters['decoder-spec'].default == 'gauss'
-    # test that their order is preserved
-    assert list(parameters) == [
-        'num-epochs',
-        'seed',
-        'labeled-samples',
-        'unlabeled-samples',
-        'encoder-layers',
-        'denoising-cost-x',
-        'decoder-spec',
-    ]
 
     # test that `get_step_by` works
     assert step == config.get_step_by(index=0)

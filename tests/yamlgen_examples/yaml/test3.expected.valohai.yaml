@@ -1,34 +1,34 @@
 - step:
-    command: python ./test.py {parameters}
-    image: python:3.7
-    inputs:
-    - default:
-      - asdf
-      name: input1
-      optional: false
-    - default:
-      - yolol
-      - yalala
-      name: input2
-      optional: false
     name: foobar1
+    image: python:3.7
+    command: python ./test.py {parameters}
     parameters:
-    - default: true
+    - name: param1
+      default: true
       multiple-separator: ','
-      name: param1
       type: flag
-    - default: asdf
+    - name: param2
+      default: asdf
       multiple-separator: ','
-      name: param2
       optional: false
       type: string
-    - default: 123
+    - name: param3
+      default: 123
       multiple-separator: ','
-      name: param3
       optional: false
       type: integer
-    - default: 0.0001
+    - name: param4
+      default: 0.0001
       multiple-separator: ','
-      name: param4
       optional: false
       type: float
+    inputs:
+    - name: input1
+      default:
+      - asdf
+      optional: false
+    - name: input2
+      default:
+      - yolol
+      - yalala
+      optional: false

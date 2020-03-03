@@ -78,9 +78,9 @@ class Config(Item):
 
     def serialize(self) -> Any:
         return list(chain(
-            ({'step': step.serialize()} for step in self.steps.values()),
-            ({'endpoint': endpoint.serialize()} for endpoint in self.endpoints.values()),
-            ({'pipeline': pipeline.serialize()} for pipeline in self.pipelines.values()),
+            ({'step': self.steps[key].serialize()} for key in sorted(self.steps)),
+            ({'endpoint': self.endpoints[key].serialize()} for key in sorted(self.endpoints)),
+            ({'pipeline': self.pipelines[key].serialize()} for key in sorted(self.pipelines)),
         ))
 
     def lint(self, lint_result=None, context=None):

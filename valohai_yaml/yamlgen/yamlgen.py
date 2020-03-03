@@ -1,4 +1,5 @@
 import os
+from collections import OrderedDict
 from typing import Any, Dict, Optional
 
 import yaml
@@ -90,7 +91,13 @@ def get_source_relative_path(source_path: str, config_path: str) -> str:
 def serialize_config_to_yaml(config_path: str, config: Config):
     output = config.serialize()
     with open(config_path, "w") as output_file:
-        output_file.write(yaml.safe_dump(output, default_flow_style=False))
+        # Make yaml.dump support OrderedDict
+        # https://stackoverflow.com/questions/42518067/how-to-use-ordereddict-as-an-input-in-yaml-dump-or-yaml-safe-dump
+        yaml.add_representer(
+            OrderedDict,
+            lambda dumper, data: dumper.represent_mapping('tag:yaml.org,2002:map', data.items())
+        )
+        output_file.write(yaml.dump(output, default_flow_style=False))
 
 
 def parse_config_from_source(source_path: str, config_path: str):
