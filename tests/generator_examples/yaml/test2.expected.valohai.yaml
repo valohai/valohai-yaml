@@ -1,6 +1,6 @@
 - step:
     name: foobar1
-    image: python:3.7
+    image: hope/thiswillnotchange:1234
     command: python ./test.py {parameters}
     parameters:
     - name: param1

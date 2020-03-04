@@ -22,7 +22,7 @@ class Item(object):
     def serialize(self) -> OrderedDict:
         out = OrderedDict()
         data = self.get_data()
-        
+
         # Default sorting except always start with 'name'
         for key in sorted(data, key=lambda x: x if x != 'name' else '\t'):
             value = data[key]
@@ -45,3 +45,6 @@ class Item(object):
 
     def lint(self, lint_result, context):
         pass
+
+    def merge_with(self, other) -> 'Item':
+        raise NotImplementedError()

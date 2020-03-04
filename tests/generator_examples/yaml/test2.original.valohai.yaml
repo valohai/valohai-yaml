@@ -1,6 +1,6 @@
 - step:
     command: python ./test.py {parameters}
-    image: ''
+    image: hope/thiswillnotchange:1234
     inputs:
     - default:
       - asdf

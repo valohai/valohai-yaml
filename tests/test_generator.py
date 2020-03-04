@@ -4,7 +4,8 @@ import shutil
 
 import pytest
 
-from valohai_yaml.generator.generator import update_yaml_from_source, yaml_needs_update
+from valohai_yaml.generator.generator import parse_config_from_source, serialize_config_to_yaml
+from valohai_yaml import parse
 
 
 def read_test_data():
@@ -28,7 +29,7 @@ def read_test_data():
 
 
 @pytest.mark.parametrize("original_yaml, source_python, expected_yaml", read_test_data())
-def test_update_yaml_from_source(local_repository_path, original_yaml, source_python, expected_yaml):
+def test_yaml_update_from_source(local_repository_path, original_yaml, source_python, expected_yaml):
     yaml_path = os.path.join(local_repository_path, "valohai.yaml")
     source_path = os.path.join(local_repository_path, "test.py")
 
@@ -39,25 +40,15 @@ def test_update_yaml_from_source(local_repository_path, original_yaml, source_py
     shutil.copy(source_python, source_path)
 
     # Update valohai.yaml based on test.py
-    update_yaml_from_source(source_path, yaml_path)
+    old_config = None
+    if os.path.isfile(yaml_path):
+        with open(yaml_path, "r") as yaml_file:
+            old_config = parse(yaml_file)
+    new_config = parse_config_from_source(source_path, yaml_path)
+    if old_config:
+        new_config = old_config.merge_with(new_config)
+    serialize_config_to_yaml(yaml_path, new_config)
 
     with open(expected_yaml, "r") as expected_yaml, open(yaml_path, "r") as updated_yaml:
         assert updated_yaml.read() == expected_yaml.read()
 
-
-@pytest.mark.parametrize("original_yaml, source_python, expected_yaml", read_test_data())
-def test_yaml_needs_update(local_repository_path, original_yaml, source_python, expected_yaml):
-    yaml_path = os.path.join(local_repository_path, "valohai.yaml")
-    source_path = os.path.join(local_repository_path, "test.py")
-
-    # Build repository with test.py and valohai.yaml
-    if os.path.isfile(original_yaml):
-        shutil.copy(original_yaml, yaml_path)
-    shutil.copy(source_python, source_path)
-
-    if os.path.isfile(yaml_path):
-        with open(expected_yaml, "r") as expected_yaml, open(yaml_path, "r") as original_yaml:
-            needs_update = original_yaml.read() != expected_yaml.read()
-            assert yaml_needs_update(source_path, yaml_path) == needs_update
-    else:
-        assert yaml_needs_update(source_path, yaml_path)

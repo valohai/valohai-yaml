@@ -1,3 +1,4 @@
+import copy
 from collections import OrderedDict
 from itertools import chain
 from typing import Any, Optional
@@ -132,6 +133,15 @@ class Config(Item):
             if all(item in extended_step.items() for item in kwargs.items()):
                 return step
         return None
+
+    def merge_with(self, other):
+        result = copy.deepcopy(self)
+        for key, step in other.steps.items():
+            if key in result.steps:
+                result.steps[key] = self.steps[key].merge_with(step)
+            else:
+                result.steps[key] = step
+        return result
 
     def __repr__(self):  # pragma: no cover
         return '<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>' % (

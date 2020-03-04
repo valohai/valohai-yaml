@@ -1,6 +1,8 @@
+import copy
 from collections import OrderedDict
 from typing import Any, Dict, List, Optional, Union
 
+from valohai_yaml.utils.merge import _merge_dicts, _merge_simple
 from ..commands import build_command
 from ..utils.lint import lint_iterables
 from .base import Item
@@ -134,3 +136,37 @@ class Step(Item):
             self.environment_variables,
             self.outputs,
         ))
+
+    # This exotic merging logic is for merging old config (self) with the one generated from .py file (other)
+    # In this case the name, command, parameters and inputs can be parsed from the .py file
+    # The rest of the values are taken from the old config (self)
+    def merge_with(self, other):
+        result = Step(
+            name=other.name,
+            image=self.image,
+            command=other.command,
+            environment=self.environment,
+            description=self.description,
+            outputs=self.outputs,
+            mounts=self.mounts,
+        )
+
+        # If user first types "learning_rage", creates config, and finally fixes the typo,
+        # they don't want to end up with both "learning_rage" and "learning_rate" after the merge.
+        # So only merge parameters and inputs that are part of the new config (skip_missing_b=True)
+        result.parameters = _merge_dicts(
+            self.parameters,
+            other.parameters,
+            merger=_merge_simple,
+            copier=copy.deepcopy,
+            skip_missing_b=True
+        )
+        result.inputs = _merge_dicts(
+            self.inputs,
+            other.inputs,
+            merger=_merge_simple,
+            copier=copy.deepcopy,
+            skip_missing_b=True
+        )
+
+        return result
