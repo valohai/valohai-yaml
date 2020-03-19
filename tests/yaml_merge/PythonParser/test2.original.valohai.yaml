@@ -1,0 +1,29 @@
+- step:
+    command: python ./test.py {parameters}
+    image: hope/thiswillnotchange:1234
+    inputs:
+    - default:
+      - asdf
+      name: input1
+      optional: false
+    - default:
+      - i should change
+      - me too !
+      name: input2
+      optional: false
+    name: foobar1
+    parameters:
+    - default: false
+      multiple-separator: ','
+      name: param1
+      type: flag
+    - default: This should be updated
+      multiple-separator: ','
+      name: param2
+      optional: false
+      type: string
+    - default: This should be removed
+      multiple-separator: ','
+      name: deleteme
+      optional: false
+      type: string

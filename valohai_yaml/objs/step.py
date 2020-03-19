@@ -1,6 +1,9 @@
+import copy
 from collections import OrderedDict
 from typing import Any, Dict, List, Optional, Union
 
+from valohai_yaml.objs.merge_mode import MergeMode
+from valohai_yaml.utils.merge import _merge_dicts, _merge_simple
 from ..commands import build_command
 from ..utils.lint import lint_iterables
 from .base import Item
@@ -58,12 +61,12 @@ class Step(Item):
         inst._original_data = data
         return inst
 
-    def serialize(self) -> Dict[str, Any]:
-        val = {
-            'name': self.name,
-            'image': self.image,
-            'command': self.command,
-        }
+    def serialize(self) -> OrderedDict:
+        val = OrderedDict([
+            ('name', self.name),
+            ('image', self.image),
+            ('command', self.command),
+        ])
         for key, source in [
             ('parameters', self.parameters),
             ('inputs', self.inputs),
@@ -99,7 +102,6 @@ class Step(Item):
     ) -> List[str]:
         """
         Build the command for this step using the given parameter values.
-
         Even if the original configuration only declared a single `command`,
         this function will return a list of shell commands.  It is the caller's
         responsibility to concatenate them, likely using the semicolon or
@@ -134,3 +136,46 @@ class Step(Item):
             self.environment_variables,
             self.outputs,
         ))
+
+    def merge_with(self, other, merge_mode: MergeMode = MergeMode.Default):
+        if merge_mode == MergeMode.Default:
+            raise NotImplementedError()
+        elif merge_mode == MergeMode.PythonParser:
+            return self.merge_from_python_parsed(other)
+
+    def merge_from_python_parsed(self, other):
+        """Merging configs for the valohai-utils AST parser use-case
+
+        self: Config parsed from .py file using valohai-utils AST parser
+        :param other: Original valohai.yaml
+        :return:
+        """
+        result = Step(
+            name=other.name,
+            image=self.image,
+            command=other.command,
+            environment=self.environment,
+            description=self.description,
+            outputs=self.outputs,
+            mounts=self.mounts,
+        )
+
+        # If user first types "learning_rage", creates config, and finally fixes the typo,
+        # they don't want to end up with both "learning_rage" and "learning_rate" after the merge.
+        # So only merge parameters and inputs that are part of the new config (skip_missing_b=True)
+        result.parameters = _merge_dicts(
+            self.parameters,
+            other.parameters,
+            merger=_merge_simple,
+            copier=copy.deepcopy,
+            skip_missing_b=True
+        )
+        result.inputs = _merge_dicts(
+            self.inputs,
+            other.inputs,
+            merger=_merge_simple,
+            copier=copy.deepcopy,
+            skip_missing_b=True
+        )
+
+        return result

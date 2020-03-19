@@ -1,7 +1,9 @@
+import copy
 from collections import OrderedDict
 from itertools import chain
 from typing import Any, Optional
 
+from valohai_yaml.objs.merge_mode import MergeMode
 from ..utils.lint import lint_iterables
 from .base import Item
 from .endpoint import Endpoint
@@ -78,9 +80,9 @@ class Config(Item):
 
     def serialize(self) -> Any:
         return list(chain(
-            ({'step': step.serialize()} for step in self.steps.values()),
-            ({'endpoint': endpoint.serialize()} for endpoint in self.endpoints.values()),
-            ({'pipeline': pipeline.serialize()} for pipeline in self.pipelines.values()),
+            ({'step': step.serialize()} for (key, step) in sorted(self.steps.items())),
+            ({'endpoint': step.serialize()} for (key, step) in sorted(self.endpoints.items())),
+            ({'pipeline': step.serialize()} for (key, step) in sorted(self.pipelines.items())),
         ))
 
     def lint(self, lint_result=None, context=None):
@@ -132,6 +134,28 @@ class Config(Item):
             if all(item in extended_step.items() for item in kwargs.items()):
                 return step
         return None
+
+    def merge_with(self, other, merge_mode: MergeMode = MergeMode.Default):
+        if merge_mode == MergeMode.Default:
+            raise NotImplementedError()
+        elif merge_mode == MergeMode.PythonParser:
+            return self.merge_from_python_parsed(other)
+
+    def merge_from_python_parsed(self, other):
+        """Merging configs for the valohai-utils AST parser use-case
+
+        self: Config parsed from .py file using valohai-utils AST parser
+        :param other: Original valohai.yaml
+        :return:
+        """
+        result = copy.deepcopy(self)
+
+        for key, step in other.steps.items():
+            if key in result.steps:
+                result.steps[key] = self.steps[key].merge_from_python_parsed(step)
+            else:
+                result.steps[key] = step
+        return result
 
     def __repr__(self):  # pragma: no cover
         return '<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>' % (
