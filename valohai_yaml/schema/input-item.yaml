@@ -24,3 +24,13 @@ properties:
     description: |
       Whether this input is optional.
       Optional inputs may be disabled in the user interface.
+  keep-directories:
+    oneOf:
+      - type: boolean
+      - type: string
+        enum:
+          - "none"  # = false
+          - "full"  # = true
+          - "suffix"
+    default: false
+    description: Whether to retain directories when using wildcards for this input.

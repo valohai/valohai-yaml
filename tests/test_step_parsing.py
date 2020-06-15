@@ -1,3 +1,6 @@
+from valohai_yaml.objs.input import KeepDirectories
+
+
 def test_parse_inputs(example2_config):
     config = example2_config
     step = config.steps['run training']
@@ -109,3 +112,11 @@ def test_parse_step_description(example1_config):
     step = config.steps['run training']
     assert 'Also, if hangs' in step.description
     assert step.description.count('\n') == 3  # it keeps newlines
+
+
+def test_keep_directories(keep_directories_config):
+    config = keep_directories_config
+    step = config.steps['example']
+    assert step.inputs['model'].keep_directories == KeepDirectories.NONE
+    assert step.inputs['foos'].keep_directories == KeepDirectories.FULL
+    assert step.inputs['bars'].keep_directories == KeepDirectories.SUFFIX
