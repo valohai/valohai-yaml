@@ -6,7 +6,8 @@
     command: hello
     inputs:
       - name: model
-        default: s3://foo/model.pb
+        default: s3://foo/model361100.pb
+        filename: model.pb
       - name: foos
         keep-directories: full
         default:

@@ -114,9 +114,10 @@ def test_parse_step_description(example1_config):
     assert step.description.count('\n') == 3  # it keeps newlines
 
 
-def test_keep_directories(keep_directories_config):
-    config = keep_directories_config
+def test_input_extras(input_extras_config):
+    config = input_extras_config
     step = config.steps['example']
     assert step.inputs['model'].keep_directories == KeepDirectories.NONE
+    assert step.inputs['model'].filename == "model.pb"
     assert step.inputs['foos'].keep_directories == KeepDirectories.FULL
     assert step.inputs['bars'].keep_directories == KeepDirectories.SUFFIX
