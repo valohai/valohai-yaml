@@ -1,8 +1,10 @@
+import copy
 from collections import OrderedDict
 from typing import Any, Dict, List, Optional, Union
 
 from ..commands import build_command
 from ..utils.lint import lint_iterables
+from ..utils.merge import merge_simple, merge_dicts
 from .base import Item
 from .environment_variable import EnvironmentVariable
 from .input import Input
@@ -134,3 +136,32 @@ class Step(Item):
             self.environment_variables,
             self.outputs,
         ))
+
+    @classmethod
+    def default_merge(cls, a, b):
+        result = merge_simple(a, b)
+        result.parameters = merge_dicts(
+            a.parameters,
+            b.parameters,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
+        result.inputs = merge_dicts(
+            a.inputs,
+            b.inputs,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
+        result.outputs = merge_dicts(
+            a.outputs,
+            b.outputs,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
+        result.environment_variables = merge_dicts(
+            a.environment_variables,
+            b.environment_variables,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
+        return result

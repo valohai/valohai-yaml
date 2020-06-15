@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
-from valohai_yaml.objs.utils import serialize_into
+from ..objs.utils import serialize_into
+from ..utils.merge import merge_simple
 
 
 class Item(object):
@@ -47,3 +48,12 @@ class Item(object):
 
     def lint(self, lint_result, context):
         pass
+
+    def merge_with(self, other, strategy=None) -> 'Item':
+        if strategy is None:
+            strategy = self.default_merge
+        return strategy(self, other)
+
+    @classmethod
+    def default_merge(cls, a, b):
+        return merge_simple(a, b)

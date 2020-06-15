@@ -1,7 +1,9 @@
+import copy
 from collections import OrderedDict
 from itertools import chain
 from typing import Any, Optional
 
+from ..utils.merge import merge_simple, merge_dicts
 from ..utils.lint import lint_iterables
 from .base import Item
 from .endpoint import Endpoint
@@ -132,6 +134,29 @@ class Config(Item):
             if all(item in extended_step.items() for item in kwargs.items()):
                 return step
         return None
+
+    @classmethod
+    def default_merge(cls, a, b):
+        result = merge_simple(a, b)
+        result.steps = merge_dicts(
+            a.steps,
+            b.steps,
+            merger=Step.default_merge,
+            copier=copy.deepcopy,
+        )
+        result.endpoints = merge_dicts(
+            a.endpoints,
+            b.endpoints,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
+        result.pipelines = merge_dicts(
+            a.pipelines,
+            b.pipelines,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
+        return result
 
     def __repr__(self):  # pragma: no cover
         return '<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>' % (
