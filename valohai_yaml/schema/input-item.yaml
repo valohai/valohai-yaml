@@ -24,3 +24,18 @@ properties:
     description: |
       Whether this input is optional.
       Optional inputs may be disabled in the user interface.
+  filename:
+    type: string
+    description: |
+      Force a filename for this input. Will not have an effect if there are multiple files
+      for this input.
+  keep-directories:
+    oneOf:
+      - type: boolean
+      - type: string
+        enum:
+          - "none"  # = false
+          - "full"  # = true
+          - "suffix"
+    default: false
+    description: Whether to retain directories when using wildcards for this input.

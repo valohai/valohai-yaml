@@ -1,0 +1,18 @@
+---
+
+- step:
+    name: example
+    image: busybox
+    command: hello
+    inputs:
+      - name: model
+        default: s3://foo/model361100.pb
+        filename: model.pb
+      - name: foos
+        keep-directories: full
+        default:
+          - s3://secret-bucket/foos/**.quux
+      - name: bars
+        keep-directories: suffix
+        default:
+          - s3://secret-bucket/bars/**.quux
