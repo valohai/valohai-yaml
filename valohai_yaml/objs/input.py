@@ -27,7 +27,7 @@ class Input(Item):
         optional=False,
         description=None,
         keep_directories=False,
-        filename=None,
+        filename=None
     ) -> None:
         self.name = name
         self.default = default  # may be None, a string or a list of strings
