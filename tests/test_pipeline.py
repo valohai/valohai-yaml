@@ -16,6 +16,17 @@ def test_pipeline(pipeline_config: Config):
         for edge in pipeline_config.pipelines["My little pipeline"].edges
     )
     assert any(
+        (
+            edge.source_node == "train"
+            and edge.source_type == "output"
+            and edge.source_key == "model"
+            and edge.target_node == "deploy"
+            and edge.target_type == "file"
+            and edge.target_key == "predict-digit.model"
+        )
+        for edge in pipeline_config.pipelines["My deployment pipeline"].edges
+    )
+    assert any(
         (edge.source_type == "output" and edge.source_key == "model.pb")
         for edge in pipeline_config.pipelines["My medium pipeline"].edges
     )

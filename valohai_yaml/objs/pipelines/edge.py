@@ -7,7 +7,7 @@ def _split_prop(prop: str) -> List[str]:
     return prop.split('.', 2)
 
 
-edge_types = {'input', 'output', 'parameter', 'metadata'}
+edge_types = {'input', 'output', 'parameter', 'metadata', 'file'}
 
 
 class Edge(Item):
