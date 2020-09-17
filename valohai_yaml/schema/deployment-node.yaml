@@ -1,0 +1,17 @@
+type: object
+additionalProperties: false
+properties:
+  type:
+    type: string
+    const: deployment
+  name:
+    type: string
+  deployment:
+    type: string
+  endpoints:
+    type: array
+required:
+  - name
+  - deployment
+  - type
+title: DeploymentNode

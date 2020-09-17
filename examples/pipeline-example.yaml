@@ -43,6 +43,26 @@
       - [batch2.metadata.optimal_learning_rate, train.parameter.learning_rate]
       - [batch2.output.processed-images*, train.input.training-images]
 - pipeline:
+    name: My deployment pipeline
+    nodes:
+      - name: batch1
+        type: execution
+        step: Batch feature extraction
+      - name: train
+        type: execution
+        step: Train model
+      - name: deploy
+        type: deployment
+        deployment: MyDeployment
+        endpoints:
+          - predict-digit
+    edges:
+      #  node.entity_type.entity_name    node.entity_type.entity_name
+      - [batch1.input.training-labels*, train.input.training-labels]
+      - [batch1.metadata.optimal_learning_rate, train.parameter.learning_rate]
+      - [batch1.output.processed-images*, train.input.training-images]
+      - [train.output.model, deploy.file.predict-digit.model]
+- pipeline:
     name: My medium pipeline
     nodes:
       - name: batch1
@@ -76,3 +96,13 @@
       - source: batch2.input.training-labels*
         target: train.input.training-labels
       - [train.output.model.pb, test.input.model]
+
+- endpoint:
+    name: predict-digit
+    description: predict digits from image inputs ("file" parameter)
+    image: tensorflow/tensorflow:1.13.1-py3
+    wsgi: predict_wsgi:predict_wsgi
+    files:
+      - name: model
+        description: Model output file from TensorFlow
+        path: model.pb

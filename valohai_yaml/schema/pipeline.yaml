@@ -10,6 +10,7 @@ properties:
     items:
       anyOf:
         - "$ref": "./execution-node.json"
+        - "$ref": "./deployment-node.json"
   edges:
     type: array
     items:
