@@ -1,0 +1,12 @@
+---
+
+- step:
+    name: test
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    parameters:
+      - default: 2020-09-02T00:00:00.000000Z
+        description: Start date
+        name: ctime
+        optional: false
+        type: string
