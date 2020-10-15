@@ -76,10 +76,16 @@ class Parameter(Item):
         return data
 
     def _validate_value(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
-        if self.min is not None and value < self.min:
-            errors.append('%s is less than the minimum allowed (%s)' % (value, self.min))
-        if self.max is not None and value > self.max:
-            errors.append('%s is greater than the maximum allowed (%s)' % (value, self.max))
+        try:
+            if self.min is not None and value < self.min:
+                errors.append('%s is less than the minimum allowed (%s)' % (value, self.min))
+        except TypeError:  # Could occur if types are incompatible
+            pass
+        try:
+            if self.max is not None and value > self.max:
+                errors.append('%s is greater than the maximum allowed (%s)' % (value, self.max))
+        except TypeError:
+            pass
         if self.choices is not None and value not in self.choices:
             errors.append('%s is not among the choices allowed (%r)' % (value, self.choices))
         return value
@@ -204,3 +210,19 @@ class Parameter(Item):
                 lint_result.add_warning('{prefix}: `pass-false-as` has no effect on non-flag parameters'.format(
                     prefix=context_prefix,
                 ))
+
+        if self.default:
+            errors = []
+            for default_value in listify(self.default):
+                if self.type == 'string' and not isinstance(default_value, str):
+                    errors.append(
+                        '`default` value {value!r} is not a string (got a {type})'.format(
+                            value=default_value,
+                            type=type(default_value),
+                        ))
+                else:
+                    self._validate_type(default_value, errors)
+                    self._validate_value(default_value, errors)
+
+            for message in errors:
+                lint_result.add_warning('{prefix}: default {message}'.format(prefix=context_prefix, message=message))

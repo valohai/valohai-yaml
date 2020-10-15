@@ -1,0 +1,15 @@
+---
+
+- step:
+    name: test
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    parameters:
+      - default:
+        - 1337
+        min: 0
+        max: 100
+        name: value
+        multiple: repeat
+        optional: false
+        type: integer
