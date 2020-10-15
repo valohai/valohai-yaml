@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from tests.consts import error_examples_path, examples_path, invalid_obj, valid_bytes, valid_obj
+from tests.consts import error_examples_path, examples_path, invalid_obj, valid_bytes, valid_obj, warning_examples_path
 from tests.utils import get_error_example_path
 from valohai_yaml import validate, ValidationErrors
 from valohai_yaml.__main__ import main
@@ -21,6 +21,14 @@ def test_good_examples_cli(good_example_path):
 def test_bad_examples_cli(capsys, bad_example_path):
     "Test that bad examples don't validate via the CLI."
     assert main([bad_example_path]) == 1
+    out, err = capsys.readouterr()
+    assert out
+
+
+@pytest.mark.parametrize('yaml_path', glob.glob(os.path.join(warning_examples_path, '*.yaml')))
+def test_warning_examples_cli(capsys, yaml_path):
+    "Test that warning examples don't validate via the CLI in strict mode."
+    assert main(['--strict-warnings', yaml_path]) == 1
     out, err = capsys.readouterr()
     assert out
 
