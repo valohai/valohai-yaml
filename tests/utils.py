@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from tests.consts import bad_examples_path, examples_path
+from tests.consts import error_examples_path, examples_path
 from valohai_yaml import parse
 
 
@@ -22,5 +22,5 @@ def config_fixture(name):
     return _config_fixture
 
 
-def get_bad_example_path(filename):
-    return os.path.join(bad_examples_path, filename)
+def get_error_example_path(filename):
+    return os.path.join(error_examples_path, filename)

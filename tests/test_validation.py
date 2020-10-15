@@ -5,8 +5,8 @@ import os
 
 import pytest
 
-from tests.consts import bad_examples_path, examples_path, invalid_obj, valid_bytes, valid_obj
-from tests.utils import get_bad_example_path
+from tests.consts import error_examples_path, examples_path, invalid_obj, valid_bytes, valid_obj
+from tests.utils import get_error_example_path
 from valohai_yaml import validate, ValidationErrors
 from valohai_yaml.__main__ import main
 
@@ -17,7 +17,7 @@ def test_good_examples_cli(good_example_path):
     assert main([good_example_path]) == 0
 
 
-@pytest.mark.parametrize('bad_example_path', glob.glob(os.path.join(bad_examples_path, '*.yaml')))
+@pytest.mark.parametrize('bad_example_path', glob.glob(os.path.join(error_examples_path, '*.yaml')))
 def test_bad_examples_cli(capsys, bad_example_path):
     "Test that bad examples don't validate via the CLI."
     assert main([bad_example_path]) == 1
@@ -26,7 +26,7 @@ def test_bad_examples_cli(capsys, bad_example_path):
 
 
 def test_invalid_file_missing_properties_cli(capsys):
-    assert main([get_bad_example_path('step-missing-required-properties.yaml')]) == 1
+    assert main([get_error_example_path('step-missing-required-properties.yaml')]) == 1
     out, err = capsys.readouterr()
     assert "step-missing-required-properties.yaml" in out
     assert "'command' is a required property" in out
@@ -35,7 +35,7 @@ def test_invalid_file_missing_properties_cli(capsys):
 
 
 def test_invalid_file_too_long_input_name_cli(capsys):
-    assert main([get_bad_example_path('input-name-too-long.yaml')]) == 1
+    assert main([get_error_example_path('input-name-too-long.yaml')]) == 1
     out, err = capsys.readouterr()
     assert "input-name-too-long.yaml" in out
     assert "'this-input-name-is-way-too-long-and-will-cause-the-validation-to-fail' is too long" in out

@@ -1,7 +1,8 @@
 import os
 
 examples_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', 'examples'))
-bad_examples_path = os.path.realpath(os.path.join(os.path.dirname(__file__), 'bad_examples'))
+error_examples_path = os.path.realpath(os.path.join(os.path.dirname(__file__), 'error_examples'))
+warning_examples_path = os.path.realpath(os.path.join(os.path.dirname(__file__), 'warning_examples'))
 
 valid_bytes = b'''
 - step:
