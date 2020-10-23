@@ -8,8 +8,14 @@ properties:
     type: string
   deployment:
     type: string
+  aliases:
+    type: array
+    items:
+      type: string
   endpoints:
     type: array
+    items:
+      type: string
 required:
   - name
   - deployment
