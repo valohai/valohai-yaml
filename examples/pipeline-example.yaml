@@ -51,17 +51,22 @@
       - name: train
         type: execution
         step: Train model
-      - name: deploy
+      - name: deploy-predictor
         type: deployment
         deployment: MyDeployment
+        aliases:
+          - predictor-staging
         endpoints:
           - predict-digit
+      - name: deploy-no-presets
+        type: deployment
+        deployment: MyDeployment
     edges:
       #  node.entity_type.entity_name    node.entity_type.entity_name
       - [batch1.input.training-labels*, train.input.training-labels]
       - [batch1.metadata.optimal_learning_rate, train.parameter.learning_rate]
       - [batch1.output.processed-images*, train.input.training-images]
-      - [train.output.model, deploy.file.predict-digit.model]
+      - [train.output.model, deploy-predictor.file.predict-digit.model]
 - pipeline:
     name: My medium pipeline
     nodes:
