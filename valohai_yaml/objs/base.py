@@ -1,4 +1,7 @@
-from valohai_yaml.objs.utils import serialize_into
+from collections import OrderedDict
+
+from ..objs.utils import serialize_into
+from ..utils.merge import merge_simple
 
 
 class Item(object):
@@ -18,8 +21,14 @@ class Item(object):
         return data
 
     def serialize(self) -> dict:
-        out = {}
-        for key, value in self.get_data().items():
+        out = OrderedDict()
+        # Default sorting except always start with 'name'
+        sorted_items = sorted(
+            self.get_data().items(),
+            key=lambda kv: kv[0] if kv[0] != 'name' else '\t',
+        )
+
+        for key, value in sorted_items:
             if value is None:
                 continue
             key = key.replace('_', '-')
@@ -39,3 +48,12 @@ class Item(object):
 
     def lint(self, lint_result, context):
         pass
+
+    def merge_with(self, other, strategy=None) -> 'Item':
+        if strategy is None:
+            strategy = self.default_merge
+        return strategy(self, other)
+
+    @classmethod
+    def default_merge(cls, a, b):
+        return merge_simple(a, b)
