@@ -9,3 +9,10 @@
       - source: /baz
         destination: /quux
         readonly: true
+      - source: hal.local:/dave
+        destination: /dave
+        readonly: true
+        type: nfs
+        options:
+          hot: true
+          superhot: false

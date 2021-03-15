@@ -87,7 +87,13 @@ def test_optional_default_param_parse(optional_default_param_config):
 
 def test_mount_parse(mount_config):
     step = mount_config.steps['test']
-    assert len(step.mounts) == 2
+    assert {m.source for m in step.mounts} == {
+        '/foo',
+        '/baz',
+        'hal.local:/dave',
+    }
+    nfs_mount = next((m for m in step.mounts if m.type == 'nfs'), None)
+    assert nfs_mount.options == {'hot': True, 'superhot': False}
 
 
 def test_parse_environment_variables(example3_config):
