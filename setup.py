@@ -11,6 +11,7 @@ dev_dependencies = [
     'isort',
     'pydocstyle',
     'pytest-cov',
+    'pytest>=6.0',
 ]
 
 if __name__ == '__main__':
