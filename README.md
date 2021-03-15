@@ -1,6 +1,6 @@
 # valohai-yaml
 
-[![Build Status](https://travis-ci.org/valohai/valohai-yaml.svg?branch=master)](https://travis-ci.org/valohai/valohai-yaml)
+[![Build Status](https://github.com/valohai/valohai-yaml/actions/workflows/ci.yml/badge.svg)](https://github.com/valohai/valohai-yaml/actions/workflows/ci.yml)
 [![Codecov](https://codecov.io/gh/valohai/valohai-yaml/branch/master/graph/badge.svg)](https://codecov.io/gh/valohai/valohai-yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
