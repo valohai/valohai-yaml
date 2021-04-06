@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, Optional
 
 from jsonschema.exceptions import relevance
 
@@ -12,10 +12,10 @@ class LintResult:
     def __init__(self) -> None:
         self.messages = []
 
-    def add_error(self, message: str, location: None = None, exception: None = None) -> None:
+    def add_error(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
         self.messages.append({'type': 'error', 'message': message, 'location': location, 'exception': exception})
 
-    def add_warning(self, message: str, location: None = None, exception: None = None) -> None:
+    def add_warning(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
         self.messages.append({'type': 'warning', 'message': message, 'location': location, 'exception': exception})
 
     @property
