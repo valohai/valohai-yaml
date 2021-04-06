@@ -2,6 +2,7 @@ from typing import Iterator, Optional
 
 from jsonschema.exceptions import relevance
 
+from valohai_yaml.excs import ValidationError
 from valohai_yaml.objs import Config
 from valohai_yaml.utils import read_yaml
 from valohai_yaml.utils.terminal import style
@@ -83,6 +84,10 @@ def lint(yaml) -> LintResult:
     if len(errors) > 0:
         return lr
 
-    config = Config.parse(data)
-    config.lint(lr, context={})
+    try:
+        config = Config.parse(data)
+    except ValidationError as err:  # Could happen before we get to linting things
+        lr.add_error(str(err), exception=err)
+    else:
+        config.lint(lr, context={})
     return lr
