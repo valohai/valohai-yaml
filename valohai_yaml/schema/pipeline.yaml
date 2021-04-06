@@ -11,6 +11,7 @@ properties:
       anyOf:
         - "$ref": "./execution-node.json"
         - "$ref": "./deployment-node.json"
+        - "$ref": "./task-node.json"
   edges:
     type: array
     items:
