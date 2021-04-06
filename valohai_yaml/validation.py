@@ -1,30 +1,16 @@
 import json
 import os
 import re
-from typing import List, Union
+from typing import List
 
 import yaml
 from jsonschema import Draft4Validator, RefResolver, ValidationError
 from jsonschema.compat import lru_cache
 
+from .excs import ValidationErrors
 from .utils import read_yaml
 
 SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
-
-
-class ValidationErrors(ValueError):
-
-    def __init__(self, errors: List[Union[str, ValidationError]]) -> None:
-        self.errors = errors
-        super(ValidationErrors, self).__init__(
-            '%d errors: %s' % (
-                len(errors),
-                ', '.join(getattr(e, 'message', e) for e in self.errors)
-            )
-        )
-
-    def __iter__(self):
-        return iter(self.errors)
 
 
 class LocalRefResolver(RefResolver):
