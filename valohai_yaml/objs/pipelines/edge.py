@@ -1,6 +1,7 @@
 from typing import List, Union
 
 from ..base import Item
+from valohai_yaml.excs import ValidationError
 
 
 def _split_prop(prop: str) -> List[str]:
@@ -45,6 +46,8 @@ class Edge(Item):
     @classmethod
     def parse(cls, data: Union[dict, list]) -> 'Edge':
         if isinstance(data, list):  # Must be a shorthand
+            if len(data) != 2:
+                raise ValidationError('Malformed edge shorthand {}'.format(data))
             data = {'source': data[0], 'target': data[1]}
         return super(Edge, cls).parse(data)
 
