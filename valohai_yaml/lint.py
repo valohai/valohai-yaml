@@ -1,7 +1,8 @@
-from typing import Iterator
+from typing import Iterator, Optional
 
 from jsonschema.exceptions import relevance
 
+from valohai_yaml.excs import ValidationError
 from valohai_yaml.objs import Config
 from valohai_yaml.utils import read_yaml
 from valohai_yaml.utils.terminal import style
@@ -12,10 +13,10 @@ class LintResult:
     def __init__(self) -> None:
         self.messages = []
 
-    def add_error(self, message: str, location: None = None, exception: None = None) -> None:
+    def add_error(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
         self.messages.append({'type': 'error', 'message': message, 'location': location, 'exception': exception})
 
-    def add_warning(self, message: str, location: None = None, exception: None = None) -> None:
+    def add_warning(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
         self.messages.append({'type': 'warning', 'message': message, 'location': location, 'exception': exception})
 
     @property
@@ -83,6 +84,10 @@ def lint(yaml) -> LintResult:
     if len(errors) > 0:
         return lr
 
-    config = Config.parse(data)
-    config.lint(lr, context={})
+    try:
+        config = Config.parse(data)
+    except ValidationError as err:  # Could happen before we get to linting things
+        lr.add_error(str(err), exception=err)
+    else:
+        config.lint(lr, context={})
     return lr

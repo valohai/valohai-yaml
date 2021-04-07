@@ -1,0 +1,16 @@
+- step:
+    name: Execution
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: training-images
+      - name: training-labels
+- pipeline:
+    name: Mipeline
+    nodes:
+      - name: batch1
+        type: execution
+        step: Execution
+    edges:
+      - [ batch1.input.training-labels* ]

@@ -1,6 +1,7 @@
 from typing import List, Union
 
 from ..base import Item
+from valohai_yaml.excs import ValidationError
 
 
 def _split_prop(prop: str) -> List[str]:
@@ -11,7 +12,7 @@ edge_types = {'input', 'output', 'parameter', 'metadata', 'file'}
 
 
 class Edge(Item):
-    def __init__(self, *, source, target, configuration=None) -> None:
+    def __init__(self, *, source: str, target: str, configuration=None) -> None:
         if configuration is None:
             configuration = {}
         self.source = source
@@ -19,34 +20,35 @@ class Edge(Item):
         self.configuration = configuration
 
     @property
-    def source_node(self) -> str:
-        return _split_prop(self.source)[0]
+    def source(self) -> str:
+        return '.'.join((self.source_node, self.source_type, self.source_key))
+
+    @source.setter
+    def source(self, prop: str) -> None:
+        self.source_node, self.source_type, self.source_key = _split_prop(prop)
 
     @property
-    def source_type(self) -> str:
-        return _split_prop(self.source)[1]
+    def target(self) -> str:
+        return '.'.join((self.target_node, self.target_type, self.target_key))
 
-    @property
-    def source_key(self) -> str:
-        return _split_prop(self.source)[2]
-
-    @property
-    def target_node(self) -> str:
-        return _split_prop(self.target)[0]
-
-    @property
-    def target_type(self) -> str:
-        return _split_prop(self.target)[1]
-
-    @property
-    def target_key(self) -> str:
-        return _split_prop(self.target)[2]
+    @target.setter
+    def target(self, prop: str) -> None:
+        self.target_node, self.target_type, self.target_key = _split_prop(prop)
 
     @classmethod
     def parse(cls, data: Union[dict, list]) -> 'Edge':
         if isinstance(data, list):  # Must be a shorthand
+            if len(data) != 2:
+                raise ValidationError('Malformed edge shorthand {}'.format(data))
             data = {'source': data[0], 'target': data[1]}
         return super(Edge, cls).parse(data)
+
+    def get_data(self) -> dict:
+        return {
+            'source': self.source,
+            'target': self.target,
+            'configuration': self.configuration,
+        }
 
     def lint(self, lint_result, context) -> None:
         pipeline = context['pipeline']
