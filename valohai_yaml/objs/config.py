@@ -1,7 +1,9 @@
 import copy
 from collections import OrderedDict
 from itertools import chain
-from typing import Any, Optional
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
+
+from valohai_yaml.lint import LintResult
 
 from ..utils.lint import lint_iterables
 from ..utils.merge import merge_dicts, merge_simple
@@ -20,9 +22,9 @@ class Config(Item):
     def __init__(
         self,
         *,
-        steps=(),
-        endpoints=(),
-        pipelines=()
+        steps: Iterable[Step] = (),
+        endpoints: Iterable[Endpoint] = (),
+        pipelines: Iterable[Pipeline] = ()
     ) -> None:
         assert all(isinstance(step, Step) for step in steps)
         self.steps = OrderedDict((step.name, step) for step in steps)
@@ -61,14 +63,14 @@ class Config(Item):
         return inst
 
     @classmethod
-    def get_top_level_parsers(cls):
+    def get_top_level_parsers(cls) -> Dict[str, Tuple[list, Callable]]:
         """
         Get the parsers for top-level elements in a configuration file.
 
         The return value is a little baroque due to the alias for `pipeline`/`blueprint`:
         it's a dict that maps top-level element names to a 2-tuple of target list objects and parse functions.
         """
-        pipeline_tuple = ([], Pipeline.parse)
+        pipeline_tuple = ([], Pipeline.parse)  # type: Tuple[list, Callable]
         return {
             'step': ([], Step.parse),
             'endpoint': ([], Endpoint.parse),
@@ -76,14 +78,18 @@ class Config(Item):
             'blueprint': pipeline_tuple,  # Alias allowed for now
         }
 
-    def serialize(self) -> Any:
+    def serialize(self) -> List[dict]:
         return list(chain(
             ({'step': step.serialize()} for (key, step) in sorted(self.steps.items())),
             ({'endpoint': endpoint.serialize()} for (key, endpoint) in sorted(self.endpoints.items())),
             ({'pipeline': pipeline.serialize()} for (key, pipeline) in sorted(self.pipelines.items())),
         ))
 
-    def lint(self, lint_result=None, context=None):
+    def lint(  # type: ignore
+        self,
+        lint_result: Optional[LintResult] = None,
+        context: Optional[dict] = None,
+    ) -> LintResult:
         """
         Lint the configuration.
 
@@ -94,7 +100,6 @@ class Config(Item):
         if context is None:
             context = {}
         if lint_result is None:
-            from valohai_yaml.lint import LintResult
             lint_result = LintResult()
         context = dict(context, config=self)
 
@@ -109,7 +114,7 @@ class Config(Item):
         ))
         return lint_result
 
-    def get_step_by(self, **kwargs) -> Optional[Step]:
+    def get_step_by(self, **kwargs: Any) -> Optional[Step]:
         """
         Get the first step that matches all the passed named arguments.
 
@@ -134,7 +139,7 @@ class Config(Item):
         return None
 
     @classmethod
-    def default_merge(cls, a, b):
+    def default_merge(cls, a: 'Config', b: 'Config') -> 'Config':
         result = merge_simple(a, b)
         result.steps = merge_dicts(
             a.steps,
@@ -156,7 +161,7 @@ class Config(Item):
         )
         return result
 
-    def __repr__(self):  # pragma: no cover  # noqa: D105
+    def __repr__(self) -> str:  # pragma: no cover  # noqa: D105
         return '<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>' % (
             len(self.steps),
             sorted(self.steps),

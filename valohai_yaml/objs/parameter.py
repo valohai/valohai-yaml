@@ -1,7 +1,8 @@
 from enum import Enum
-from typing import List, Optional, Union
+from typing import Any, Iterable, List, Optional, Union
 
 from valohai_yaml.excs import ValidationErrors
+from valohai_yaml.lint import LintResult
 from valohai_yaml.utils import listify
 
 from .base import Item
@@ -14,9 +15,11 @@ class MultipleMode(Enum):
     REPEAT = 'repeat'
 
     @classmethod
-    def cast(cls, value):
+    def cast(cls, value: Optional[Union['MultipleMode', str]]) -> Optional['MultipleMode']:
         if not value:
             return None
+        if isinstance(value, MultipleMode):
+            return value
         value = str(value).lower()
         if value == 'none':
             return None
@@ -33,19 +36,19 @@ class Parameter(Item):
     def __init__(
         self,
         *,
-        name,
-        type='string',
-        optional=False,
-        min=None,
-        max=None,
-        description=None,
-        default=None,
-        pass_as=None,
-        pass_true_as=None,
-        pass_false_as=None,
-        choices=None,
-        multiple=None,
-        multiple_separator=','
+        name: str,
+        type: str = 'string',
+        optional: bool = False,
+        min: Optional[ValueAtomType] = None,
+        max: Optional[ValueAtomType] = None,
+        description: Optional[str] = None,
+        default: Optional[Any] = None,
+        pass_as: Optional[str] = None,
+        pass_true_as: Optional[str] = None,
+        pass_false_as: Optional[str] = None,
+        choices: Optional[Iterable[ValueAtomType]] = None,
+        multiple: Optional[Union[str, MultipleMode]] = None,
+        multiple_separator: str = ','
     ) -> None:
         self.name = name
         self.type = type
@@ -62,7 +65,7 @@ class Parameter(Item):
         self.default = (listify(default) if self.multiple else default)
         if self.type == 'flag':
             self.optional = True
-            self.choices = (True, False)
+            self.choices = [True, False]
             if self.multiple:
                 raise ValueError('Flag parameters can\'t be multiple')
         else:
@@ -81,12 +84,12 @@ class Parameter(Item):
 
     def _validate_value(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
         try:
-            if self.min is not None and value < self.min:
+            if self.min is not None and value < self.min:  # type: ignore
                 errors.append('%s is less than the minimum allowed (%s)' % (value, self.min))
         except TypeError:  # Could occur if types are incompatible
             pass
         try:
-            if self.max is not None and value > self.max:
+            if self.max is not None and value > self.max:  # type: ignore
                 errors.append('%s is greater than the maximum allowed (%s)' % (value, self.max))
         except TypeError:
             pass
@@ -164,7 +167,7 @@ class Parameter(Item):
 
         pass_as_bits = pass_as_template.split()
 
-        def _format_atom(value: ValueAtomType) -> List[str]:
+        def _format_atom(value: Optional[ValueAtomType]) -> List[str]:
             env = dict(name=self.name, value=value, v=value)
             return [bit.format(**env) for bit in pass_as_bits]
 
@@ -180,23 +183,25 @@ class Parameter(Item):
                 return _format_atom(self.multiple_separator.join(str(atom) for atom in value_list))
             return None
         elif not self.multiple:
+            assert not isinstance(value, list)
             return _format_atom(value)
         raise NotImplementedError('unknown multiple type %r' % self.multiple)
 
     def lint(
         self,
-        lint_result,
+        lint_result: LintResult,
         context: dict
     ) -> None:
-        has_pass_as = bool(self._original_data.get('pass-as'))
-        has_pass_true_as = bool(self._original_data.get('pass-true-as'))
-        has_pass_false_as = bool(self._original_data.get('pass-false-as'))
+        original_data = (self._original_data or {})
+        has_pass_as = bool(original_data.get('pass-as'))
+        has_pass_true_as = bool(original_data.get('pass-true-as'))
+        has_pass_false_as = bool(original_data.get('pass-false-as'))
         context_prefix = 'Step {step}, parameter {param}'.format(
             step=context['step'].name,
             param=self.name,
         )
         if self.type == 'flag':
-            if self._original_data.get('optional'):
+            if original_data.get('optional'):
                 lint_result.add_warning('{prefix}: `optional` has no effect on flag-type parameters'.format(
                     prefix=context_prefix,
                 ))

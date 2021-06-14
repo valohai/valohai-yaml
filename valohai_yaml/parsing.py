@@ -1,9 +1,11 @@
+from typing import IO, Union
+
 from valohai_yaml.objs import Config
 
 from .utils import read_yaml
 
 
-def parse(yaml, validate: bool = True) -> Config:
+def parse(yaml: Union[dict, list, bytes, str, IO], validate: bool = True) -> Config:
     """
     Parse the given YAML data into a `Config` object, optionally validating it first.
 
@@ -16,6 +18,6 @@ def parse(yaml, validate: bool = True) -> Config:
     """
     data = read_yaml(yaml)
     if validate:  # pragma: no branch
-        from .validation import validate
-        validate(data, raise_exc=True)
+        from .validation import validate as do_validate
+        do_validate(data, raise_exc=True)
     return Config.parse(data)

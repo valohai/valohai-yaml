@@ -1,9 +1,8 @@
-from typing import Iterator, Optional
+from typing import IO, Iterator, List, Optional, Union
 
 from jsonschema.exceptions import relevance
 
 from valohai_yaml.excs import ValidationError
-from valohai_yaml.objs import Config
 from valohai_yaml.utils import read_yaml
 from valohai_yaml.utils.terminal import style
 from valohai_yaml.validation import get_validator
@@ -13,7 +12,7 @@ class LintResult:
     """Container for lint results."""
 
     def __init__(self) -> None:
-        self.messages = []
+        self.messages = []  # type: List[dict]
 
     def add_error(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
         self.messages.append({'type': 'error', 'message': message, 'location': location, 'exception': exception})
@@ -58,7 +57,7 @@ def lint_file(file_path: str) -> LintResult:
             return lr
 
 
-def lint(yaml) -> LintResult:
+def lint(yaml: Union[dict, list, bytes, str, IO]) -> LintResult:
     lr = LintResult()
 
     data = read_yaml(yaml)
@@ -86,6 +85,7 @@ def lint(yaml) -> LintResult:
         return lr
 
     try:
+        from valohai_yaml.objs import Config
         config = Config.parse(data)
     except ValidationError as err:  # Could happen before we get to linting things
         lr.add_error(str(err), exception=err)

@@ -19,6 +19,6 @@ class ValidationErrors(ValidationError):
             )
         )
 
-    def __iter__(self):
+    def __iter__(self):  # noqa: ANN204
         """Iterate over the errors contained within."""
         return iter(self.errors)

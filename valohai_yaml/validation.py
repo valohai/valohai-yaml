@@ -1,7 +1,7 @@
 import json
 import os
 import re
-from typing import List
+from typing import IO, List, Union
 
 import yaml
 from jsonschema import Draft4Validator, RefResolver, ValidationError
@@ -37,7 +37,7 @@ def get_schema(name: str) -> dict:
     ]:
         if os.path.isfile(filename):
             with open(filename, encoding='utf-8') as infp:
-                return loader(infp)
+                return loader(infp)  # type: ignore
     raise ValueError('unable to read schema %s' % name)  # pragma: no cover
 
 
@@ -48,7 +48,7 @@ def get_validator() -> Draft4Validator:
     return cls(schema, resolver=LocalRefResolver.from_schema(schema))
 
 
-def validate(yaml, raise_exc: bool = True) -> List[ValidationError]:
+def validate(yaml: Union[dict, list, bytes, str, IO], raise_exc: bool = True) -> List[ValidationError]:
     """
     Validate the given YAML document and return a list of errors.
 

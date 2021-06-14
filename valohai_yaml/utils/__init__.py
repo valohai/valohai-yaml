@@ -1,7 +1,9 @@
+from typing import Any, IO, Union
+
 from yaml import safe_load
 
 
-def read_yaml(yaml):
+def read_yaml(yaml: Union[dict, list, bytes, str, IO]) -> Any:
     if isinstance(yaml, (dict, list)):  # Smells already parsed
         return yaml
     if isinstance(yaml, bytes):
@@ -9,7 +11,7 @@ def read_yaml(yaml):
     return safe_load(yaml)  # can be a stream or a string
 
 
-def listify(value) -> list:
+def listify(value: Any) -> list:
     """
     Wrap the given value into a list, with provisions outlined below.
 

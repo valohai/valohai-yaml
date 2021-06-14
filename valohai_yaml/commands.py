@@ -1,7 +1,7 @@
 import re
 import warnings
 from shlex import quote
-from typing import List, TYPE_CHECKING, Union
+from typing import List, Optional, TYPE_CHECKING, Union
 
 from valohai_yaml.objs.parameter_map import ParameterMap
 from valohai_yaml.utils import listify
@@ -17,7 +17,7 @@ class CommandInterpolationWarning(UserWarning):
 interpolable_re = re.compile(r'{(.+?)}')
 
 
-def quote_multiple(args: List[str]) -> str:
+def quote_multiple(args: Optional[List[str]]) -> str:
     if not args:
         return ''
     return ' '.join(quote(arg) for arg in args)
@@ -62,7 +62,8 @@ def build_command(
         raise TypeError("Passing in lists as ParameterMaps is no longer supported.")
 
     out_commands = []
-    for command in listify(command):
+    commands = listify(command)  # type: List[str]
+    for command in commands:
         # Only attempt formatting if the string smells like it should be formatted.
         # This allows the user to include shell syntax in the commands, if required.
         # (There's still naturally the chance for false-positives, so guard against

@@ -1,6 +1,8 @@
 import copy
 from collections import OrderedDict
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
+
+from valohai_yaml.lint import LintResult
 
 from ..commands import build_command
 from ..utils.lint import lint_iterables
@@ -20,21 +22,22 @@ class Step(Item):
     def __init__(
         self,
         *,
-        name,
-        image,
-        command,
-        parameters=(),
-        inputs=(),
-        outputs=(),
-        mounts=(),
-        environment_variables=(),
-        environment=None,
-        description=None
+        name: str,
+        image: str,
+        command: Union[List[str], str],
+        parameters: Iterable[Parameter] = (),
+        inputs: Iterable[Input] = (),
+        outputs: Iterable[Any] = (),
+        mounts: Iterable[Mount] = (),
+        environment_variables: Iterable[EnvironmentVariable] = (),
+        environment: Optional[str] = None,
+        description: Optional[str] = None
     ) -> None:
         self.name = name
         self.image = image
         self.command = command
         self.description = description
+        self.environment = (str(environment) if environment else None)
 
         self.outputs = list(outputs)  # TODO: Improve handling
 
@@ -48,7 +51,6 @@ class Step(Item):
         self.parameters = OrderedDict((param.name, param) for param in parameters)
 
         self.environment_variables = OrderedDict((ev.name, ev) for ev in environment_variables)
-        self.environment = (str(environment) if environment else None)
 
     @classmethod
     def parse(cls, data: Dict[str, Any]) -> 'Step':
@@ -79,7 +81,7 @@ class Step(Item):
             serialize_into(val, key, source, flatten_dicts=True, elide_empty_iterables=True)
         return val
 
-    def get_parameter_defaults(self, include_flags: bool = True) -> Dict[str, Union[str, int]]:
+    def get_parameter_defaults(self, include_flags: bool = True) -> Dict[str, Any]:
         """Get a dict mapping parameter names to their defaults (if set)."""
         return {
             name: parameter.default
@@ -120,7 +122,7 @@ class Step(Item):
         parameter_map = ParameterMap(parameters=self.parameters, values=values)
         return build_command(command, parameter_map)
 
-    def lint(self, lint_result, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: dict) -> None:
         context = dict(context, step=self)
 
         lint_iterables(lint_result, context, (
@@ -132,7 +134,7 @@ class Step(Item):
         ))
 
     @classmethod
-    def default_merge(cls, a, b):
+    def default_merge(cls, a: 'Step', b: 'Step') -> 'Step':
         result = merge_simple(a, b)
         result.parameters = merge_dicts(
             a.parameters,
@@ -146,12 +148,7 @@ class Step(Item):
             merger=merge_simple,
             copier=copy.deepcopy,
         )
-        result.outputs = merge_dicts(
-            a.outputs,
-            b.outputs,
-            merger=merge_simple,
-            copier=copy.deepcopy,
-        )
+        result.outputs = a.outputs[:] + b.outputs[:]  # TODO: Improve handling
         result.environment_variables = merge_dicts(
             a.environment_variables,
             b.environment_variables,

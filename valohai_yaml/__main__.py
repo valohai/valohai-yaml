@@ -5,7 +5,7 @@ from typing import List, Optional
 from valohai_yaml.lint import lint, LintResult
 
 
-def main(args: Optional[List[str]] = None) -> int:
+def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument(
         '--strict-warnings',
@@ -13,7 +13,7 @@ def main(args: Optional[List[str]] = None) -> int:
         help='exit with error if there are warnings',
     )
     ap.add_argument('file', nargs='+', help='file(s) to validate')
-    args = ap.parse_args(args)
+    args = ap.parse_args(argv)
     errors = warnings = 0
     for file in args.file:
         result = process_file(file)

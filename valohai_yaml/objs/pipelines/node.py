@@ -4,7 +4,12 @@ from ..base import Item
 class Node(Item):
     """Generic node base class."""
 
-    type = None  # must be set in subclasses
+    # `type` must be set in subclasses
+    type = None  # type: str
+
+    # `name` will be set on instance level in subclasses
+    # TODO: change to a type annotation when dropping py3.5
+    name = None  # type: str
 
     @classmethod
     def parse_qualifying(cls, data: dict) -> 'Node':

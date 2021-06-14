@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import List, Optional, Union
 
 from .base import Item
 
@@ -11,7 +12,7 @@ class KeepDirectories(Enum):
     FULL = 'full'
 
     @classmethod
-    def cast(cls, value):
+    def cast(cls, value: Union[bool, str]) -> 'KeepDirectories':
         if not value:
             return KeepDirectories.NONE
         if value is True:
@@ -25,12 +26,12 @@ class Input(Item):
     def __init__(
         self,
         *,
-        name,
-        default=None,
-        optional=False,
-        description=None,
-        keep_directories=False,
-        filename=None
+        name: str,
+        default: Optional[Union[List[str], str]] = None,
+        optional: bool = False,
+        description: Optional[str] = None,
+        keep_directories: bool = False,
+        filename: Optional[str] = None
     ) -> None:
         self.name = name
         self.default = default  # may be None, a string or a list of strings
