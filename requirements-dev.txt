@@ -14,6 +14,8 @@ click==8.0.1
     # via pip-tools
 coverage==5.5
     # via pytest-cov
+flake8-annotations==2.6.2
+    # via -r requirements-dev.in
 flake8-bugbear==21.4.3
     # via -r requirements-dev.in
 flake8-docstrings==1.6.0
@@ -29,6 +31,7 @@ flake8-simplify==0.14.1
 flake8==3.9.2
     # via
     #   -r requirements-dev.in
+    #   flake8-annotations
     #   flake8-bugbear
     #   flake8-docstrings
     #   flake8-isort
@@ -39,6 +42,10 @@ isort==5.8.0
     # via flake8-isort
 mccabe==0.6.1
     # via flake8
+mypy-extensions==0.4.3
+    # via mypy
+mypy==0.902
+    # via -r requirements-dev.in
 packaging==20.9
     # via pytest
 pep517==0.10.0
@@ -69,9 +76,14 @@ testfixtures==6.17.1
     # via flake8-isort
 toml==0.10.2
     # via
+    #   mypy
     #   pep517
     #   pytest
     #   pytest-cov
+types-pyyaml==5.4.0
+    # via -r requirements-dev.in
+typing-extensions==3.10.0.0
+    # via mypy
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
