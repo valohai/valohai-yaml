@@ -1,8 +1,11 @@
 -r ./requirements-test.in
 flake8
+flake8-annotations
 flake8-bugbear
 flake8-docstrings
 flake8-isort
 flake8-return
 flake8-simplify
+mypy
 pip-tools
+types-PyYAML
