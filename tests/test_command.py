@@ -1,4 +1,5 @@
 from valohai_yaml.commands import build_command
+from valohai_yaml.objs.parameter_map import ParameterMap
 
 
 def test_command_generation(example1_config):
@@ -32,8 +33,9 @@ def test_command_override(example1_config):
 
 
 def test_nonexistent_interpolation_keys():
-    interp_command = build_command(['Where are the ${shell_unicorns}? The {parameters} are here!'], ['ponies'])
-    assert interp_command == ['Where are the ${shell_unicorns}? The ponies are here!']
+    empty_parameter_map = ParameterMap(parameters={}, values={})
+    interp_command = build_command(['Where are the ${shell_unicorns}? The {parameters} are here!'], empty_parameter_map)
+    assert interp_command == ['Where are the ${shell_unicorns}? The  are here!']
 
 
 parameter_test_values = {

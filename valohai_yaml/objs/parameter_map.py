@@ -24,16 +24,3 @@ class ParameterMap:
         param = self.parameters[name]
         value = self.values.get(param.name)
         return param.format_cli(value)
-
-
-class LegacyParameterMap:
-    def __init__(self, parameters_list: List[str]) -> None:
-        self.parameters_list = parameters_list
-        self.parameters = {}
-        self.values = {}
-
-    def build_parameters(self) -> List[str]:
-        return self.parameters_list[:]
-
-    def build_parameter_by_name(self, name):  # pragma: no cover
-        return None

@@ -3,7 +3,7 @@ import warnings
 from shlex import quote
 from typing import List, TYPE_CHECKING, Union
 
-from valohai_yaml.objs.parameter_map import LegacyParameterMap, ParameterMap
+from valohai_yaml.objs.parameter_map import ParameterMap
 from valohai_yaml.utils import listify
 
 if TYPE_CHECKING:
@@ -23,7 +23,7 @@ def quote_multiple(args: List[str]) -> str:
     return ' '.join(quote(arg) for arg in args)
 
 
-def _replace_interpolation(parameter_map: Union[ParameterMap, LegacyParameterMap], match: 'Match') -> str:
+def _replace_interpolation(parameter_map: ParameterMap, match: 'Match') -> str:
     value = match.group(1)
     if value in ('parameters', 'params'):
         return quote_multiple(parameter_map.build_parameters())
@@ -41,7 +41,7 @@ def _replace_interpolation(parameter_map: Union[ParameterMap, LegacyParameterMap
 
 def build_command(
     command: Union[str, List[str]],
-    parameter_map: Union[ParameterMap, LegacyParameterMap, list],
+    parameter_map: ParameterMap,
 ) -> List[str]:
     """
     Build command line(s) using the given parameter map.
@@ -59,8 +59,8 @@ def build_command(
     :rtype: list[str]
     """
 
-    if isinstance(parameter_map, list):  # Partially emulate old (pre-0.7) API for this function.
-        parameter_map = LegacyParameterMap(parameter_map)
+    if isinstance(parameter_map, list):
+        raise TypeError("Passing in lists as ParameterMaps is no longer supported.")
 
     out_commands = []
     for command in listify(command):
