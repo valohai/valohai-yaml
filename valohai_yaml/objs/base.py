@@ -1,7 +1,11 @@
 from collections import OrderedDict
+from typing import Any, Callable, Optional, Type, TypeVar
 
+from ..lint import LintResult
 from ..objs.utils import serialize_into
 from ..utils.merge import merge_simple
+
+T = TypeVar('T', bound='Item')
 
 
 class Item:
@@ -19,8 +23,8 @@ class Item:
         data.pop('_original_data', None)
         return data
 
-    def serialize(self) -> dict:
-        out = OrderedDict()
+    def serialize(self) -> Any:  # type = Any because subclasses may override
+        out = OrderedDict()  # type: OrderedDict
         # Default sorting except always start with 'name'
         sorted_items = sorted(
             self.get_data().items(),
@@ -35,8 +39,8 @@ class Item:
         return out
 
     @classmethod
-    def parse(cls, data: dict) -> 'Item':
-        inst = cls(**{
+    def parse(cls: Type[T], data: dict) -> T:
+        inst = cls(**{  # type: ignore
             key.replace('-', '_'): value
             for (key, value)
             in data.items()
@@ -45,14 +49,14 @@ class Item:
         inst._original_data = data
         return inst
 
-    def lint(self, lint_result, context):
+    def lint(self, lint_result: LintResult, context: dict) -> None:
         pass
 
-    def merge_with(self, other, strategy=None) -> 'Item':
+    def merge_with(self: T, other: T, strategy: Optional[Callable[[T, T], T]] = None) -> 'Item':
         if strategy is None:
             strategy = self.default_merge
         return strategy(self, other)
 
     @classmethod
-    def default_merge(cls, a, b):
+    def default_merge(cls: Type[T], a: T, b: T) -> T:
         return merge_simple(a, b)

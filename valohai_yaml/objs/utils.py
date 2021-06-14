@@ -1,8 +1,23 @@
-def consume_array_of(source, key, type):
+from collections import OrderedDict
+from typing import Any, Dict, List, Type, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from valohai_yaml.objs.base import Item
+
+
+# TODO: use TypeVar?
+def consume_array_of(source: Dict[str, Any], key: str, type: Type['Item']) -> List[Any]:
     return [type.parse(datum) for datum in source.pop(key, ())]
 
 
-def serialize_into(dest, key, value, flatten_dicts=False, elide_empty_iterables=False):
+def serialize_into(
+    dest: OrderedDict,
+    key: str,
+    value: Any,
+    *,
+    flatten_dicts: bool = False,
+    elide_empty_iterables: bool = False
+) -> None:
     if value is None:
         return
 
@@ -19,5 +34,5 @@ def serialize_into(dest, key, value, flatten_dicts=False, elide_empty_iterables=
     dest[key] = value
 
 
-def _serialize_if_able(v):
+def _serialize_if_able(v: Any) -> Any:
     return (v.serialize() if hasattr(v, 'serialize') else v)

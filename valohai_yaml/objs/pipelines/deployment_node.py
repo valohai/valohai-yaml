@@ -1,3 +1,7 @@
+from typing import List
+
+from valohai_yaml.lint import LintResult
+
 from .node import Node
 
 
@@ -9,10 +13,10 @@ class DeploymentNode(Node):
     def __init__(
         self,
         *,
-        name,
-        deployment,
-        endpoints=None,
-        aliases=None
+        name: str,
+        deployment: str,
+        endpoints: List[str] = None,
+        aliases: List[str] = None
     ) -> None:
         if aliases is None:
             aliases = []
@@ -23,7 +27,7 @@ class DeploymentNode(Node):
         self.endpoints = endpoints
         self.aliases = aliases
 
-    def lint(self, lint_result, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: dict) -> None:
         super().lint(lint_result, context)
 
         if not self.name:

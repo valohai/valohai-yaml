@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from .parameter import Parameter
 
@@ -6,7 +6,7 @@ from .parameter import Parameter
 class ParameterMap:
     """Container for an execution's parameters and the values assigned."""
 
-    def __init__(self, *, parameters: Dict[str, Parameter], values) -> None:
+    def __init__(self, *, parameters: Dict[str, Parameter], values: Dict[str, Any]) -> None:
         self.parameters = parameters
         self.values = values
 

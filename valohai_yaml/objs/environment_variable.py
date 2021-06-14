@@ -1,3 +1,5 @@
+from typing import Optional
+
 from .base import Item
 
 
@@ -7,11 +9,11 @@ class EnvironmentVariable(Item):
     def __init__(
         self,
         *,
-        name,
-        default=None,
-        optional=True,
-        description=None
-    ):
+        name: str,
+        default: Optional[str] = None,
+        optional: bool = True,
+        description: Optional[str] = None
+    ) -> None:
         self.name = name
         self.default = default  # may be None or a string
         self.optional = bool(optional)

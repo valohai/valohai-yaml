@@ -9,9 +9,9 @@ class Mount(Item):
     def __init__(
         self,
         *,
-        source,
-        destination,
-        readonly=False,
+        source: str,
+        destination: str,
+        readonly: bool = False,
         type: Optional[str] = None,
         options: Optional[dict] = None
     ) -> None:

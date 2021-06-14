@@ -1,20 +1,25 @@
 import copy
+from typing import Any, Callable, List, MutableMapping, TypeVar
 
 MISSING = object()
 
+TMerge = TypeVar('TMerge')
+TCopy = TypeVar('TCopy')
+TD = TypeVar('TD', bound=MutableMapping)
+
 
 def merge_dicts(
-    a: dict,
-    b: dict,
-    merger,
-    copier=lambda v: v,
+    a: TD,
+    b: TD,
+    merger: Callable[[TMerge, TMerge], TMerge],
+    copier: Callable[[TCopy], TCopy] = lambda v: v,
     skip_missing_a: bool = False,
     skip_missing_b: bool = False
-) -> dict:
-    out = type(a)()
+) -> TD:
+    out = type(a)()  # type: TD
 
     # Hack to keep the iteration order the same...
-    keys = list(a)
+    keys = list(a)  # type: List[Any]
     key_set = set(keys)
     keys += [k for k in b if k not in key_set]
 
@@ -32,7 +37,7 @@ def merge_dicts(
     return out
 
 
-def merge_simple(a, b):
+def merge_simple(a: TMerge, b: TMerge) -> TMerge:
     a = copy.deepcopy(a)
     a.__dict__.update(copy.deepcopy(b).__dict__)
     return a

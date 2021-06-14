@@ -1,3 +1,4 @@
+from ...lint import LintResult
 from .node import Node
 
 
@@ -9,9 +10,9 @@ class ExecutionNode(Node):
     def __init__(
         self,
         *,
-        name,
-        step,
-        override=None
+        name: str,
+        step: str,
+        override: dict = None
     ) -> None:
         if override is None:
             override = {}
@@ -19,7 +20,7 @@ class ExecutionNode(Node):
         self.step = step
         self.override = override
 
-    def lint(self, lint_result, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: dict) -> None:
         super().lint(lint_result, context)
         config = context['config']
         pipeline = context['pipeline']

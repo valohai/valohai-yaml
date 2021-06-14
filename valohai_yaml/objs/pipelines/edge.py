@@ -1,6 +1,10 @@
-from typing import List, Union
+from typing import List, Optional, TYPE_CHECKING, Union
 
 from valohai_yaml.excs import ValidationError
+from valohai_yaml.lint import LintResult
+
+if TYPE_CHECKING:
+    from valohai_yaml.objs import Pipeline
 
 from ..base import Item
 
@@ -15,7 +19,13 @@ edge_types = {'input', 'output', 'parameter', 'metadata', 'file'}
 class Edge(Item):
     """Represents an edge within a pipeline definition."""
 
-    def __init__(self, *, source: str, target: str, configuration=None) -> None:
+    def __init__(
+        self,
+        *,
+        source: str,
+        target: str,
+        configuration: Optional[dict] = None
+    ) -> None:
         if configuration is None:
             configuration = {}
         self.source = source
@@ -53,8 +63,8 @@ class Edge(Item):
             'configuration': self.configuration,
         }
 
-    def lint(self, lint_result, context) -> None:
-        pipeline = context['pipeline']
+    def lint(self, lint_result: LintResult, context: dict) -> None:
+        pipeline = context['pipeline']  # type: Pipeline
         node_map = pipeline.node_map
         if self.source_node not in node_map:
             lint_result.add_error(
