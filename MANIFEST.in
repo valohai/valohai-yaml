@@ -1,2 +1,3 @@
 recursive-include valohai_yaml *.json
 recursive-include valohai_yaml *.yaml
+recursive-include valohai_yaml py.typed
