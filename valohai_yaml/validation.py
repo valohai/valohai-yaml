@@ -24,7 +24,7 @@ class LocalRefResolver(RefResolver):
         if local_match:
             schema = get_schema(name=local_match.group(1))
             self.store[url] = schema
-            return schema
+            return schema  # noqa: R504
         raise NotImplementedError('remote URL resolution is not supported for security reasons')  # pragma: no cover
 
 

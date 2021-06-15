@@ -4,7 +4,7 @@ from ..objs.utils import serialize_into
 from ..utils.merge import merge_simple
 
 
-class Item(object):
+class Item:
     """
     Base class for all objects represented in a valohai.yaml file.
 

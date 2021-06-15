@@ -177,8 +177,7 @@ class Parameter(Item):
             return None
         elif not self.multiple:
             return _format_atom(value)
-        else:
-            raise NotImplementedError('unknown multiple type %r' % self.multiple)
+        raise NotImplementedError('unknown multiple type %r' % self.multiple)
 
     def lint(
         self,
