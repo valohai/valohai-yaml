@@ -1,5 +1,4 @@
 import copy
-from collections import OrderedDict
 from itertools import chain
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
@@ -11,6 +10,7 @@ from .base import Item
 from .endpoint import Endpoint
 from .pipelines.pipeline import Pipeline
 from .step import Step
+from .utils import check_type_and_dictify
 
 
 class Config(Item):
@@ -26,12 +26,9 @@ class Config(Item):
         endpoints: Iterable[Endpoint] = (),
         pipelines: Iterable[Pipeline] = ()
     ) -> None:
-        assert all(isinstance(step, Step) for step in steps)
-        self.steps = OrderedDict((step.name, step) for step in steps)
-        assert all(isinstance(endpoint, Endpoint) for endpoint in endpoints)
-        self.endpoints = OrderedDict((endpoint.name, endpoint) for endpoint in endpoints)
-        assert all(isinstance(pipeline, Pipeline) for pipeline in pipelines)
-        self.pipelines = OrderedDict((pipeline.name, pipeline) for pipeline in pipelines)
+        self.steps = check_type_and_dictify(steps, Step, 'name')
+        self.endpoints = check_type_and_dictify(endpoints, Endpoint, 'name')
+        self.pipelines = check_type_and_dictify(pipelines, Pipeline, 'name')
 
     @classmethod
     def parse(cls, data: Any) -> 'Config':
