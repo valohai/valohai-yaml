@@ -1,0 +1,5 @@
+-r ./requirements-test.in
+flake8
+isort
+pydocstyle
+pip-tools

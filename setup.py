@@ -6,14 +6,6 @@ import setuptools
 with open(os.path.join(os.path.dirname(__file__), 'valohai_yaml', '__init__.py')) as infp:
     version = ast.literal_eval(re.search('__version__ = (.+?)$', infp.read(), re.M).group(1))
 
-dev_dependencies = [
-    'flake8',
-    'isort',
-    'pydocstyle',
-    'pytest-cov',
-    'pytest>=6.0',
-]
-
 if __name__ == '__main__':
     setuptools.setup(
         name='valohai-yaml',
@@ -26,8 +18,6 @@ if __name__ == '__main__':
         maintainer_email='akx@iki.fi',
         license='MIT',
         install_requires=['jsonschema', 'PyYAML'],
-        tests_require=dev_dependencies,
-        extras_require={'dev': dev_dependencies},
         packages=setuptools.find_packages('.', exclude=('*tests*',)),
         include_package_data=True,
         entry_points={
