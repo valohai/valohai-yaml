@@ -1,7 +1,19 @@
 from typing import Iterable, List, Set, Union
 
+from ...lint import LintResult
 from ...utils import listify
 from ..base import Item
+
+WELL_KNOWN_WHENS = {
+    'node-complete',  # Node completed (successfully)
+    'node-starting',  # Node about to start
+    'node-error',  # Node errored
+}
+
+WELL_KNOWN_THENS = {
+    'noop',  # For testing
+    'stop-pipeline',
+}
 
 
 class NodeAction(Item):
@@ -27,4 +39,18 @@ class NodeAction(Item):
     def get_data(self) -> dict:
         data = super().get_data()
         data['if'] = data.pop('if_')
+        data['when'] = sorted(data.pop('when'))
         return data
+
+    def lint(self, lint_result: LintResult, context: dict) -> None:
+        super().lint(lint_result, context)
+        for when in self.when:
+            if when not in WELL_KNOWN_WHENS:
+                lint_result.add_warning(
+                    '"when" value {when} is not well-known; the action might never be triggered'.format(when=self.when)
+                )
+        for then in self.then:
+            if then not in WELL_KNOWN_THENS:
+                lint_result.add_warning(
+                    '"then" value {then} is not well-known; the action might do nothing'.format(then=self.then)
+                )

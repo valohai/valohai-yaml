@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from ...lint import LintResult
+from ...utils.lint import lint_iterables
 from ..base import Item
 from ..utils import check_type_and_listify, consume_array_of
 from .node_action import NodeAction
@@ -44,3 +46,10 @@ class Node(Item):
         ser = super().serialize()
         ser['type'] = self.type
         return ser
+
+    def lint(self, lint_result: LintResult, context: dict) -> None:
+        super().lint(lint_result, context)
+        context = dict(context, node=self)
+        lint_iterables(lint_result, context, (
+            self.actions,
+        ))
