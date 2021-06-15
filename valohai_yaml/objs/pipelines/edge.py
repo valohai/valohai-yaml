@@ -1,7 +1,8 @@
 from typing import List, Union
 
-from ..base import Item
 from valohai_yaml.excs import ValidationError
+
+from ..base import Item
 
 
 def _split_prop(prop: str) -> List[str]:

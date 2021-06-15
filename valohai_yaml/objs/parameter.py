@@ -1,8 +1,9 @@
 from enum import Enum
 from typing import List, Optional, Union
 
-from valohai_yaml.utils import listify
 from valohai_yaml.excs import ValidationErrors
+from valohai_yaml.utils import listify
+
 from .base import Item
 
 
