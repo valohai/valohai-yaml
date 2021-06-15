@@ -159,7 +159,6 @@ class Parameter(Item):
         Build a parameter argument (or multiple, if this is a multi-valued parameter).
 
         :return: list of CLI strings -- not escaped. If the parameter should not be expressed, returns None.
-        :rtype: list[str]|None
         """
         pass_as_template = self._get_pass_as_template(value)
         if not pass_as_template:

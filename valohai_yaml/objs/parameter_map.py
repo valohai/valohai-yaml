@@ -15,7 +15,6 @@ class ParameterMap:
         Build the CLI command line from the parameter values.
 
         :return: list of CLI strings -- not escaped!
-        :rtype: list[str]
         """
         param_bits = []
         for name in self.parameters:

@@ -45,7 +45,6 @@ def lint_file(file_path: str) -> LintResult:
     Validate & lint `file_path` and return a LintResult.
 
     :param file_path: YAML filename
-    :type file_path: str
     :return: LintResult object
     """
     with open(file_path) as yaml:
