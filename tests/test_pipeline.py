@@ -29,12 +29,12 @@ def test_pipeline(pipeline_config: Config):
     )
     dp = pipeline_config.pipelines["My deployment pipeline"]
 
-    dn_predict = [node for node in dp.nodes if node.type == 'deployment' and node.name == 'deploy-predictor'][0]
+    dn_predict = dp.get_node_by(name='deploy-predictor')
     assert isinstance(dn_predict, DeploymentNode)
     assert "predictor-staging" in dn_predict.aliases
     assert "predict-digit" in dn_predict.endpoints
 
-    dn_no_preset = [node for node in dp.nodes if node.type == 'deployment' and node.name == 'deploy-no-presets'][0]
+    dn_no_preset = dp.get_node_by(name='deploy-no-presets')
     assert isinstance(dn_no_preset, DeploymentNode)
     assert dn_no_preset.aliases == []
     assert dn_no_preset.endpoints == []
