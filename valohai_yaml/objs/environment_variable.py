@@ -2,6 +2,7 @@ from .base import Item
 
 
 class EnvironmentVariable(Item):
+    """An environment variable item (within executions)."""
 
     def __init__(
         self,

@@ -2,6 +2,8 @@ from ..base import Item
 
 
 class Node(Item):
+    """Generic node base class."""
+
     type = None  # must be set in subclasses
 
     @classmethod

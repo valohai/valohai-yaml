@@ -4,10 +4,11 @@ import jsonschema
 
 
 class ValidationError(ValueError):
-    pass
+    """Generic validation error."""
 
 
 class ValidationErrors(ValidationError):
+    """Wrapper for multiple validation errors."""
 
     def __init__(self, errors: List[Union[str, jsonschema.ValidationError]]) -> None:
         self.errors = errors
@@ -19,4 +20,5 @@ class ValidationErrors(ValidationError):
         )
 
     def __iter__(self):
+        """Iterate over the errors contained within."""
         return iter(self.errors)

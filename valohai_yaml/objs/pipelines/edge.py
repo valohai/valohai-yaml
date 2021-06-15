@@ -13,6 +13,8 @@ edge_types = {'input', 'output', 'parameter', 'metadata', 'file'}
 
 
 class Edge(Item):
+    """Represents an edge within a pipeline definition."""
+
     def __init__(self, *, source: str, target: str, configuration=None) -> None:
         if configuration is None:
             configuration = {}

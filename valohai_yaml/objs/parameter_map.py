@@ -4,6 +4,8 @@ from .parameter import Parameter
 
 
 class ParameterMap:
+    """Container for an execution's parameters and the values assigned."""
+
     def __init__(self, *, parameters: Dict[str, Parameter], values) -> None:
         self.parameters = parameters
         self.values = values

@@ -15,6 +15,7 @@ from .utils import consume_array_of, serialize_into
 
 
 class Step(Item):
+    """Represents an execution step definition."""
 
     def __init__(
         self,
@@ -79,10 +80,7 @@ class Step(Item):
         return val
 
     def get_parameter_defaults(self, include_flags: bool = True) -> Dict[str, Union[str, int]]:
-        """
-        Get a dict mapping parameter names to their defaults (if set).
-        :rtype: dict[str, object]
-        """
+        """Get a dict mapping parameter names to their defaults (if set)."""
         return {
             name: parameter.default
             for (name, parameter)

@@ -10,12 +10,11 @@ class Item:
 
     Provides basic parsing and serialization.
     """
+
     _original_data = None  # Possible original data dict this object was parsed from
 
     def get_data(self) -> dict:
-        """
-        Get data for serialization.
-        """
+        """Get the object's data for serialization."""
         data = vars(self).copy()
         data.pop('_original_data', None)
         return data

@@ -14,9 +14,8 @@ SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
 
 
 class LocalRefResolver(RefResolver):
-    """
-    Loads relative URLs (as it were) from the `schema` directory.
-    """
+    """Loads relative URLs (as it were) from the `schema` directory."""
+
     local_scope_re = re.compile(r'^https?://valohai.com/(.+\.json)$')
 
     def resolve_from_url(self, url: str) -> dict:

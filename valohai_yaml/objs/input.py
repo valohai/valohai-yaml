@@ -4,6 +4,8 @@ from .base import Item
 
 
 class KeepDirectories(Enum):
+    """How to retain directories when using storage wildcards."""
+
     NONE = 'none'
     SUFFIX = 'suffix'
     FULL = 'full'
@@ -18,6 +20,7 @@ class KeepDirectories(Enum):
 
 
 class Input(Item):
+    """Represents an input definition within a step definition."""
 
     def __init__(
         self,

@@ -4,6 +4,8 @@ from .base import Item
 
 
 class Mount(Item):
+    """Represents a mount definition within a step definition."""
+
     def __init__(
         self,
         *,

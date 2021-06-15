@@ -7,6 +7,7 @@ from .node import Node
 
 
 class Pipeline(Item):
+    """Represents a definition of a pipeline, containing nodes and edges."""
 
     def __init__(
         self,
