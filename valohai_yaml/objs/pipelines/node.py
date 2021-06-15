@@ -53,3 +53,9 @@ class Node(Item):
         lint_iterables(lint_result, context, (
             self.actions,
         ))
+
+    def __repr__(self) -> str:  # noqa: D105
+        return '<{type} Node "{name}">'.format(
+            type=self.type.title(),
+            name=self.name,
+        )
