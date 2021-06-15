@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from ..commands import build_command
 from ..utils.lint import lint_iterables
-from ..utils.merge import merge_simple, merge_dicts
+from ..utils.merge import merge_dicts, merge_simple
 from .base import Item
 from .environment_variable import EnvironmentVariable
 from .input import Input

@@ -3,8 +3,8 @@ from collections import OrderedDict
 from itertools import chain
 from typing import Any, Optional
 
-from ..utils.merge import merge_simple, merge_dicts
 from ..utils.lint import lint_iterables
+from ..utils.merge import merge_dicts, merge_simple
 from .base import Item
 from .endpoint import Endpoint
 from .pipelines.pipeline import Pipeline

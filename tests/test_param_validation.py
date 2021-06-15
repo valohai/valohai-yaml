@@ -1,7 +1,7 @@
 import pytest
 
-from valohai_yaml.objs import Parameter
 from valohai_yaml import ValidationErrors
+from valohai_yaml.objs import Parameter
 
 
 @pytest.mark.parametrize('case', (-5, 15))
