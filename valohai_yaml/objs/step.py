@@ -88,10 +88,6 @@ class Step(Item):
             if parameter.default is not None and (include_flags or parameter.type != 'flag')
         }
 
-    def build_parameters(self, param_values):  # pragma: no cover
-        # TODO: Legacy; no longer used internally. Remove at 1.0.
-        return ParameterMap(self.parameters, param_values).build_parameters()
-
     def build_command(
         self,
         parameter_values: Dict[str, Any],
