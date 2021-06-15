@@ -11,13 +11,13 @@ from valohai_yaml.__main__ import main
 
 @pytest.mark.parametrize('good_example_path', glob.glob(os.path.join(examples_path, '*.yaml')))
 def test_good_examples_cli(good_example_path):
-    "Test that known-good files validate via the CLI."
+    """Test that known-good files validate via the CLI."""
     assert main([good_example_path]) == 0
 
 
 @pytest.mark.parametrize('bad_example_path', glob.glob(os.path.join(error_examples_path, '*.yaml')))
 def test_bad_examples_cli(capsys, bad_example_path):
-    "Test that bad examples don't validate via the CLI."
+    """Test that bad examples don't validate via the CLI."""
     assert main([bad_example_path]) == 1
     out, err = capsys.readouterr()
     assert out
@@ -25,7 +25,7 @@ def test_bad_examples_cli(capsys, bad_example_path):
 
 @pytest.mark.parametrize('yaml_path', glob.glob(os.path.join(warning_examples_path, '*.yaml')))
 def test_warning_examples_cli(capsys, yaml_path):
-    "Test that warning examples don't validate via the CLI in strict mode."
+    """Test that warning examples don't validate via the CLI in strict mode."""
     assert main(['--strict-warnings', yaml_path]) == 1
     out, err = capsys.readouterr()
     assert out
@@ -48,12 +48,12 @@ def test_invalid_file_too_long_input_name_cli(capsys):
 
 
 def test_bytes_validation():
-    "Test that you can pass in bytestring YAML and validate it."
+    """Test that you can pass in bytestring YAML and validate it."""
     assert not validate(valid_bytes)
 
 
 def test_popo_validation():
-    "Test that you can pass in pre-parsed data and validate it."
+    """Test that you can pass in pre-parsed data and validate it."""
     # (POPO: Plain Old Python Object.)
     assert not validate(valid_obj)
 
