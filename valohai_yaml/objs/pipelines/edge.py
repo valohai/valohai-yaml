@@ -41,7 +41,7 @@ class Edge(Item):
             if len(data) != 2:
                 raise ValidationError('Malformed edge shorthand {}'.format(data))
             data = {'source': data[0], 'target': data[1]}
-        return super(Edge, cls).parse(data)
+        return super().parse(data)
 
     def get_data(self) -> dict:
         return {

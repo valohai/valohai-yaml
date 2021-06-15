@@ -9,9 +9,13 @@ class DeploymentNode(Node):
         *,
         name,
         deployment,
-        endpoints=[],
-        aliases=[]
+        endpoints=None,
+        aliases=None
     ) -> None:
+        if aliases is None:
+            aliases = []
+        if endpoints is None:
+            endpoints = []
         self.name = name
         self.deployment = deployment
         self.endpoints = endpoints

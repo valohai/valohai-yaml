@@ -28,7 +28,7 @@ class Pipeline(Item):
         data = data.copy()
         data['edges'] = [Edge.parse(e) for e in data.pop('edges', ())]
         data['nodes'] = [Node.parse_qualifying(n) for n in data.pop('nodes', ())]
-        return super(Pipeline, cls).parse(data)
+        return super().parse(data)
 
     def lint(self, lint_result, context: dict) -> None:
         context = dict(context, pipeline=self)

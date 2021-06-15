@@ -48,7 +48,7 @@ def lint_file(file_path: str) -> LintResult:
     :return: LintResult object
     """
 
-    with open(file_path, 'r') as yaml:
+    with open(file_path) as yaml:
         try:
             return lint(yaml)
         except Exception as e:

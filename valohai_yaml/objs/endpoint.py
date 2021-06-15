@@ -31,4 +31,4 @@ class Endpoint(Item):
     def parse(cls, kwargs: Dict[str, Union[str, List[Dict[str, str]], int]]) -> 'Endpoint':
         kwargs = kwargs.copy()
         kwargs['files'] = [File.parse(f) for f in kwargs.pop('files', ())]
-        return super(Endpoint, cls).parse(kwargs)
+        return super().parse(kwargs)

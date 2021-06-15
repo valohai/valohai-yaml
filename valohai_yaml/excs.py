@@ -11,7 +11,7 @@ class ValidationErrors(ValidationError):
 
     def __init__(self, errors: List[Union[str, jsonschema.ValidationError]]) -> None:
         self.errors = errors
-        super(ValidationErrors, self).__init__(
+        super().__init__(
             '%d errors: %s' % (
                 len(errors),
                 ', '.join(getattr(e, 'message', e) for e in self.errors)

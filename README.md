@@ -53,6 +53,6 @@ print(config.steps['cool step'].command)
 # Development
 
 ```bash
-pip install -e .[dev]
+pip install -e . -r requirements-dev.txt
 pytest
 ```
