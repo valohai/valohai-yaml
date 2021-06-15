@@ -1,4 +1,8 @@
+from typing import List, Optional
+
 from ..base import Item
+from ..utils import check_type_and_listify, consume_array_of
+from .node_action import NodeAction
 
 
 class Node(Item):
@@ -11,6 +15,19 @@ class Node(Item):
     # TODO: change to a type annotation when dropping py3.5
     name = None  # type: str
 
+    # `actions` will be set on instance level in subclasses
+    # TODO: change to a type annotation when dropping py3.5
+    actions = None  # type: List[NodeAction]
+
+    def __init__(
+        self,
+        *,
+        name: str,
+        actions: Optional[List[NodeAction]] = None
+    ) -> None:
+        self.name = name
+        self.actions = check_type_and_listify(actions, NodeAction)
+
     @classmethod
     def parse_qualifying(cls, data: dict) -> 'Node':
         node_type_map = {
@@ -20,6 +37,7 @@ class Node(Item):
         }
         data = data.copy()
         subcls = node_type_map[data.pop('type')]
+        data['actions'] = consume_array_of(data, 'actions', NodeAction)
         return subcls.parse(data)
 
     def serialize(self) -> dict:

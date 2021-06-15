@@ -16,6 +16,10 @@ properties:
     type: array
     items:
       type: string
+  actions:
+    type: array
+    items:
+      "$ref": "./node-action.json"
 required:
   - name
   - deployment

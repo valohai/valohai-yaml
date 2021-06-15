@@ -1,0 +1,15 @@
+type: object
+additionalProperties: false
+properties:
+  when: &string-or-stringlist
+    oneOf:
+      - type: string
+      - type: array
+        items:
+          type: string
+  if: *string-or-stringlist
+  then: *string-or-stringlist
+required:
+  - when
+  - then
+title: NodeAction

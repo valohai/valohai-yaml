@@ -49,3 +49,26 @@ def test_medium_pipeline(pipeline_config: Config):
         (edge.source_type == "output" and edge.source_key == "model.pb")
         for edge in pipeline_config.pipelines["My medium pipeline"].edges
     )
+
+
+def test_action_pipeline(pipeline_config: Config):
+    pl = pipeline_config.pipelines["Last action pipeline"]
+    train_node = pl.get_node_by(name='train')
+    assert train_node
+    assert train_node.actions[0].get_data() == {
+        'if': ['metadata.accuracy < .8'],
+        'then': ['stop-pipeline'],
+        'when': ['node-complete'],
+    }
+    validate_node = pl.get_node_by(name='validate')
+    assert validate_node
+    assert validate_node.actions[0].get_data() == {
+        'if': [],
+        'then': ['noop', 'noop', 'noop'],
+        'when': ['node-complete'],
+    }
+    assert validate_node.actions[1].get_data() == {
+        'if': ['a', 'b', 'c'],
+        'then': ['noop'],
+        'when': ['node-complete', 'node-starting'],
+    }
