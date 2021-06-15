@@ -5,6 +5,7 @@ from .file import File
 
 
 class Endpoint(Item):
+    """Represents a deployment endpoint."""
 
     def __init__(
         self,

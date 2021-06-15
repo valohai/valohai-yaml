@@ -8,6 +8,8 @@ from .base import Item
 
 
 class MultipleMode(Enum):
+    """How to serialize multiple values given for a parameter."""
+
     SEPARATE = 'separate'
     REPEAT = 'repeat'
 
@@ -26,6 +28,7 @@ ValueType = Union[List[ValueAtomType], ValueAtomType]
 
 
 class Parameter(Item):
+    """Represents a parameter definition within an execution step definition."""
 
     def __init__(
         self,

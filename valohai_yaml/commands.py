@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class CommandInterpolationWarning(UserWarning):
-    pass
+    """Warning issued when command interpolation fails."""
 
 
 interpolable_re = re.compile(r'{(.+?)}')
@@ -58,7 +58,6 @@ def build_command(
     :return: list of commands
     :rtype: list[str]
     """
-
     if isinstance(parameter_map, list):
         raise TypeError("Passing in lists as ParameterMaps is no longer supported.")
 

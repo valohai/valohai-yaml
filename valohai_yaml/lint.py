@@ -10,6 +10,8 @@ from valohai_yaml.validation import get_validator
 
 
 class LintResult:
+    """Container for lint results."""
+
     def __init__(self) -> None:
         self.messages = []
 
@@ -47,7 +49,6 @@ def lint_file(file_path: str) -> LintResult:
     :type file_path: str
     :return: LintResult object
     """
-
     with open(file_path) as yaml:
         try:
             return lint(yaml)

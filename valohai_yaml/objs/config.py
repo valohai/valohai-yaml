@@ -12,9 +12,7 @@ from .step import Step
 
 
 class Config(Item):
-    """
-    Represents a `valohai.yaml` file.
-    """
+    """Represents a `valohai.yaml` file."""
 
     # Warnings that may be stuck on the top-level config during its parsing.
     _parse_warnings = None
@@ -158,7 +156,7 @@ class Config(Item):
         )
         return result
 
-    def __repr__(self):  # pragma: no cover
+    def __repr__(self):  # pragma: no cover  # noqa: D105
         return '<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>' % (
             len(self.steps),
             sorted(self.steps),

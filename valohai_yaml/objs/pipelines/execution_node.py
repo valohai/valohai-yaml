@@ -2,6 +2,8 @@ from .node import Node
 
 
 class ExecutionNode(Node):
+    """Represents an execution node within a pipeline definition."""
+
     type = 'execution'
 
     def __init__(

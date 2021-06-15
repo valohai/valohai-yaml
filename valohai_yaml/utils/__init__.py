@@ -11,7 +11,7 @@ def read_yaml(yaml):
 
 def listify(value) -> list:
     """
-    Wrap the given value into a list, with the below provisions:
+    Wrap the given value into a list, with provisions outlined below.
 
     * If the value is a list or a tuple, it's coerced into a new list.
     * If the value is None, an empty list is returned.

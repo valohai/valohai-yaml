@@ -2,6 +2,8 @@ from .node import Node
 
 
 class DeploymentNode(Node):
+    """Represents a deployment node within a pipeline definition."""
+
     type = 'deployment'
 
     def __init__(

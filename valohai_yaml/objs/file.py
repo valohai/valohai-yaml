@@ -2,6 +2,7 @@ from .base import Item
 
 
 class File(Item):
+    """Represents a file within a deployment endpoint."""
 
     def __init__(
         self,
