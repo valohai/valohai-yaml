@@ -1,9 +1,11 @@
 from valohai_yaml.objs import Config, DeploymentNode
 
 
-def test_pipeline(pipeline_config: Config):
-    lr = pipeline_config.lint()
-    assert lr.is_valid()
+def test_pipeline_valid(pipeline_config: Config):
+    assert pipeline_config.lint().is_valid()
+
+
+def test_little_pipeline(pipeline_config: Config):
     assert any(
         (
             edge.source_node == "batch1"
@@ -16,6 +18,9 @@ def test_pipeline(pipeline_config: Config):
         for edge in pipeline_config.pipelines["My little pipeline"].edges
     )
 
+
+def test_deployment_pipeline(pipeline_config: Config):
+    dp = pipeline_config.pipelines["My deployment pipeline"]
     assert any(
         (
             edge.source_node == "train"
@@ -25,9 +30,8 @@ def test_pipeline(pipeline_config: Config):
             and edge.target_type == "file"
             and edge.target_key == "predict-digit.model"
         )
-        for edge in pipeline_config.pipelines["My deployment pipeline"].edges
+        for edge in dp.edges
     )
-    dp = pipeline_config.pipelines["My deployment pipeline"]
 
     dn_predict = dp.get_node_by(name='deploy-predictor')
     assert isinstance(dn_predict, DeploymentNode)
@@ -39,6 +43,8 @@ def test_pipeline(pipeline_config: Config):
     assert dn_no_preset.aliases == []
     assert dn_no_preset.endpoints == []
 
+
+def test_medium_pipeline(pipeline_config: Config):
     assert any(
         (edge.source_type == "output" and edge.source_key == "model.pb")
         for edge in pipeline_config.pipelines["My medium pipeline"].edges
