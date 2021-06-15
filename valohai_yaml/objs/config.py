@@ -39,9 +39,7 @@ class Config(Item):
         Parse a Config structure out of a Python dict (that's likely deserialized from YAML).
 
         :param data: Config-y dict
-        :type data: dict
         :return: Config object
-        :rtype: valohai_yaml.objs.Config
         """
         parsers = cls.get_top_level_parsers()
         parse_warnings = []
@@ -127,7 +125,6 @@ class Config(Item):
 
         :param kwargs:
         :return: Step object or None
-        :rtype: valohai_yaml.objs.Step|None
         """
         if not kwargs:
             return None

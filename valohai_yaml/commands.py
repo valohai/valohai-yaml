@@ -51,12 +51,9 @@ def build_command(
     likely using the semicolon or double ampersands.
 
     :param command: The command to interpolate params into.
-    :type command: str|list[str]
     :param parameter_map: A ParameterMap object containing parameter knowledge.
-    :type parameter_map: valohai_yaml.objs.parameter_map.ParameterMap
 
     :return: list of commands
-    :rtype: list[str]
     """
     if isinstance(parameter_map, list):
         raise TypeError("Passing in lists as ParameterMaps is no longer supported.")

@@ -21,7 +21,6 @@ def listify(value: Any) -> list:
 
     :param value: A value.
     :return: a list!
-    :rtype: list
     """
     if value is None:
         return []

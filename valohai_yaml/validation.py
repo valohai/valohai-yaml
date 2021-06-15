@@ -53,11 +53,8 @@ def validate(yaml: Union[dict, list, bytes, str, IO], raise_exc: bool = True) ->
     Validate the given YAML document and return a list of errors.
 
     :param yaml: YAML data (either a string, a stream, or pre-parsed Python dict/list)
-    :type yaml: list|dict|str|file
     :param raise_exc: Whether to raise a meta-exception containing all discovered errors after validation.
-    :type raise_exc: bool
     :return: A list of errors encountered.
-    :rtype: list[jsonschema.exceptions.ValidationError]
     """
     data = read_yaml(yaml)
     validator = get_validator()

@@ -106,11 +106,8 @@ class Step(Item):
         It is also possible to override the `command`.
 
         :param parameter_values: Parameter values to augment any parameter defaults.
-        :type parameter_values: dict[str, object]
         :param command: Overriding command; leave falsy to not override.
-        :type command: str|list[str]|None
         :return: list of commands
-        :rtype: list[str]
         """
         command = (command or self.command)
 
