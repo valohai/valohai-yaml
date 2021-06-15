@@ -37,7 +37,7 @@ def get_schema(name: str) -> dict:
         (yaml_filename, yaml.safe_load),
     ]:
         if os.path.isfile(filename):
-            with open(filename, 'r', encoding='utf-8') as infp:
+            with open(filename, encoding='utf-8') as infp:
                 return loader(infp)
     raise ValueError('unable to read schema %s' % name)  # pragma: no cover
 

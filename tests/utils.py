@@ -7,7 +7,7 @@ from valohai_yaml import parse
 
 
 def _load_config(filename, roundtrip):
-    with open(os.path.join(examples_path, filename), 'r') as infp:
+    with open(os.path.join(examples_path, filename)) as infp:
         config = parse(infp)
     if roundtrip:
         config = parse(config.serialize())

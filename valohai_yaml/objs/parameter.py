@@ -65,7 +65,7 @@ class Parameter(Item):
             self.pass_true_as = self.pass_false_as = None
 
     def get_data(self) -> dict:
-        data = super(Parameter, self).get_data()
+        data = super().get_data()
         if self.type == 'flag':
             data.pop('optional', None)
             data.pop('choices', None)
