@@ -13,7 +13,7 @@ from .input import Input
 from .mount import Mount
 from .parameter import Parameter
 from .parameter_map import ParameterMap
-from .utils import consume_array_of, serialize_into
+from .utils import check_type_and_dictify, check_type_and_listify, consume_array_of, serialize_into
 
 
 class Step(Item):
@@ -40,17 +40,10 @@ class Step(Item):
         self.environment = (str(environment) if environment else None)
 
         self.outputs = list(outputs)  # TODO: Improve handling
-
-        assert all(isinstance(m, Mount) for m in mounts)
-        self.mounts = list(mounts)
-
-        assert all(isinstance(i, Input) for i in inputs)
-        self.inputs = OrderedDict((input.name, input) for input in inputs)
-
-        assert all(isinstance(p, Parameter) for p in parameters)
-        self.parameters = OrderedDict((param.name, param) for param in parameters)
-
-        self.environment_variables = OrderedDict((ev.name, ev) for ev in environment_variables)
+        self.mounts = check_type_and_listify(mounts, Mount)
+        self.inputs = check_type_and_dictify(inputs, Input, 'name')
+        self.parameters = check_type_and_dictify(parameters, Parameter, 'name')
+        self.environment_variables = check_type_and_dictify(environment_variables, EnvironmentVariable, 'name')
 
     @classmethod
     def parse(cls, data: Dict[str, Any]) -> 'Step':

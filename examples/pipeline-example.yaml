@@ -101,6 +101,32 @@
       - source: batch2.input.training-labels*
         target: train.input.training-labels
       - [train.output.model.pb, test.input.model]
+- pipeline:
+    name: Last action pipeline
+    nodes:
+      - name: train
+        type: execution
+        step: Train model
+        actions:
+          - when: node-complete
+            if: "metadata.accuracy < .8"
+            then: stop-pipeline
+      - name: validate
+        type: execution
+        step: Test model
+        actions:
+          - when: node-complete
+            then:
+            - noop
+            - noop
+            - noop
+          - when:
+            - node-starting
+            - node-complete
+            if: [a, b, c]
+            then: noop
+    edges:
+      - [train.output.model, validate.input.model]
 
 - endpoint:
     name: predict-digit

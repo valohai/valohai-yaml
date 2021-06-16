@@ -2,6 +2,7 @@ from typing import Any, Dict, Iterable, Optional, Union
 
 from .base import Item
 from .file import File
+from .utils import check_type_and_listify
 
 
 class Endpoint(Item):
@@ -24,10 +25,7 @@ class Endpoint(Item):
         self.port = port
         self.server_command = server_command
         self.wsgi = wsgi
-
-        files = list(files)  # Listify iterators
-        assert all(isinstance(f, File) for f in files)
-        self.files = files
+        self.files = check_type_and_listify(files, File)
 
     @classmethod
     def parse(cls, kwargs: Dict[str, Any]) -> 'Endpoint':

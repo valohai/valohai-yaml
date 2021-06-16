@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import List
+from typing import Any, List, Optional
 
 from valohai_yaml.lint import LintResult
 from valohai_yaml.utils.lint import lint_iterables
@@ -37,3 +37,13 @@ class Pipeline(Item):
     def lint(self, lint_result: LintResult, context: dict) -> None:
         context = dict(context, pipeline=self)
         lint_iterables(lint_result, context, (self.nodes, self.edges))
+
+    def get_node_by(self, **kwargs: Any) -> Optional[Node]:
+        """Get the first node that matches all the passed named arguments."""
+        if not kwargs:
+            return None
+        for node in self.nodes:
+            data = node.serialize()
+            if all(item in data.items() for item in kwargs.items()):
+                return node
+        return None

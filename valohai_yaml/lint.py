@@ -69,7 +69,7 @@ def lint(yaml: Union[dict, list, bytes, str, IO]) -> LintResult:
         simplified_schema_path = [
             el
             for el
-            in list(error.relative_schema_path)[:-1]
+            in list(error.relative_schema_path)
             if el not in ('properties', 'items')
         ]
         obj_path = [str(el) for el in error.path]

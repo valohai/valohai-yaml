@@ -8,6 +8,10 @@ properties:
     type: string
   step:
     type: string
+  actions:
+    type: array
+    items:
+      "$ref": "./node-action.json"
   override:
     # This is really Partial<Step>, but that's currently not expressible in JSON Schema.
     # TODO: add validation/lint in valohai-yaml that attempts to merge this override

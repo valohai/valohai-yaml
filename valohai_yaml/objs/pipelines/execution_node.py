@@ -1,5 +1,8 @@
+from typing import List, Optional
+
 from ...lint import LintResult
 from .node import Node
+from .node_action import NodeAction
 
 
 class ExecutionNode(Node):
@@ -12,11 +15,12 @@ class ExecutionNode(Node):
         *,
         name: str,
         step: str,
+        actions: Optional[List[NodeAction]] = None,
         override: dict = None
     ) -> None:
+        super().__init__(name=name, actions=actions)
         if override is None:
             override = {}
-        self.name = name
         self.step = step
         self.override = override
 
