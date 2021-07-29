@@ -38,7 +38,10 @@ class Edge(Item):
 
     @source.setter
     def source(self, prop: str) -> None:
-        self.source_node, self.source_type, self.source_key = _split_prop(prop)
+        split = _split_prop(prop)
+        if len(split) != 3:
+            raise ValidationError("Source specifier {!r} must have 3 parts (it has {})".format(prop, len(split)))
+        self.source_node, self.source_type, self.source_key = split
 
     @property
     def target(self) -> str:
@@ -46,7 +49,10 @@ class Edge(Item):
 
     @target.setter
     def target(self, prop: str) -> None:
-        self.target_node, self.target_type, self.target_key = _split_prop(prop)
+        split = _split_prop(prop)
+        if len(split) != 3:
+            raise ValidationError("Target specifier {!r} must have 3 parts (it has {})".format(prop, len(split)))
+        self.target_node, self.target_type, self.target_key = split
 
     @classmethod
     def parse(cls, data: Union[dict, list]) -> 'Edge':
