@@ -1,0 +1,29 @@
+---
+
+- endpoint:
+    name: Server-endpoint
+    image: python:3.6
+    port: 1453
+    server-command: python run_server.py
+
+- endpoint:
+    name: 3-server-endpoint
+    image: python:3.6
+    port: 1453
+    server-command: python run_server.py
+
+- endpoint:
+    name: server@endpoint
+    image: python:3.6
+    port: 1453
+    server-command: python run_server.py
+
+- endpoint:
+    name: wsgi_endpoint
+    description: predict digits from image inputs
+    image: tensorflow/tensorflow:1.3.0-py3
+    wsgi: predict_wsgi:predict_wsgi
+    files:
+      - name: model
+        description: Model output file from TensorFlow
+        path: model.pb

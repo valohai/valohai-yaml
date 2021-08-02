@@ -11,7 +11,8 @@ properties:
       Name of the endpoint, which is used as part of
       the URL (i.e. /project/version/name) of the deployed endpoint.
       Endpoint names must be lowercase, start with a letter and may contain letters,
-      numbers, dashes and underscores thereafter.
+      numbers and dashes thereafter.
+    pattern: "^[a-z][a-z0-9-]+$"
   description:
     type: string
   image:

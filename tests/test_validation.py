@@ -4,7 +4,7 @@ import os
 import pytest
 
 from tests.consts import error_examples_path, examples_path, invalid_obj, valid_bytes, valid_obj, warning_examples_path
-from tests.utils import get_error_example_path
+from tests.utils import get_error_example_path, get_valid_example_path
 from valohai_yaml import validate, ValidationErrors
 from valohai_yaml.__main__ import main
 
@@ -45,6 +45,20 @@ def test_invalid_file_too_long_input_name_cli(capsys):
     out, err = capsys.readouterr()
     assert "input-name-too-long.yaml" in out
     assert "'this-input-name-is-way-too-long-and-will-cause-the-validation-to-fail' is too long" in out
+
+
+def test_valid_endpoint_name_cli(capsys):
+    assert main([get_valid_example_path('endpoint-names-valid.yaml')]) == 0
+
+
+def test_invalid_endpoint_name_cli(capsys):
+    assert main([get_error_example_path('endpoint-names-invalid.yaml')]) == 1
+    out, err = capsys.readouterr()
+    assert "endpoint-names-invalid.yaml" in out
+    assert "'wsgi_endpoint' does not match '^[a-z][a-z0-9-]+$'" in out
+    assert "'server@endpoint' does not match '^[a-z][a-z0-9-]+$'" in out
+    assert "'3-server-endpoint' does not match '^[a-z][a-z0-9-]+$'" in out
+    assert "'Server-endpoint' does not match '^[a-z][a-z0-9-]+$'" in out
 
 
 def test_bytes_validation():

@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from tests.consts import error_examples_path, examples_path, warning_examples_path
+from tests.consts import error_examples_path, examples_path, valid_examples_path, warning_examples_path
 from valohai_yaml import parse
 
 
@@ -28,3 +28,7 @@ def get_error_example_path(filename):
 
 def get_warning_example_path(filename):
     return os.path.join(warning_examples_path, filename)
+
+
+def get_valid_example_path(filename):
+    return os.path.join(valid_examples_path, filename)
