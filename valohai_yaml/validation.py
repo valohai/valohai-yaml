@@ -1,11 +1,11 @@
 import json
 import os
 import re
+from functools import lru_cache
 from typing import IO, List, Union
 
 import yaml
 from jsonschema import Draft4Validator, RefResolver, ValidationError
-from jsonschema.compat import lru_cache
 
 from .excs import ValidationErrors
 from .utils import read_yaml
