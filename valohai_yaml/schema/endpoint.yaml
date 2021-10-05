@@ -41,6 +41,29 @@ properties:
       Specifies the WSGI application to serve (e.g. a Flask application).
       Specify the module (i.e. `package.app`) or
       the module and the WSGI callable (i.e. `package.app:wsgi_callable`).
+  resources:
+    type: object
+    description: Resource requirements and limits for the endpoint.
+    additionalProperties: false
+    properties:
+      cpu:
+        type: object
+        description: CPU resource requirements and limits in vCPU counts e.g. 0.1 is 10% of one CPU.
+        additionalProperties: false
+        properties:
+          min:
+            type: number
+          max:
+            type: number
+      memory:
+        type: object
+        description: Memory requirements and limits in MB e.g. 100 is 100 MB.
+        additionalProperties: false
+        properties:
+          min:
+            type: number
+          max:
+            type: number
 oneOf:
   - required:
       - server-command

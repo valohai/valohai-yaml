@@ -17,7 +17,8 @@ class Endpoint(Item):
         files: Iterable[File] = (),
         port: Optional[Union[str, int]] = None,
         server_command: Optional[str] = None,
-        wsgi: Optional[str] = None
+        wsgi: Optional[str] = None,
+        resources: Optional[Dict] = None
     ) -> None:
         self.name = name
         self.description = description
@@ -26,6 +27,7 @@ class Endpoint(Item):
         self.server_command = server_command
         self.wsgi = wsgi
         self.files = check_type_and_listify(files, File)
+        self.resources = resources
 
     @classmethod
     def parse(cls, kwargs: Dict[str, Any]) -> 'Endpoint':
