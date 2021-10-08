@@ -47,7 +47,7 @@ class Config(Item):
                     items.append(parse(datum[type]))
                     break
             else:
-                parse_warnings.append('No parser for {}'.format(datum))
+                parse_warnings.append(f'No parser for {datum}')
         inst = cls(
             steps=parsers['step'][0],
             endpoints=parsers['endpoint'][0],

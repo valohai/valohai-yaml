@@ -53,7 +53,4 @@ class Node(Item):
         ))
 
     def __repr__(self) -> str:  # noqa: D105
-        return '<{type} Node "{name}">'.format(
-            type=self.type.title(),
-            name=self.name,
-        )
+        return f'<{self.type.title()} Node "{self.name}">'

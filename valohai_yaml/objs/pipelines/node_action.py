@@ -47,10 +47,10 @@ class NodeAction(Item):
         for when in self.when:
             if when not in WELL_KNOWN_WHENS:
                 lint_result.add_warning(
-                    '"when" value {when} is not well-known; the action might never be triggered'.format(when=self.when)
+                    f'"when" value {self.when} is not well-known; the action might never be triggered'
                 )
         for then in self.then:
             if then not in WELL_KNOWN_THENS:
                 lint_result.add_warning(
-                    '"then" value {then} is not well-known; the action might do nothing'.format(then=self.then)
+                    f'"then" value {self.then} is not well-known; the action might do nothing'
                 )

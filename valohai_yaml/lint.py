@@ -52,7 +52,7 @@ def lint_file(file_path: str) -> LintResult:
             return lint(yaml)
         except Exception as e:
             lr = LintResult()
-            lr.add_error('could not parse YAML: %s' % e, exception=e)
+            lr.add_error(f'could not parse YAML: {e}', exception=e)
             return lr
 
 

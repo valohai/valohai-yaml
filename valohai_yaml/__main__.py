@@ -21,7 +21,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         warnings += result.warning_count
 
     if errors or warnings:
-        print('*** {} errors, {} warnings'.format(errors, warnings))
+        print(f'*** {errors} errors, {warnings} warnings')
 
     return 1 if errors or (args.strict_warnings and warnings) else 0
 
@@ -36,7 +36,7 @@ def process_file(file: str) -> LintResult:
         if not header_printed:
             print('>>>', file)
             header_printed = True
-        print('{}: {}'.format(item['type'], item['message']))
+        print(f"{item['type']}: {item['message']}")
         print('-' * 60)
     return result
 

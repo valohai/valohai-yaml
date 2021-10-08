@@ -79,6 +79,6 @@ def test_raise():
 
 
 def test_error_list():
-    errs = ['%s' % err for err in validate(invalid_obj, raise_exc=False)]
+    errs = [f'{err}' for err in validate(invalid_obj, raise_exc=False)]
     assert any(('Additional properties are not allowed' in err) for err in errs)  # pragma: no branch
     assert any(('required property' in err) for err in errs)  # pragma: no branch

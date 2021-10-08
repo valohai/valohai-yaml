@@ -40,7 +40,7 @@ class Edge(Item):
     def source(self, prop: str) -> None:
         split = _split_prop(prop)
         if len(split) != 3:
-            raise ValidationError("Source specifier {!r} must have 3 parts (it has {})".format(prop, len(split)))
+            raise ValidationError(f"Source specifier {prop!r} must have 3 parts (it has {len(split)})")
         self.source_node, self.source_type, self.source_key = split
 
     @property
@@ -51,14 +51,14 @@ class Edge(Item):
     def target(self, prop: str) -> None:
         split = _split_prop(prop)
         if len(split) != 3:
-            raise ValidationError("Target specifier {!r} must have 3 parts (it has {})".format(prop, len(split)))
+            raise ValidationError(f"Target specifier {prop!r} must have 3 parts (it has {len(split)})")
         self.target_node, self.target_type, self.target_key = split
 
     @classmethod
     def parse(cls, data: Union[dict, list]) -> 'Edge':
         if isinstance(data, list):  # Must be a shorthand
             if len(data) != 2:
-                raise ValidationError('Malformed edge shorthand {}'.format(data))
+                raise ValidationError(f'Malformed edge shorthand {data}')
             data = {'source': data[0], 'target': data[1]}
         return super().parse(data)
 

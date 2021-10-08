@@ -85,16 +85,16 @@ class Parameter(Item):
     def _validate_value(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
         try:
             if self.min is not None and value < self.min:  # type: ignore
-                errors.append('%s is less than the minimum allowed (%s)' % (value, self.min))
+                errors.append(f'{value} is less than the minimum allowed ({self.min})')
         except TypeError:  # Could occur if types are incompatible
             pass
         try:
             if self.max is not None and value > self.max:  # type: ignore
-                errors.append('%s is greater than the maximum allowed (%s)' % (value, self.max))
+                errors.append(f'{value} is greater than the maximum allowed ({self.max})')
         except TypeError:
             pass
         if self.choices is not None and value not in self.choices:
-            errors.append('%s is not among the choices allowed (%r)' % (value, self.choices))
+            errors.append(f'{value} is not among the choices allowed ({self.choices!r})')
         return value
 
     def _validate_type(self, value: ValueAtomType, errors: list) -> ValueAtomType:
@@ -102,12 +102,12 @@ class Parameter(Item):
             try:
                 value = int(str(value), 10)
             except ValueError:
-                errors.append('%s is not an integer' % value)
+                errors.append(f'{value} is not an integer')
         elif self.type == 'float':
             try:
                 value = float(str(value))
             except ValueError:
-                errors.append('%s is not a floating-point number' % value)
+                errors.append(f'{value} is not a floating-point number')
         return value
 
     def validate(self, value: ValueType) -> ValueType:
@@ -184,7 +184,7 @@ class Parameter(Item):
         elif not self.multiple:
             assert not isinstance(value, list)
             return _format_atom(value)
-        raise NotImplementedError('unknown multiple type %r' % self.multiple)
+        raise NotImplementedError(f'unknown multiple type {self.multiple!r}')
 
     def lint(
         self,
@@ -232,4 +232,4 @@ class Parameter(Item):
                     self._validate_value(default_value, errors)
 
             for message in errors:
-                lint_result.add_warning('{prefix}: default {message}'.format(prefix=context_prefix, message=message))
+                lint_result.add_warning(f'{context_prefix}: default {message}')
