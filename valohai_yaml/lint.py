@@ -73,12 +73,11 @@ def lint(yaml: Union[dict, list, bytes, str, IO]) -> LintResult:
             if el not in ('properties', 'items')
         ]
         obj_path = [str(el) for el in error.path]
-        lr.add_error('  {validator} validation on {schema_path}: {message} ({path})'.format(
-            validator=style(error.validator.title(), bold=True),
-            schema_path=style('.'.join(simplified_schema_path), bold=True),
-            message=style(error.message, fg='red'),
-            path=style('.'.join(obj_path), bold=True),
-        ))
+        styled_validator = style(error.validator.title(), bold=True)
+        styled_schema_path = style('.'.join(simplified_schema_path), bold=True)
+        styled_message = style(error.message, fg='red')
+        styled_path = style('.'.join(obj_path), bold=True)
+        lr.add_error(f'  {styled_validator} validation on {styled_schema_path}: {styled_message} ({styled_path})')
 
     if len(errors) > 0:
         return lr

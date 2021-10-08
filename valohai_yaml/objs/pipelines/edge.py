@@ -74,31 +74,19 @@ class Edge(Item):
         node_map = pipeline.node_map
         if self.source_node not in node_map:
             lint_result.add_error(
-                'Pipeline {pipeline} edge source node {source_node} does not exist'.format(
-                    pipeline=pipeline.name, source_node=self.source_node
-                )
+                f'Pipeline {pipeline.name} edge source node {self.source_node} does not exist'
             )
         if self.target_node not in node_map:
             lint_result.add_error(
-                'Pipeline {pipeline} edge target node {target_node} does not exist'.format(
-                    pipeline=pipeline.name, target_node=self.target_node
-                )
+                f'Pipeline {pipeline.name} edge target node {self.target_node} does not exist'
             )
         if self.source_type not in edge_types:
             lint_result.add_error(
-                'Pipeline {pipeline} source type {type} (between {source_node} and {target_node}) not valid'.format(
-                    pipeline=pipeline.name,
-                    source_node=self.source_node,
-                    target_node=self.target_node,
-                    type=self.source_type,
-                )
+                f'Pipeline {pipeline.name} source type {self.source_type} '
+                f'(between {self.source_node} and {self.target_node}) not valid'
             )
         if self.target_type not in edge_types:
             lint_result.add_error(
-                'Pipeline {pipeline} target type {type} (between {source_node} and {target_node}) not valid'.format(
-                    pipeline=pipeline.name,
-                    source_node=self.source_node,
-                    target_node=self.target_node,
-                    type=self.target_type,
-                )
+                f'Pipeline {pipeline.name} target type {self.target_type} '
+                f'(between {self.source_node} and {self.target_node}) not valid'
             )
