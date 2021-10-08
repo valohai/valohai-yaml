@@ -1,4 +1,0 @@
-# TODO: merge this with requirements-dev.txt once Python 3.5 support is dropped
-pytest-cov
-# TODO: unpin this once Python 3.5 support is dropped
-pytest>6.0,<6.2

@@ -11,15 +11,13 @@ class Node(Item):
     """Generic node base class."""
 
     # `type` must be set in subclasses
-    type = None  # type: str
+    type: str
 
     # `name` will be set on instance level in subclasses
-    # TODO: change to a type annotation when dropping py3.5
-    name = None  # type: str
+    name: str
 
     # `actions` will be set on instance level in subclasses
-    # TODO: change to a type annotation when dropping py3.5
-    actions = None  # type: List[NodeAction]
+    actions: List[NodeAction]
 
     def __init__(
         self,

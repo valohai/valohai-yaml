@@ -14,7 +14,6 @@ jobs:
         os:
           - ubuntu-20.04
         python-version:
-          - '3.5'
           - '3.6'
           - '3.7'
           - '3.8'
@@ -31,9 +30,7 @@ jobs:
           key: '${{ runner.os }}-${{ hashFiles(''**/setup.py'') }}'
       - uses: actions/checkout@v2
       - run: pip install -U pip setuptools wheel
-      - run: 'pip install -e . -r requirements-test.txt'
-      - run: 'pip install -U jsonschema==3.2.0'
-        if: '${{ matrix.python-version }} == ''3.5'''
+      - run: 'pip install -e . -r requirements-dev.txt'
       - run: py.test -vvv --cov .
       - run: 'bash <(curl -s https://codecov.io/bash)'
   Lint:
