@@ -38,7 +38,7 @@ def get_schema(name: str) -> dict:
         if os.path.isfile(filename):
             with open(filename, encoding='utf-8') as infp:
                 return loader(infp)  # type: ignore
-    raise ValueError('unable to read schema %s' % name)  # pragma: no cover
+    raise ValueError(f'unable to read schema {name}')  # pragma: no cover
 
 
 def get_validator() -> Draft4Validator:

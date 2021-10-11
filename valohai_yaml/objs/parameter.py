@@ -85,16 +85,16 @@ class Parameter(Item):
     def _validate_value(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
         try:
             if self.min is not None and value < self.min:  # type: ignore
-                errors.append('%s is less than the minimum allowed (%s)' % (value, self.min))
+                errors.append(f'{value} is less than the minimum allowed ({self.min})')
         except TypeError:  # Could occur if types are incompatible
             pass
         try:
             if self.max is not None and value > self.max:  # type: ignore
-                errors.append('%s is greater than the maximum allowed (%s)' % (value, self.max))
+                errors.append(f'{value} is greater than the maximum allowed ({self.max})')
         except TypeError:
             pass
         if self.choices is not None and value not in self.choices:
-            errors.append('%s is not among the choices allowed (%r)' % (value, self.choices))
+            errors.append(f'{value} is not among the choices allowed ({self.choices!r})')
         return value
 
     def _validate_type(self, value: ValueAtomType, errors: list) -> ValueAtomType:
@@ -102,12 +102,12 @@ class Parameter(Item):
             try:
                 value = int(str(value), 10)
             except ValueError:
-                errors.append('%s is not an integer' % value)
+                errors.append(f'{value} is not an integer')
         elif self.type == 'float':
             try:
                 value = float(str(value))
             except ValueError:
-                errors.append('%s is not a floating-point number' % value)
+                errors.append(f'{value} is not a floating-point number')
         return value
 
     def validate(self, value: ValueType) -> ValueType:
@@ -168,7 +168,7 @@ class Parameter(Item):
 
         def _format_atom(value: Optional[ValueAtomType]) -> List[str]:
             env = dict(name=self.name, value=value, v=value)
-            return [bit.format(**env) for bit in pass_as_bits]
+            return [bit.format_map(env) for bit in pass_as_bits]
 
         if self.multiple == MultipleMode.REPEAT:
             out = []
@@ -184,7 +184,7 @@ class Parameter(Item):
         elif not self.multiple:
             assert not isinstance(value, list)
             return _format_atom(value)
-        raise NotImplementedError('unknown multiple type %r' % self.multiple)
+        raise NotImplementedError(f'unknown multiple type {self.multiple!r}')
 
     def lint(
         self,
@@ -195,41 +195,26 @@ class Parameter(Item):
         has_pass_as = bool(original_data.get('pass-as'))
         has_pass_true_as = bool(original_data.get('pass-true-as'))
         has_pass_false_as = bool(original_data.get('pass-false-as'))
-        context_prefix = 'Step {step}, parameter {param}'.format(
-            step=context['step'].name,
-            param=self.name,
-        )
+        prefix = f'Step {context["step"].name}, parameter {self.name}'
         if self.type == 'flag':
             if original_data.get('optional'):
-                lint_result.add_warning('{prefix}: `optional` has no effect on flag-type parameters'.format(
-                    prefix=context_prefix,
-                ))
+                lint_result.add_warning(f'{prefix}: `optional` has no effect on flag-type parameters')
             if (has_pass_true_as or has_pass_false_as) and has_pass_as:
-                lint_result.add_warning('{prefix}: `pass-as` has no effect with `pass-true-as`/`pass-false-as`'.format(
-                    prefix=context_prefix,
-                ))
+                lint_result.add_warning(f'{prefix}: `pass-as` has no effect with `pass-true-as`/`pass-false-as`')
         else:
             if has_pass_true_as:
-                lint_result.add_warning('{prefix}: `pass-true-as` has no effect on non-flag parameters'.format(
-                    prefix=context_prefix,
-                ))
+                lint_result.add_warning(f'{prefix}: `pass-true-as` has no effect on non-flag parameters')
             if has_pass_false_as:
-                lint_result.add_warning('{prefix}: `pass-false-as` has no effect on non-flag parameters'.format(
-                    prefix=context_prefix,
-                ))
+                lint_result.add_warning(f'{prefix}: `pass-false-as` has no effect on non-flag parameters')
 
         if self.default:
             errors = []
             for default_value in listify(self.default):
                 if self.type == 'string' and not isinstance(default_value, str):
-                    errors.append(
-                        '`default` value {value!r} is not a string (got a {type})'.format(
-                            value=default_value,
-                            type=type(default_value),
-                        ))
+                    errors.append(f'`default` value {default_value!r} is not a string (got a {type(default_value)})')
                 else:
                     self._validate_type(default_value, errors)
                     self._validate_value(default_value, errors)
 
             for message in errors:
-                lint_result.add_warning('{prefix}: default {message}'.format(prefix=context_prefix, message=message))
+                lint_result.add_warning(f'{prefix}: default {message}')

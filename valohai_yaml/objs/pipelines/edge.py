@@ -40,7 +40,7 @@ class Edge(Item):
     def source(self, prop: str) -> None:
         split = _split_prop(prop)
         if len(split) != 3:
-            raise ValidationError("Source specifier {!r} must have 3 parts (it has {})".format(prop, len(split)))
+            raise ValidationError(f"Source specifier {prop!r} must have 3 parts (it has {len(split)})")
         self.source_node, self.source_type, self.source_key = split
 
     @property
@@ -51,14 +51,14 @@ class Edge(Item):
     def target(self, prop: str) -> None:
         split = _split_prop(prop)
         if len(split) != 3:
-            raise ValidationError("Target specifier {!r} must have 3 parts (it has {})".format(prop, len(split)))
+            raise ValidationError(f"Target specifier {prop!r} must have 3 parts (it has {len(split)})")
         self.target_node, self.target_type, self.target_key = split
 
     @classmethod
     def parse(cls, data: Union[dict, list]) -> 'Edge':
         if isinstance(data, list):  # Must be a shorthand
             if len(data) != 2:
-                raise ValidationError('Malformed edge shorthand {}'.format(data))
+                raise ValidationError(f'Malformed edge shorthand {data}')
             data = {'source': data[0], 'target': data[1]}
         return super().parse(data)
 
@@ -74,31 +74,19 @@ class Edge(Item):
         node_map = pipeline.node_map
         if self.source_node not in node_map:
             lint_result.add_error(
-                'Pipeline {pipeline} edge source node {source_node} does not exist'.format(
-                    pipeline=pipeline.name, source_node=self.source_node
-                )
+                f'Pipeline {pipeline.name} edge source node {self.source_node} does not exist'
             )
         if self.target_node not in node_map:
             lint_result.add_error(
-                'Pipeline {pipeline} edge target node {target_node} does not exist'.format(
-                    pipeline=pipeline.name, target_node=self.target_node
-                )
+                f'Pipeline {pipeline.name} edge target node {self.target_node} does not exist'
             )
         if self.source_type not in edge_types:
             lint_result.add_error(
-                'Pipeline {pipeline} source type {type} (between {source_node} and {target_node}) not valid'.format(
-                    pipeline=pipeline.name,
-                    source_node=self.source_node,
-                    target_node=self.target_node,
-                    type=self.source_type,
-                )
+                f'Pipeline {pipeline.name} source type {self.source_type} '
+                f'(between {self.source_node} and {self.target_node}) not valid'
             )
         if self.target_type not in edge_types:
             lint_result.add_error(
-                'Pipeline {pipeline} target type {type} (between {source_node} and {target_node}) not valid'.format(
-                    pipeline=pipeline.name,
-                    source_node=self.source_node,
-                    target_node=self.target_node,
-                    type=self.target_type,
-                )
+                f'Pipeline {pipeline.name} target type {self.target_type} '
+                f'(between {self.source_node} and {self.target_node}) not valid'
             )

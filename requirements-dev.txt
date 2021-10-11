@@ -65,10 +65,10 @@ pyflakes==2.3.1
 pyparsing==2.4.7
     # via packaging
 pytest-cov==2.12.1
-    # via -r ./requirements-test.in
+    # via -r requirements-dev.in
 pytest==6.1.2
     # via
-    #   -r ./requirements-test.in
+    #   -r requirements-dev.in
     #   pytest-cov
 snowballstemmer==2.1.0
     # via pydocstyle

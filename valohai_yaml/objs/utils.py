@@ -20,7 +20,7 @@ def check_type_and_listify(source: Optional[Iterable[Any]], type: Type[T]) -> Li
     out = []
     for item in source:
         if not isinstance(item, type):
-            raise TypeError("{} not a {}".format(item, type))
+            raise TypeError(f"{item} not a {type}")
         out.append(item)
     return out
 
@@ -34,7 +34,7 @@ def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr:
 
     for item in source:
         if not isinstance(item, type):
-            raise TypeError("{} not a {}".format(item, type))
+            raise TypeError(f"{item} not a {type}")
         out[getattr(item, attr)] = item
     return out
 
