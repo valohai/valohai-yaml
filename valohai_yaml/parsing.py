@@ -14,6 +14,8 @@ def parse(yaml: Union[dict, list, bytes, str, IO], validate: bool = True) -> Con
     :return: Config object
     """
     data = read_yaml(yaml)
+    if data is None:  # empty file
+        return Config()
     if validate:  # pragma: no branch
         from .validation import validate as do_validate
         do_validate(data, raise_exc=True)
