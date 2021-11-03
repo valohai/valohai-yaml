@@ -1,4 +1,6 @@
-from valohai_yaml.objs.input import KeepDirectories
+import pytest
+
+from valohai_yaml.objs.input import Input, KeepDirectories
 
 
 def test_parse_inputs(example2_config):
@@ -127,3 +129,13 @@ def test_input_extras(input_extras_config):
     assert step.inputs['model'].filename == "model.pb"
     assert step.inputs['foos'].keep_directories == KeepDirectories.FULL
     assert step.inputs['bars'].keep_directories == KeepDirectories.SUFFIX
+
+
+@pytest.mark.parametrize("value, expected", [(kd, kd) for kd in KeepDirectories] + [
+    ("full", KeepDirectories.FULL),  # type: ignore[list-item]
+    (False, KeepDirectories.NONE),  # type: ignore[list-item]
+    (True, KeepDirectories.FULL),  # type: ignore[list-item]
+    ("suffix", KeepDirectories.SUFFIX),  # type: ignore[list-item]
+])
+def test_input_keep_directories(value, expected):
+    assert Input(name="foo", keep_directories=value).keep_directories == expected

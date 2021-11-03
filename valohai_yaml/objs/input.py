@@ -3,6 +3,8 @@ from typing import List, Optional, Union
 
 from .base import Item
 
+KeepDirectoriesValue = Union[bool, str, 'KeepDirectories']
+
 
 class KeepDirectories(Enum):
     """How to retain directories when using storage wildcards."""
@@ -12,7 +14,9 @@ class KeepDirectories(Enum):
     FULL = 'full'
 
     @classmethod
-    def cast(cls, value: Union[bool, str]) -> 'KeepDirectories':
+    def cast(cls, value: KeepDirectoriesValue) -> 'KeepDirectories':
+        if isinstance(value, KeepDirectories):
+            return value
         if not value:
             return KeepDirectories.NONE
         if value is True:
@@ -30,7 +34,7 @@ class Input(Item):
         default: Optional[Union[List[str], str]] = None,
         optional: bool = False,
         description: Optional[str] = None,
-        keep_directories: bool = False,
+        keep_directories: KeepDirectoriesValue = False,
         filename: Optional[str] = None
     ) -> None:
         self.name = name
