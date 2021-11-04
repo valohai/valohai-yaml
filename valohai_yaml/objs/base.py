@@ -52,7 +52,7 @@ class Item:
     def lint(self, lint_result: LintResult, context: dict) -> None:
         pass
 
-    def merge_with(self: T, other: T, strategy: Optional[Callable[[T, T], T]] = None) -> 'Item':
+    def merge_with(self: T, other: T, strategy: Optional[Callable[[T, T], T]] = None) -> T:
         if strategy is None:
             strategy = self.default_merge
         return strategy(self, other)
