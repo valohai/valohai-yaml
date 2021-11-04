@@ -43,6 +43,8 @@ class Node(Item):
     def serialize(self) -> dict:
         ser = super().serialize()
         ser['type'] = self.type
+        if not ser.get('actions'):
+            ser.pop('actions', None)
         return ser
 
     def lint(self, lint_result: LintResult, context: dict) -> None:

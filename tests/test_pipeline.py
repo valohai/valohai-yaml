@@ -72,3 +72,11 @@ def test_action_pipeline(pipeline_config: Config):
         'then': ['noop'],
         'when': ['node-complete', 'node-starting'],
     }
+
+
+def test_empty_actions_not_serialized(pipeline_config: Config):
+    pl = pipeline_config.pipelines["Last action pipeline"]
+    train_node = pl.get_node_by(name='train')
+    assert train_node
+    train_node.actions.clear()
+    assert 'actions' not in train_node.serialize()
