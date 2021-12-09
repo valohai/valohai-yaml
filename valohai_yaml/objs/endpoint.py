@@ -1,5 +1,6 @@
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Iterable, Optional, Union
 
+from ..types import EndpointResourcesDict, SerializedDict
 from .base import Item
 from .file import File
 from .utils import check_type_and_listify
@@ -18,7 +19,7 @@ class Endpoint(Item):
         port: Optional[Union[str, int]] = None,
         server_command: Optional[str] = None,
         wsgi: Optional[str] = None,
-        resources: Optional[Dict] = None
+        resources: Optional[EndpointResourcesDict] = None
     ) -> None:
         self.name = name
         self.description = description
@@ -30,9 +31,9 @@ class Endpoint(Item):
         self.resources = resources
 
     @classmethod
-    def parse(cls, kwargs: Dict[str, Any]) -> 'Endpoint':
+    def parse(cls, data: SerializedDict) -> 'Endpoint':
         data = dict(
-            kwargs,
-            files=[File.parse(f) for f in kwargs.get('files', ())],
+            data,
+            files=[File.parse(f) for f in data.get('files', ())],
         )
         return super().parse(data)

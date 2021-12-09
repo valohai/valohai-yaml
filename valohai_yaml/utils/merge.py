@@ -5,7 +5,7 @@ MISSING = object()
 
 TMerge = TypeVar('TMerge')
 TCopy = TypeVar('TCopy')
-TD = TypeVar('TD', bound=MutableMapping)
+TD = TypeVar('TD', bound=MutableMapping[Any, Any])
 
 
 def merge_dicts(

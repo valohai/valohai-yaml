@@ -55,4 +55,5 @@ jobs:
       - run: pip install -U pip setuptools wheel
       - run: 'pip install -e . -r requirements-dev.txt'
       - run: flake8 valohai_yaml tests
-      - run: mypy valohai_yaml tests
+      - run: mypy valohai_yaml --strict --show-error-codes
+      - run: mypy tests

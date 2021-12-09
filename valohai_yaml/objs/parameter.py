@@ -5,6 +5,7 @@ from valohai_yaml.excs import ValidationErrors
 from valohai_yaml.lint import LintResult
 from valohai_yaml.utils import listify
 
+from ..types import LintContext, SerializedDict
 from .base import Item
 
 
@@ -71,7 +72,7 @@ class Parameter(Item):
         else:
             self.pass_true_as = self.pass_false_as = None
 
-    def get_data(self) -> dict:
+    def get_data(self) -> SerializedDict:
         data = super().get_data()
         if self.type == 'flag':
             data.pop('optional', None)
@@ -97,7 +98,7 @@ class Parameter(Item):
             errors.append(f'{value} is not among the choices allowed ({self.choices!r})')
         return value
 
-    def _validate_type(self, value: ValueAtomType, errors: list) -> ValueAtomType:
+    def _validate_type(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
         if self.type == 'integer':
             try:
                 value = int(str(value), 10)
@@ -125,6 +126,7 @@ class Parameter(Item):
             errors.append('Only a single value is allowed')
 
         for atom in listify(value):
+            assert not isinstance(atom, list)  # type guard
             atom = self._validate_type(atom, errors)
             atom = self._validate_value(atom, errors)
             validated_values.append(atom)
@@ -173,6 +175,7 @@ class Parameter(Item):
         if self.multiple == MultipleMode.REPEAT:
             out = []
             for atom in listify(value):
+                assert not isinstance(atom, list)  # type guard
                 out.extend(_format_atom(atom))
             return out
         elif self.multiple == MultipleMode.SEPARATE:
@@ -189,7 +192,7 @@ class Parameter(Item):
     def lint(
         self,
         lint_result: LintResult,
-        context: dict
+        context: LintContext,
     ) -> None:
         original_data = (self._original_data or {})
         has_pass_as = bool(original_data.get('pass-as'))

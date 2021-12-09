@@ -4,6 +4,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
 from valohai_yaml.lint import LintResult
 
+from ..types import LintContext, SerializedDict
 from ..utils.lint import lint_iterables
 from ..utils.merge import merge_dicts, merge_simple
 from .base import Item
@@ -11,6 +12,8 @@ from .endpoint import Endpoint
 from .pipelines.pipeline import Pipeline
 from .step import Step
 from .utils import check_type_and_dictify
+
+ParserFunction = Callable[[SerializedDict], Any]
 
 
 class Config(Item):
@@ -58,32 +61,32 @@ class Config(Item):
         return inst
 
     @classmethod
-    def get_top_level_parsers(cls) -> Dict[str, Tuple[list, Callable]]:
+    def get_top_level_parsers(cls) -> Dict[str, Tuple[List[Any], ParserFunction]]:
         """
         Get the parsers for top-level elements in a configuration file.
 
         The return value is a little baroque due to the alias for `pipeline`/`blueprint`:
         it's a dict that maps top-level element names to a 2-tuple of target list objects and parse functions.
         """
-        pipeline_tuple = ([], Pipeline.parse)  # type: Tuple[list, Callable]
+        pipelines: List[Pipeline] = []
         return {
             'step': ([], Step.parse),
             'endpoint': ([], Endpoint.parse),
-            'pipeline': pipeline_tuple,
-            'blueprint': pipeline_tuple,  # Alias allowed for now
+            'pipeline': (pipelines, Pipeline.parse),
+            'blueprint': (pipelines, Pipeline.parse),  # Alias allowed for now
         }
 
-    def serialize(self) -> List[dict]:
+    def serialize(self) -> List[SerializedDict]:
         return list(chain(
             ({'step': step.serialize()} for (key, step) in sorted(self.steps.items())),
             ({'endpoint': endpoint.serialize()} for (key, endpoint) in sorted(self.endpoints.items())),
             ({'pipeline': pipeline.serialize()} for (key, pipeline) in sorted(self.pipelines.items())),
         ))
 
-    def lint(  # type: ignore
+    def lint(  # type: ignore[override]
         self,
         lint_result: Optional[LintResult] = None,
-        context: Optional[dict] = None,
+        context: Optional[LintContext] = None,
     ) -> LintResult:
         """
         Lint the configuration.

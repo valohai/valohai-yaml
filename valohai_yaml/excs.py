@@ -1,6 +1,8 @@
-from typing import List, Union
+from typing import Iterator, List, Union
 
 import jsonschema
+
+ErrorType = Union[str, jsonschema.ValidationError]
 
 
 class ValidationError(ValueError):
@@ -10,7 +12,7 @@ class ValidationError(ValueError):
 class ValidationErrors(ValidationError):
     """Wrapper for multiple validation errors."""
 
-    def __init__(self, errors: List[Union[str, jsonschema.ValidationError]]) -> None:
+    def __init__(self, errors: List[ErrorType]) -> None:
         self.errors = errors
         super().__init__(
             '%d errors: %s' % (
@@ -19,6 +21,6 @@ class ValidationErrors(ValidationError):
             )
         )
 
-    def __iter__(self):  # noqa: ANN204
+    def __iter__(self) -> Iterator[ErrorType]:
         """Iterate over the errors contained within."""
         return iter(self.errors)

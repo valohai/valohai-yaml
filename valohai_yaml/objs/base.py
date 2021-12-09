@@ -3,6 +3,7 @@ from typing import Any, Callable, Optional, Type, TypeVar
 
 from ..lint import LintResult
 from ..objs.utils import serialize_into
+from ..types import LintContext, SerializedDict
 from ..utils.merge import merge_simple
 
 T = TypeVar('T', bound='Item')
@@ -17,14 +18,14 @@ class Item:
 
     _original_data = None  # Possible original data dict this object was parsed from
 
-    def get_data(self) -> dict:
+    def get_data(self) -> SerializedDict:
         """Get the object's data for serialization."""
         data = vars(self).copy()
         data.pop('_original_data', None)
         return data
 
     def serialize(self) -> Any:  # type = Any because subclasses may override
-        out = OrderedDict()  # type: OrderedDict
+        out = OrderedDict()  # type: OrderedDict[str, Any]
         # Default sorting except always start with 'name'
         sorted_items = sorted(
             self.get_data().items(),
@@ -39,7 +40,7 @@ class Item:
         return out
 
     @classmethod
-    def parse(cls: Type[T], data: dict) -> T:
+    def parse(cls: Type[T], data: SerializedDict) -> T:
         inst = cls(**{  # type: ignore
             key.replace('-', '_'): value
             for (key, value)
@@ -49,7 +50,7 @@ class Item:
         inst._original_data = data
         return inst
 
-    def lint(self, lint_result: LintResult, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
         pass
 
     def merge_with(self: T, other: T, strategy: Optional[Callable[[T, T], T]] = None) -> T:

@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from ...lint import LintResult
+from ...types import LintContext, NodeOverrideDict
 from .node import Node
 from .node_action import NodeAction
 
@@ -16,7 +17,7 @@ class ExecutionNode(Node):
         name: str,
         step: str,
         actions: Optional[List[NodeAction]] = None,
-        override: dict = None
+        override: Optional[NodeOverrideDict] = None
     ) -> None:
         super().__init__(name=name, actions=actions)
         if override is None:
@@ -24,7 +25,7 @@ class ExecutionNode(Node):
         self.step = step
         self.override = override
 
-    def lint(self, lint_result: LintResult, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
         super().lint(lint_result, context)
         config = context['config']
         pipeline = context['pipeline']

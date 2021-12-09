@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List, Optional, Union
 
+from ..types import SerializedDict
 from .base import Item
 
 KeepDirectoriesValue = Union[bool, str, 'KeepDirectories']
@@ -44,7 +45,7 @@ class Input(Item):
         self.keep_directories = KeepDirectories.cast(keep_directories)
         self.filename = filename
 
-    def get_data(self) -> dict:
+    def get_data(self) -> SerializedDict:
         data = super().get_data()
         if self.keep_directories is not KeepDirectories.NONE:
             data['keep_directories'] = data['keep_directories'].value

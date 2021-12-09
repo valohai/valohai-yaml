@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from valohai_yaml.lint import LintResult
 
+from ...types import LintContext
 from .node import Node
 from .node_action import NodeAction
 
@@ -17,8 +18,8 @@ class DeploymentNode(Node):
         name: str,
         deployment: str,
         actions: Optional[List[NodeAction]] = None,
-        endpoints: List[str] = None,
-        aliases: List[str] = None
+        endpoints: Optional[List[str]] = None,
+        aliases: Optional[List[str]] = None,
     ) -> None:
         super().__init__(name=name, actions=actions)
         if aliases is None:
@@ -29,7 +30,7 @@ class DeploymentNode(Node):
         self.endpoints = endpoints
         self.aliases = aliases
 
-    def lint(self, lint_result: LintResult, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
         super().lint(lint_result, context)
 
         if not self.name:

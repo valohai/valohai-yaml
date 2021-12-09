@@ -5,6 +5,7 @@ from typing import Any, Dict, Iterable, List, Optional, Union
 from valohai_yaml.lint import LintResult
 
 from ..commands import build_command
+from ..types import LintContext, SerializedDict
 from ..utils.lint import lint_iterables
 from ..utils.merge import merge_dicts, merge_simple
 from .base import Item
@@ -46,7 +47,7 @@ class Step(Item):
         self.environment_variables = check_type_and_dictify(environment_variables, EnvironmentVariable, 'name')
 
     @classmethod
-    def parse(cls, data: Dict[str, Any]) -> 'Step':
+    def parse(cls, data: SerializedDict) -> 'Step':
         kwargs = data.copy()
         kwargs['parameters'] = consume_array_of(kwargs, 'parameters', Parameter)
         kwargs['inputs'] = consume_array_of(kwargs, 'inputs', Input)
@@ -56,7 +57,7 @@ class Step(Item):
         inst._original_data = data
         return inst
 
-    def serialize(self) -> OrderedDict:
+    def serialize(self) -> OrderedDict:  # type: ignore[type-arg]
         val = OrderedDict([
             ('name', self.name),
             ('image', self.image),
@@ -112,7 +113,7 @@ class Step(Item):
         parameter_map = ParameterMap(parameters=self.parameters, values=values)
         return build_command(command, parameter_map)
 
-    def lint(self, lint_result: LintResult, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, step=self)
 
         lint_iterables(lint_result, context, (

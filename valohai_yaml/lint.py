@@ -1,8 +1,9 @@
-from typing import IO, Iterator, List, Optional, Union
+from typing import Iterator, List, Optional
 
 from jsonschema.exceptions import relevance
 
 from valohai_yaml.excs import ValidationError
+from valohai_yaml.types import LintResultMessage, YamlReadable
 from valohai_yaml.utils import read_yaml
 from valohai_yaml.utils.terminal import style
 from valohai_yaml.validation import get_validator
@@ -12,7 +13,7 @@ class LintResult:
     """Container for lint results."""
 
     def __init__(self) -> None:
-        self.messages = []  # type: List[dict]
+        self.messages: List[LintResultMessage] = []
 
     def add_error(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
         self.messages.append({'type': 'error', 'message': message, 'location': location, 'exception': exception})
@@ -29,11 +30,11 @@ class LintResult:
         return sum(1 for m in self.messages if m['type'] == 'error')
 
     @property
-    def warnings(self) -> Iterator[dict]:
+    def warnings(self) -> Iterator[LintResultMessage]:
         return (m for m in self.messages if m['type'] == 'warning')
 
     @property
-    def errors(self) -> Iterator[dict]:
+    def errors(self) -> Iterator[LintResultMessage]:
         return (m for m in self.messages if m['type'] == 'error')
 
     def is_valid(self) -> bool:
@@ -56,7 +57,7 @@ def lint_file(file_path: str) -> LintResult:
             return lr
 
 
-def lint(yaml: Union[dict, list, bytes, str, IO]) -> LintResult:
+def lint(yaml: YamlReadable) -> LintResult:
     lr = LintResult()
 
     data = read_yaml(yaml)
