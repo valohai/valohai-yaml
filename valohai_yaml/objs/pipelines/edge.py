@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, TYPE_CHECKING, Union
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
 from valohai_yaml.excs import ValidationError
 from valohai_yaml.lint import LintResult
@@ -69,6 +69,20 @@ class Edge(Item):
             'target': self.target,
             'configuration': self.configuration,
         }
+
+    def get_expanded(self) -> Dict[str, Any]:
+        """Get the "expanded" form of this edge."""
+        result: Dict[str, Any] = {
+            'source_node': self.source_node,
+            'source_type': self.source_type,
+            'source_key': self.source_key,
+            'target_node': self.target_node,
+            'target_type': self.target_type,
+            'target_key': self.target_key,
+        }
+        if self.configuration:
+            result['configuration'] = self.configuration
+        return result
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         pipeline = context['pipeline']  # type: Pipeline
