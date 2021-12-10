@@ -1,11 +1,10 @@
-from typing import IO, Union
-
 from valohai_yaml.objs import Config
 
+from .types import YamlReadable
 from .utils import read_yaml
 
 
-def parse(yaml: Union[dict, list, bytes, str, IO], validate: bool = True) -> Config:
+def parse(yaml: YamlReadable, validate: bool = True) -> Config:
     """
     Parse the given YAML data into a `Config` object, optionally validating it first.
 

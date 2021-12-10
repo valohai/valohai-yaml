@@ -2,23 +2,24 @@ import json
 import os
 import re
 from functools import lru_cache
-from typing import IO, List, Union
+from typing import Any, Dict, List
 
 import yaml
 from jsonschema import Draft4Validator, RefResolver, ValidationError
 
 from .excs import ValidationErrors
+from .types import YamlReadable
 from .utils import read_yaml
 
 SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
 
 
-class LocalRefResolver(RefResolver):
+class LocalRefResolver(RefResolver):  # type: ignore[misc]
     """Loads relative URLs (as it were) from the `schema` directory."""
 
     local_scope_re = re.compile(r'^https?://valohai.com/(.+\.json)$')
 
-    def resolve_from_url(self, url: str) -> dict:
+    def resolve_from_url(self, url: str) -> Dict[Any, Any]:
         local_match = self.local_scope_re.match(url)
         if local_match:
             schema = get_schema(name=local_match.group(1))
@@ -28,7 +29,7 @@ class LocalRefResolver(RefResolver):
 
 
 @lru_cache()
-def get_schema(name: str) -> dict:
+def get_schema(name: str) -> Dict[Any, Any]:
     json_filename = os.path.join(SCHEMATA_DIRECTORY, name)
     yaml_filename = os.path.splitext(json_filename)[0] + '.yaml'
     for filename, loader in [
@@ -48,7 +49,7 @@ def get_validator() -> Draft4Validator:
     return cls(schema, resolver=LocalRefResolver.from_schema(schema))
 
 
-def validate(yaml: Union[dict, list, bytes, str, IO], raise_exc: bool = True) -> List[ValidationError]:
+def validate(yaml: YamlReadable, raise_exc: bool = True) -> List[ValidationError]:
     """
     Validate the given YAML document and return a list of errors.
 

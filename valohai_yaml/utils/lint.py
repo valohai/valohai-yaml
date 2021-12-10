@@ -1,10 +1,16 @@
-from typing import Any, Dict, Iterable, TYPE_CHECKING
+from typing import Any, Iterable, TYPE_CHECKING
+
+from valohai_yaml.types import LintContext
 
 if TYPE_CHECKING:
     from valohai_yaml.lint import LintResult
 
 
-def lint_iterables(lint_result: 'LintResult', context: Dict[str, Any], iterables: Iterable[Iterable[Any]]) -> None:
+def lint_iterables(
+    lint_result: 'LintResult',
+    context: LintContext,
+    iterables: Iterable[Iterable[Any]],
+) -> None:
     for iterable in iterables:
         if isinstance(iterable, dict):
             iterable = iterable.values()

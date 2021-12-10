@@ -1,6 +1,7 @@
 from typing import Iterable, List, Set, Union
 
 from ...lint import LintResult
+from ...types import LintContext, SerializedDict
 from ...utils import listify
 from ..base import Item
 
@@ -31,18 +32,18 @@ class NodeAction(Item):
         self.then = listify(then)  # type: List[str]
 
     @classmethod
-    def parse(cls, data: dict) -> 'NodeAction':
+    def parse(cls, data: SerializedDict) -> 'NodeAction':
         data = data.copy()
         data['if_'] = data.pop('if', [])
         return super().parse(data)
 
-    def get_data(self) -> dict:
+    def get_data(self) -> SerializedDict:
         data = super().get_data()
         data['if'] = data.pop('if_')
         data['when'] = sorted(data.pop('when'))
         return data
 
-    def lint(self, lint_result: LintResult, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
         super().lint(lint_result, context)
         for when in self.when:
             if when not in WELL_KNOWN_WHENS:

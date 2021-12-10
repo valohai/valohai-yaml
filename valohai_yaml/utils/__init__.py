@@ -1,9 +1,11 @@
-from typing import Any, IO, Union
+from typing import Any, List, Optional, overload, Tuple, TypeVar, Union
 
 from yaml import safe_load
 
+from valohai_yaml.types import YamlReadable
 
-def read_yaml(yaml: Union[dict, list, bytes, str, IO]) -> Any:
+
+def read_yaml(yaml: YamlReadable) -> Any:
     if isinstance(yaml, (dict, list)):  # Smells already parsed
         return yaml
     if isinstance(yaml, bytes):
@@ -11,7 +13,25 @@ def read_yaml(yaml: Union[dict, list, bytes, str, IO]) -> Any:
     return safe_load(yaml)  # can be a stream or a string
 
 
-def listify(value: Any) -> list:
+T = TypeVar("T")
+
+
+@overload
+def listify(value: None) -> List[Any]:
+    ...
+
+
+@overload
+def listify(value: Union[List[T], Tuple[T]]) -> List[T]:
+    ...
+
+
+@overload
+def listify(value: T) -> List[T]:
+    ...
+
+
+def listify(value: Optional[Union[List[T], Tuple[T], T]]) -> List[T]:
     """
     Wrap the given value into a list, with provisions outlined below.
 

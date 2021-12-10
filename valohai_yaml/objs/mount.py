@@ -1,5 +1,6 @@
-from typing import Any, Dict, Optional, Union
+from typing import Optional, Union
 
+from ..types import MountOptions, SerializedDict
 from .base import Item
 
 
@@ -13,7 +14,7 @@ class Mount(Item):
         destination: str,
         readonly: bool = False,
         type: Optional[str] = None,
-        options: Optional[dict] = None
+        options: Optional[MountOptions] = None
     ) -> None:
         if options is None:
             options = {}
@@ -24,7 +25,7 @@ class Mount(Item):
         self.options = options
 
     @classmethod
-    def parse(cls, data: Union[Dict[str, Any], str]) -> 'Mount':
+    def parse(cls, data: Union[SerializedDict, str]) -> 'Mount':
         if isinstance(data, str):
             source, destination = str(data).split(':', 1)
             data = {
@@ -33,7 +34,7 @@ class Mount(Item):
             }
         return super().parse(data)
 
-    def get_data(self) -> dict:
+    def get_data(self) -> SerializedDict:
         data = super().get_data()
         if self.options:
             data['options'] = {str(k): v for (k, v) in self.options.items() if v is not None}

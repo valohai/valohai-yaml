@@ -1,6 +1,8 @@
 import typing
 from collections import OrderedDict
-from typing import Any, Dict, Iterable, List, Optional, Type, TYPE_CHECKING, TypeVar
+from typing import Any, Iterable, List, Optional, Type, TYPE_CHECKING, TypeVar
+
+from valohai_yaml.types import SerializedDict
 
 if TYPE_CHECKING:
     from valohai_yaml.objs.base import Item
@@ -9,7 +11,7 @@ TItem = TypeVar('TItem', bound='Item')
 T = TypeVar('T')
 
 
-def consume_array_of(source: Dict[str, Any], key: str, type: Type[TItem]) -> List[TItem]:
+def consume_array_of(source: SerializedDict, key: str, type: Type[TItem]) -> List[TItem]:
     return [type.parse(datum) for datum in source.pop(key, ())]
 
 
@@ -39,8 +41,8 @@ def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr:
     return out
 
 
-def serialize_into(
-    dest: OrderedDict,
+def serialize_into(  # noqa: ANN301
+    dest,  # type: OrderedDict[str, Any]
     key: str,
     value: Any,
     *,

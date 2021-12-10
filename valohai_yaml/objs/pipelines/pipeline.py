@@ -2,6 +2,7 @@ from collections import OrderedDict
 from typing import Any, List, Optional
 
 from valohai_yaml.lint import LintResult
+from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.lint import lint_iterables
 
 from ..base import Item
@@ -24,17 +25,17 @@ class Pipeline(Item):
         self.edges = edges
 
     @property
-    def node_map(self) -> OrderedDict:
+    def node_map(self) -> OrderedDict:  # type: ignore[type-arg]
         return OrderedDict((node.name, node) for node in self.nodes)
 
     @classmethod
-    def parse(cls, data: dict) -> 'Pipeline':
+    def parse(cls, data: SerializedDict) -> 'Pipeline':
         data = data.copy()
         data['edges'] = [Edge.parse(e) for e in data.pop('edges', ())]
         data['nodes'] = [Node.parse_qualifying(n) for n in data.pop('nodes', ())]
         return super().parse(data)
 
-    def lint(self, lint_result: LintResult, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, pipeline=self)
         lint_iterables(lint_result, context, (self.nodes, self.edges))
 

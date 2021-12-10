@@ -1,7 +1,8 @@
-from typing import List, Optional, TYPE_CHECKING, Union
+from typing import Any, List, Optional, TYPE_CHECKING, Union
 
 from valohai_yaml.excs import ValidationError
 from valohai_yaml.lint import LintResult
+from valohai_yaml.types import EdgeConfigurationDict, LintContext, SerializedDict
 
 if TYPE_CHECKING:
     from valohai_yaml.objs import Pipeline
@@ -24,7 +25,7 @@ class Edge(Item):
         *,
         source: str,
         target: str,
-        configuration: Optional[dict] = None
+        configuration: Optional[EdgeConfigurationDict] = None
     ) -> None:
         if configuration is None:
             configuration = {}
@@ -55,21 +56,21 @@ class Edge(Item):
         self.target_node, self.target_type, self.target_key = split
 
     @classmethod
-    def parse(cls, data: Union[dict, list]) -> 'Edge':
+    def parse(cls, data: Union[SerializedDict, List[Any]]) -> 'Edge':
         if isinstance(data, list):  # Must be a shorthand
             if len(data) != 2:
                 raise ValidationError(f'Malformed edge shorthand {data}')
             data = {'source': data[0], 'target': data[1]}
         return super().parse(data)
 
-    def get_data(self) -> dict:
+    def get_data(self) -> SerializedDict:
         return {
             'source': self.source,
             'target': self.target,
             'configuration': self.configuration,
         }
 
-    def lint(self, lint_result: LintResult, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
         pipeline = context['pipeline']  # type: Pipeline
         node_map = pipeline.node_map
         if self.source_node not in node_map:

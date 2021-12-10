@@ -18,6 +18,7 @@ jobs:
           - '3.7'
           - '3.8'
           - '3.9'
+          - '3.10'
     steps:
       - name: 'Set up Python ${{ matrix.python-version }}'
         uses: actions/setup-python@v2
@@ -40,7 +41,7 @@ jobs:
         os:
           - ubuntu-20.04
         python-version:
-          - '3.9'
+          - '3.10'
     steps:
       - name: 'Set up Python ${{ matrix.python-version }}'
         uses: actions/setup-python@v2
@@ -55,4 +56,5 @@ jobs:
       - run: pip install -U pip setuptools wheel
       - run: 'pip install -e . -r requirements-dev.txt'
       - run: flake8 valohai_yaml tests
-      - run: mypy valohai_yaml tests
+      - run: mypy valohai_yaml --strict --show-error-codes
+      - run: mypy tests

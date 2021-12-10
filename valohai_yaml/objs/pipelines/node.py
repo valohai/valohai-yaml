@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from ...lint import LintResult
+from ...types import LintContext, SerializedDict
 from ...utils.lint import lint_iterables
 from ..base import Item
 from ..utils import check_type_and_listify, consume_array_of
@@ -29,7 +30,7 @@ class Node(Item):
         self.actions = check_type_and_listify(actions, NodeAction)
 
     @classmethod
-    def parse_qualifying(cls, data: dict) -> 'Node':
+    def parse_qualifying(cls, data: SerializedDict) -> 'Node':
         node_type_map = {
             sc.type: sc
             for sc in cls.__subclasses__()
@@ -40,14 +41,14 @@ class Node(Item):
         data['actions'] = consume_array_of(data, 'actions', NodeAction)
         return subcls.parse(data)
 
-    def serialize(self) -> dict:
-        ser = super().serialize()
+    def serialize(self) -> SerializedDict:
+        ser = dict(super().serialize())
         ser['type'] = self.type
         if not ser.get('actions'):
             ser.pop('actions', None)
         return ser
 
-    def lint(self, lint_result: LintResult, context: dict) -> None:
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
         super().lint(lint_result, context)
         context = dict(context, node=self)
         lint_iterables(lint_result, context, (
