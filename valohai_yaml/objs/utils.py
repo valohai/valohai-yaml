@@ -1,6 +1,7 @@
-import typing
 from collections import OrderedDict
-from typing import Any, Iterable, List, Optional, Type, TYPE_CHECKING, TypeVar
+from typing import Any, Callable, Iterable, List
+from typing import MutableMapping as MutableMappingType
+from typing import Optional, Type, TYPE_CHECKING, TypeVar
 
 from valohai_yaml.types import SerializedDict
 
@@ -15,20 +16,32 @@ def consume_array_of(source: SerializedDict, key: str, type: Type[TItem]) -> Lis
     return [type.parse(datum) for datum in source.pop(key, ())]
 
 
-def check_type_and_listify(source: Optional[Iterable[Any]], type: Type[T]) -> List[T]:
-    """Check that all items in the `source` iterable are of the type `type`, return a list."""
+def check_type_and_listify(
+    source: Optional[Iterable[Any]],
+    type: Type[T],
+    parse: Optional[Callable[[Any], T]] = None,
+) -> List[T]:
+    """
+    Check that all items in the `source` iterable are of the type `type`, return a list.
+
+    If `parse` is given, and the item is not of the type, that function is called to parse it to one.
+
+    """
     if source is None:
         return []
     out = []
     for item in source:
         if not isinstance(item, type):
-            raise TypeError(f"{item} not a {type}")
+            if not parse:
+                raise TypeError(f"{item} not a {type}")
+            item = parse(item)
+            assert isinstance(item, type)  # Make sure `parse` was up to spec
         out.append(item)
     return out
 
 
 # TODO: use `typing.OrderedDict` as return type when only 3.7.2+ supported
-def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr: str) -> typing.MutableMapping[str, T]:
+def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr: str) -> MutableMappingType[str, T]:
     """Check that all items in the `source` iterable are of the type `type` and map them into an OrderedDict."""
     out = OrderedDict()  # type: OrderedDict[str, T]
     if source is None:

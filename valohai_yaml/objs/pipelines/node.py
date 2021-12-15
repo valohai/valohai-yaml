@@ -27,7 +27,7 @@ class Node(Item):
         actions: Optional[List[NodeAction]] = None
     ) -> None:
         self.name = name
-        self.actions = check_type_and_listify(actions, NodeAction)
+        self.actions = check_type_and_listify(actions, NodeAction, parse=NodeAction.parse)
 
     @classmethod
     def parse_qualifying(cls, data: SerializedDict) -> 'Node':
