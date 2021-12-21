@@ -41,7 +41,7 @@ class Item:
 
     @classmethod
     def parse(cls: Type[T], data: SerializedDict) -> T:
-        inst = cls(**{  # type: ignore
+        inst = cls(**{
             key.replace('-', '_'): value
             for (key, value)
             in data.items()

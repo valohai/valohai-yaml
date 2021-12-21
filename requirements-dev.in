@@ -9,4 +9,5 @@ mypy
 pip-tools
 pytest
 pytest-cov
+tomli<2.0.0
 types-PyYAML
