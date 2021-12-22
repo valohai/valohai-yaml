@@ -48,11 +48,12 @@ class PipelineConverter:
     def convert_executionlike_node(self, node: Union[ExecutionNode, TaskNode]) -> ConvertedObject:
         node_data = node.serialize()
         step_name = node_data.pop("step")
-        override = node_data.pop("override")
+        override = node_data.pop("override", {})
         step = self.config.get_step_by(name=step_name)
         if not step:  # pragma: no cover
             raise ValueError(f"Step {step_name} not found in {self.config}")
         step_data = step.serialize()
+        step_data.update(override)  # TODO: this might need to e.g. merge mappings
         step_data["parameters"] = step.get_parameter_defaults(include_flags=True)
         step_data["inputs"] = {
             i["name"]: listify(i.get("default")) for i in step_data.get("inputs", [])
@@ -62,6 +63,5 @@ class PipelineConverter:
             "commit": self.commit_identifier,
             "step": step_name,
             **step_data,
-            **override,
         }
         return node_data
