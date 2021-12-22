@@ -7,7 +7,7 @@ name: CI
     branches:
       - master
 jobs:
-  Build:
+  Test:
     runs-on: '${{ matrix.os }}'
     strategy:
       matrix:
@@ -33,7 +33,7 @@ jobs:
       - run: pip install -U pip setuptools wheel
       - run: 'pip install -e . -r requirements-dev.txt'
       - run: py.test -vvv --cov .
-      - run: 'bash <(curl -s https://codecov.io/bash)'
+      - uses: codecov/codecov-action@v2
   Lint:
     runs-on: '${{ matrix.os }}'
     strategy:
@@ -58,3 +58,12 @@ jobs:
       - run: flake8 valohai_yaml tests
       - run: mypy valohai_yaml --strict --show-error-codes
       - run: mypy tests
+  Build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - uses: actions/checkout@v2
+      - run: pip install -U pip setuptools build
+      - run: python -m build .
