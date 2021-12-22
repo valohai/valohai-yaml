@@ -81,6 +81,9 @@
       - name: train
         type: execution
         step: Train model
+        override:
+          inputs:
+            - name: training-images
       - name: test
         type: execution
         step: Test model
