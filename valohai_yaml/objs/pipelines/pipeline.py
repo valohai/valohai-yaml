@@ -35,6 +35,13 @@ class Pipeline(Item):
         data['nodes'] = [Node.parse_qualifying(n) for n in data.pop('nodes', ())]
         return super().parse(data)
 
+    def serialize(self, sorted=True) -> Any:
+        data = super().serialize()
+        if sorted:
+            data['edges'].sort(key=lambda d: (d['source'], d['target']))
+            data['nodes'].sort(key=lambda d: d['name'])
+        return data
+
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, pipeline=self)
         lint_iterables(lint_result, context, (self.nodes, self.edges))

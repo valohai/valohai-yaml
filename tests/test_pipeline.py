@@ -80,3 +80,8 @@ def test_empty_actions_not_serialized(pipeline_config: Config):
     assert train_node
     train_node.actions.clear()
     assert 'actions' not in train_node.serialize()
+
+
+def test_node_sort_order(pipeline_config: Config):
+    node_names = [n["name"] for n in pipeline_config.pipelines["My deployment pipeline"].serialize()["nodes"]]
+    assert node_names == sorted(node_names)
