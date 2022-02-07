@@ -20,14 +20,19 @@ class Node(Item):
     # `actions` will be set on instance level in subclasses
     actions: List[NodeAction]
 
+    # `continue_on_error` if pipeline execution should continue even when node was erroneous
+    continue_on_error: bool
+
     def __init__(
         self,
         *,
         name: str,
-        actions: Optional[List[NodeAction]] = None
+        actions: Optional[List[NodeAction]] = None,
+        continue_on_error: bool = False,
     ) -> None:
         self.name = name
         self.actions = check_type_and_listify(actions, NodeAction, parse=NodeAction.parse)
+        self.continue_on_error = bool(continue_on_error)
 
     @classmethod
     def parse_qualifying(cls, data: SerializedDict) -> 'Node':

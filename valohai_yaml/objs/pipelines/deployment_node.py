@@ -20,8 +20,9 @@ class DeploymentNode(Node):
         actions: Optional[List[NodeAction]] = None,
         endpoints: Optional[List[str]] = None,
         aliases: Optional[List[str]] = None,
+        continue_on_error: bool = False,
     ) -> None:
-        super().__init__(name=name, actions=actions)
+        super().__init__(name=name, actions=actions, continue_on_error=continue_on_error)
         if aliases is None:
             aliases = []
         if endpoints is None:

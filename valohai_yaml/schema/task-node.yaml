@@ -8,6 +8,8 @@ properties:
     type: string
   step:
     type: string
+  continue-on-error:
+    type: boolean
   actions:
     type: array
     items:

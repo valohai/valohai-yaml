@@ -17,9 +17,10 @@ class ExecutionNode(Node):
         name: str,
         step: str,
         actions: Optional[List[NodeAction]] = None,
-        override: Optional[NodeOverrideDict] = None
+        override: Optional[NodeOverrideDict] = None,
+        continue_on_error: bool = False,
     ) -> None:
-        super().__init__(name=name, actions=actions)
+        super().__init__(name=name, actions=actions, continue_on_error=continue_on_error)
         if override is None:
             override = {}
         self.step = step

@@ -47,6 +47,13 @@ def test_invalid_file_too_long_input_name_cli(capsys):
     assert "'this-input-name-is-way-too-long-and-will-cause-the-validation-to-fail' is too long" in out
 
 
+def test_invalid_on_error_value(capsys):
+    assert main([get_error_example_path('invalid-on-error-value.yaml')]) == 1
+    out, err = capsys.readouterr()
+    assert "invalid-on-error-value.yaml" in out
+    assert "is not valid under any of the given schemas" in out
+
+
 def test_valid_endpoint_name_cli(capsys):
     assert main([get_valid_example_path('endpoint-names-valid.yaml')]) == 0
 
