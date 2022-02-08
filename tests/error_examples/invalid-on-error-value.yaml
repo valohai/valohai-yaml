@@ -1,0 +1,29 @@
+- step:
+    name: preprocess
+    image: python:3.7
+    command:
+      - python ./preprocess.py
+- step:
+    name: train
+    image: python:3.7
+    command:
+      - pip install valohai-utils
+      - python ./train.py {parameters}
+    parameters:
+      - name: id
+        type: string
+- pipeline:
+    name: dynamic-task
+    nodes:
+      - name: preprocess
+        step: preprocess
+        type: execution
+      - name: train-with-errors
+        step: train
+        type: task
+        on-error: report-to-sentry
+      - name: train
+        step: train
+        type: task
+    edges:
+      - [ preprocess.metadata.storeids, train.parameter.id ]

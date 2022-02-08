@@ -20,6 +20,9 @@ properties:
     type: array
     items:
       "$ref": "./node-action.json"
+  on-error:
+    type: string
+    enum: ["stop-all", "continue"]
 required:
   - name
   - deployment

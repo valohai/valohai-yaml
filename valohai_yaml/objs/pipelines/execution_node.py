@@ -1,8 +1,8 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from ...lint import LintResult
 from ...types import LintContext, NodeOverrideDict
-from .node import Node
+from .node import ErrorAction, Node
 from .node_action import NodeAction
 
 
@@ -17,9 +17,10 @@ class ExecutionNode(Node):
         name: str,
         step: str,
         actions: Optional[List[NodeAction]] = None,
-        override: Optional[NodeOverrideDict] = None
+        override: Optional[NodeOverrideDict] = None,
+        on_error: Union[str, ErrorAction] = ErrorAction.STOP_ALL,
     ) -> None:
-        super().__init__(name=name, actions=actions)
+        super().__init__(name=name, actions=actions, on_error=on_error)
         if override is None:
             override = {}
         self.step = step

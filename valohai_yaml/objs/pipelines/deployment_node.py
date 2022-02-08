@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from valohai_yaml.lint import LintResult
 
 from ...types import LintContext
-from .node import Node
+from .node import ErrorAction, Node
 from .node_action import NodeAction
 
 
@@ -20,8 +20,9 @@ class DeploymentNode(Node):
         actions: Optional[List[NodeAction]] = None,
         endpoints: Optional[List[str]] = None,
         aliases: Optional[List[str]] = None,
+        on_error: Union[str, ErrorAction] = ErrorAction.STOP_ALL,
     ) -> None:
-        super().__init__(name=name, actions=actions)
+        super().__init__(name=name, actions=actions, on_error=on_error)
         if aliases is None:
             aliases = []
         if endpoints is None:
