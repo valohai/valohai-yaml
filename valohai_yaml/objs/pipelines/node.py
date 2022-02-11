@@ -12,7 +12,8 @@ from .node_action import NodeAction
 class ErrorAction(Enum):
     """What should happen when error occurs in nodes execution."""
 
-    STOP_ALL = 'stop-all'  # default
+    STOP_ALL = 'stop-all'  # default: stop whole pipeline on error
+    STOP_NEXT = 'stop-next'  # stop only following nodes on error
     CONTINUE = 'continue'  # continue pipeline as error never occurred
 
     @classmethod
