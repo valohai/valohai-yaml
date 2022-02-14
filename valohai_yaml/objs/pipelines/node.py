@@ -1,4 +1,5 @@
-from typing import List, Optional
+from enum import Enum
+from typing import List, Optional, Union
 
 from ...lint import LintResult
 from ...types import LintContext, SerializedDict
@@ -6,6 +7,25 @@ from ...utils.lint import lint_iterables
 from ..base import Item
 from ..utils import check_type_and_listify, consume_array_of
 from .node_action import NodeAction
+
+
+class ErrorAction(Enum):
+    """What should happen when error occurs in nodes execution."""
+
+    STOP_ALL = 'stop-all'  # default: stop whole pipeline on error
+    STOP_NEXT = 'stop-next'  # stop only following nodes on error
+    CONTINUE = 'continue'  # continue pipeline as error never occurred
+
+    @classmethod
+    def cast(cls, value: Optional[Union['ErrorAction', str]]) -> 'ErrorAction':
+        if not value:
+            return ErrorAction.STOP_ALL
+        if isinstance(value, ErrorAction):
+            return value
+        value = str(value).lower()
+        if value == 'none':
+            return ErrorAction.STOP_ALL
+        return ErrorAction(value)
 
 
 class Node(Item):
@@ -20,14 +40,19 @@ class Node(Item):
     # `actions` will be set on instance level in subclasses
     actions: List[NodeAction]
 
+    # `on_error` what the pipeline should do when this node is erroneous: "stop-all" default, "continue"
+    on_error: ErrorAction
+
     def __init__(
         self,
         *,
         name: str,
-        actions: Optional[List[NodeAction]] = None
+        actions: Optional[List[NodeAction]] = None,
+        on_error: Union[str, ErrorAction] = ErrorAction.STOP_ALL,
     ) -> None:
         self.name = name
         self.actions = check_type_and_listify(actions, NodeAction, parse=NodeAction.parse)
+        self.on_error = ErrorAction.cast(on_error)
 
     @classmethod
     def parse_qualifying(cls, data: SerializedDict) -> 'Node':
@@ -54,6 +79,11 @@ class Node(Item):
         lint_iterables(lint_result, context, (
             self.actions,
         ))
+
+    def get_data(self) -> SerializedDict:
+        data = super().get_data()
+        data['on_error'] = data['on_error'].value
+        return data
 
     def __repr__(self) -> str:  # noqa: D105
         return f'<{self.type.title()} Node "{self.name}">'
