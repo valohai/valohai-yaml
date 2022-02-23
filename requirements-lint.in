@@ -5,9 +5,8 @@ flake8-docstrings
 flake8-isort
 flake8-return
 flake8-simplify
+flake8-tidy-imports
 mypy
-pip-tools
 pytest
 pytest-cov
-tomli<2.0.0
 types-PyYAML
