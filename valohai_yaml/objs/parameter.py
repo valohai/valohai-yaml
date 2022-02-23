@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Iterable, List, Optional, Union
 
-from valohai_yaml.excs import ValidationErrors
+from valohai_yaml.excs import InvalidType, ValidationErrors
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.types import LintContext, SerializedDict
@@ -125,7 +125,8 @@ class Parameter(Item):
             errors.append('Only a single value is allowed')
 
         for atom in listify(value):
-            assert not isinstance(atom, list)  # type guard
+            if isinstance(atom, list):  # type guard
+                raise InvalidType(f"nested list atom {atom!r} not allowed")
             atom = self._validate_type(atom, errors)
             atom = self._validate_value(atom, errors)
             validated_values.append(atom)
@@ -174,7 +175,8 @@ class Parameter(Item):
         if self.multiple == MultipleMode.REPEAT:
             out = []
             for atom in listify(value):
-                assert not isinstance(atom, list)  # type guard
+                if isinstance(atom, list):
+                    raise InvalidType(f"nested list value {atom!r} for repeat-style multiple parameter not allowed")
                 out.extend(_format_atom(atom))
             return out
         elif self.multiple == MultipleMode.SEPARATE:
@@ -184,7 +186,8 @@ class Parameter(Item):
                 return _format_atom(self.multiple_separator.join(str(atom) for atom in value_list))
             return None
         elif not self.multiple:
-            assert not isinstance(value, list)
+            if isinstance(value, list):
+                raise InvalidType(f"list value {value!r} for non-multiple parameter {self.name!r} not allowed")
             return _format_atom(value)
         raise NotImplementedError(f'unknown multiple type {self.multiple!r}')
 
