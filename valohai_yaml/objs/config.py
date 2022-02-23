@@ -2,6 +2,7 @@ import copy
 from itertools import chain
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
+from valohai_yaml.excs import InvalidType
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.endpoint import Endpoint
@@ -43,7 +44,8 @@ class Config(Item):
         parsers = cls.get_top_level_parsers()
         parse_warnings = []
         for datum in data:
-            assert isinstance(datum, dict)
+            if not isinstance(datum, dict):
+                raise InvalidType(f"Top-level YAML {datum} is not a dictionary")
             for type, (items, parse) in parsers.items():
                 if type in datum:
                     items.append(parse(datum[type]))

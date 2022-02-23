@@ -5,6 +5,10 @@ import jsonschema
 ErrorType = Union[str, jsonschema.ValidationError]
 
 
+class InvalidType(TypeError):
+    """A type error specific to valohai-yaml."""
+
+
 class ValidationError(ValueError):
     """Generic validation error."""
 
