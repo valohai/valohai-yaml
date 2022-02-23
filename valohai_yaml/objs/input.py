@@ -1,8 +1,8 @@
 from enum import Enum
 from typing import List, Optional, Union
 
-from ..types import SerializedDict
-from .base import Item
+from valohai_yaml.objs.base import Item
+from valohai_yaml.types import SerializedDict
 
 KeepDirectoriesValue = Union[bool, str, 'KeepDirectories']
 

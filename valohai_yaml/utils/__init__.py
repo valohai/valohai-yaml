@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, overload, Tuple, TypeVar, Union
+from typing import Any, List, Optional, Tuple, TypeVar, Union, overload
 
 from yaml import safe_load
 

@@ -1,9 +1,9 @@
 from typing import List, Optional, Union
 
-from ...lint import LintResult
-from ...types import LintContext, NodeOverrideDict
-from .node import ErrorAction, Node
-from .node_action import NodeAction
+from valohai_yaml.lint import LintResult
+from valohai_yaml.objs.pipelines.node import ErrorAction, Node
+from valohai_yaml.objs.pipelines.node_action import NodeAction
+from valohai_yaml.types import LintContext, NodeOverrideDict
 
 
 class ExecutionNode(Node):

@@ -1,7 +1,6 @@
 from valohai_yaml.objs import Config
-
-from .types import YamlReadable
-from .utils import read_yaml
+from valohai_yaml.types import YamlReadable
+from valohai_yaml.utils import read_yaml
 
 
 def parse(yaml: YamlReadable, validate: bool = True) -> Config:
@@ -16,6 +15,6 @@ def parse(yaml: YamlReadable, validate: bool = True) -> Config:
     if data is None:  # empty file
         return Config()
     if validate:  # pragma: no branch
-        from .validation import validate as do_validate
+        from valohai_yaml.validation import validate as do_validate
         do_validate(data, raise_exc=True)
     return Config.parse(data)

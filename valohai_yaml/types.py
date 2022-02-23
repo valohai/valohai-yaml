@@ -1,4 +1,4 @@
-from typing import Any, Dict, IO, List, Union
+from typing import IO, Any, Dict, List, Union
 
 YamlReadable = Union[Dict[Any, Any], List[Any], bytes, str, IO[bytes], IO[str]]
 SerializedDict = Dict[str, Any]

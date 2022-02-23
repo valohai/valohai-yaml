@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from valohai_yaml.excs import ValidationError
 from valohai_yaml.lint import LintResult
@@ -7,7 +7,7 @@ from valohai_yaml.types import EdgeConfigurationDict, LintContext, SerializedDic
 if TYPE_CHECKING:
     from valohai_yaml.objs import Pipeline
 
-from ..base import Item
+from valohai_yaml.objs.base import Item
 
 
 def _split_prop(prop: str) -> List[str]:

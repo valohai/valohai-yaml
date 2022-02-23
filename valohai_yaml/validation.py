@@ -7,9 +7,9 @@ from typing import Any, Dict, List
 import yaml
 from jsonschema import Draft4Validator, RefResolver, ValidationError
 
-from .excs import ValidationErrors
-from .types import YamlReadable
-from .utils import read_yaml
+from valohai_yaml.excs import ValidationErrors
+from valohai_yaml.types import YamlReadable
+from valohai_yaml.utils import read_yaml
 
 SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
 

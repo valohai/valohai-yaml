@@ -3,15 +3,14 @@ from itertools import chain
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
 from valohai_yaml.lint import LintResult
-
-from ..types import LintContext, SerializedDict
-from ..utils.lint import lint_iterables
-from ..utils.merge import merge_dicts, merge_simple
-from .base import Item
-from .endpoint import Endpoint
-from .pipelines.pipeline import Pipeline
-from .step import Step
-from .utils import check_type_and_dictify
+from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.endpoint import Endpoint
+from valohai_yaml.objs.pipelines.pipeline import Pipeline
+from valohai_yaml.objs.step import Step
+from valohai_yaml.objs.utils import check_type_and_dictify
+from valohai_yaml.types import LintContext, SerializedDict
+from valohai_yaml.utils.lint import lint_iterables
+from valohai_yaml.utils.merge import merge_dicts, merge_simple
 
 ParserFunction = Callable[[SerializedDict], Any]
 

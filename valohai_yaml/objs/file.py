@@ -1,6 +1,6 @@
 from typing import Optional
 
-from .base import Item
+from valohai_yaml.objs.base import Item
 
 
 class File(Item):

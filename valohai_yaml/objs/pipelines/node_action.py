@@ -1,9 +1,9 @@
 from typing import Iterable, List, Set, Union
 
-from ...lint import LintResult
-from ...types import LintContext, SerializedDict
-from ...utils import listify
-from ..base import Item
+from valohai_yaml.lint import LintResult
+from valohai_yaml.objs.base import Item
+from valohai_yaml.types import LintContext, SerializedDict
+from valohai_yaml.utils import listify
 
 WELL_KNOWN_WHENS = {
     'node-complete',  # Node completed (successfully)

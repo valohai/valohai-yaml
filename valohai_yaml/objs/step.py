@@ -2,19 +2,23 @@ import copy
 from collections import OrderedDict
 from typing import Any, Dict, Iterable, List, Optional, Union
 
+from valohai_yaml.commands import build_command
 from valohai_yaml.lint import LintResult
-
-from ..commands import build_command
-from ..types import LintContext, SerializedDict
-from ..utils.lint import lint_iterables
-from ..utils.merge import merge_dicts, merge_simple
-from .base import Item
-from .environment_variable import EnvironmentVariable
-from .input import Input
-from .mount import Mount
-from .parameter import Parameter
-from .parameter_map import ParameterMap
-from .utils import check_type_and_dictify, check_type_and_listify, consume_array_of, serialize_into
+from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.environment_variable import EnvironmentVariable
+from valohai_yaml.objs.input import Input
+from valohai_yaml.objs.mount import Mount
+from valohai_yaml.objs.parameter import Parameter
+from valohai_yaml.objs.parameter_map import ParameterMap
+from valohai_yaml.objs.utils import (
+    check_type_and_dictify,
+    check_type_and_listify,
+    consume_array_of,
+    serialize_into,
+)
+from valohai_yaml.types import LintContext, SerializedDict
+from valohai_yaml.utils.lint import lint_iterables
+from valohai_yaml.utils.merge import merge_dicts, merge_simple
 
 
 class Step(Item):

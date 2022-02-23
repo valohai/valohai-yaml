@@ -1,6 +1,6 @@
 from typing import Any, List, Mapping, Optional
 
-from .parameter import Parameter
+from valohai_yaml.objs.parameter import Parameter
 
 
 class ParameterMap:

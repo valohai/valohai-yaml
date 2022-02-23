@@ -1,9 +1,9 @@
 from typing import Iterable, Optional, Union
 
-from ..types import EndpointResourcesDict, SerializedDict
-from .base import Item
-from .file import File
-from .utils import check_type_and_listify
+from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.file import File
+from valohai_yaml.objs.utils import check_type_and_listify
+from valohai_yaml.types import EndpointResourcesDict, SerializedDict
 
 
 class Endpoint(Item):

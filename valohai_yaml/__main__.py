@@ -2,7 +2,7 @@ import argparse
 import sys
 from typing import List, Optional
 
-from valohai_yaml.lint import lint, LintResult
+from valohai_yaml.lint import LintResult, lint
 
 
 def main(argv: Optional[List[str]] = None) -> int:

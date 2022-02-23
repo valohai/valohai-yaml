@@ -1,6 +1,13 @@
 from typing import Any, Dict, List, Union
 
-from valohai_yaml.objs import Config, DeploymentNode, ExecutionNode, Node, Pipeline, TaskNode
+from valohai_yaml.objs import (
+    Config,
+    DeploymentNode,
+    ExecutionNode,
+    Node,
+    Pipeline,
+    TaskNode,
+)
 from valohai_yaml.utils import listify
 
 ConvertedObject = Dict[str, Any]
