@@ -1,6 +1,6 @@
-from .excs import ValidationErrors
-from .parsing import parse
-from .validation import validate
+from valohai_yaml.excs import ValidationErrors
+from valohai_yaml.parsing import parse
+from valohai_yaml.validation import validate
 
 __version__ = '0.22.0'
 

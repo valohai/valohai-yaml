@@ -1,7 +1,7 @@
 import re
 import warnings
 from shlex import quote
-from typing import List, Optional, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from valohai_yaml.objs.parameter_map import ParameterMap
 from valohai_yaml.utils import listify

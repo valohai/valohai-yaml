@@ -1,10 +1,10 @@
 from collections import OrderedDict
 from typing import Any, Callable, Optional, Type, TypeVar
 
-from ..lint import LintResult
-from ..objs.utils import serialize_into
-from ..types import LintContext, SerializedDict
-from ..utils.merge import merge_simple
+from valohai_yaml.lint import LintResult
+from valohai_yaml.objs.utils import serialize_into
+from valohai_yaml.types import LintContext, SerializedDict
+from valohai_yaml.utils.merge import merge_simple
 
 T = TypeVar('T', bound='Item')
 

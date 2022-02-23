@@ -1,7 +1,7 @@
 from collections import OrderedDict
-from typing import Any, Callable, Iterable, List
+from typing import TYPE_CHECKING, Any, Callable, Iterable, List
 from typing import MutableMapping as MutableMappingType
-from typing import Optional, Type, TYPE_CHECKING, TypeVar
+from typing import Optional, Type, TypeVar
 
 from valohai_yaml.types import SerializedDict
 

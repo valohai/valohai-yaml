@@ -3,10 +3,9 @@ from typing import Any, Iterable, List, Optional, Union
 
 from valohai_yaml.excs import ValidationErrors
 from valohai_yaml.lint import LintResult
+from valohai_yaml.objs.base import Item
+from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils import listify
-
-from ..types import LintContext, SerializedDict
-from .base import Item
 
 
 class MultipleMode(Enum):

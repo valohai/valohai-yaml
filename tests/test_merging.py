@@ -1,4 +1,9 @@
-from tests.config_data import complex_step, complex_step_alt, complex_steps_merged, echo_step
+from tests.config_data import (
+    complex_step,
+    complex_step_alt,
+    complex_steps_merged,
+    echo_step,
+)
 from valohai_yaml.objs import Config
 
 

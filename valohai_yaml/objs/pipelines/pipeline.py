@@ -2,12 +2,11 @@ from collections import OrderedDict
 from typing import Any, List, Optional
 
 from valohai_yaml.lint import LintResult
+from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.pipelines.edge import Edge
+from valohai_yaml.objs.pipelines.node import Node
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.lint import lint_iterables
-
-from ..base import Item
-from .edge import Edge
-from .node import Node
 
 
 class Pipeline(Item):

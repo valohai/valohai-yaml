@@ -1,12 +1,12 @@
 from enum import Enum
 from typing import List, Optional, Union
 
-from ...lint import LintResult
-from ...types import LintContext, SerializedDict
-from ...utils.lint import lint_iterables
-from ..base import Item
-from ..utils import check_type_and_listify, consume_array_of
-from .node_action import NodeAction
+from valohai_yaml.lint import LintResult
+from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.pipelines.node_action import NodeAction
+from valohai_yaml.objs.utils import check_type_and_listify, consume_array_of
+from valohai_yaml.types import LintContext, SerializedDict
+from valohai_yaml.utils.lint import lint_iterables
 
 
 class ErrorAction(Enum):
