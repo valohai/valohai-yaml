@@ -60,8 +60,13 @@ class PipelineConverter:
         if not step:  # pragma: no cover
             raise ValueError(f"Step {step_name} not found in {self.config}")
         step_data = step.serialize()
-        step_data.update(override)  # TODO: this might need to e.g. merge mappings
-        step_data["parameters"] = step.get_parameter_defaults(include_flags=True)
+        step_data.update(override)
+
+        parameters_from_node = node.get_parameter_defaults()
+        parameters_from_step = step.get_parameter_defaults(include_flags=True)
+        step_data["parameters"] = parameters_from_step
+        step_data["parameters"].update(parameters_from_node)
+
         step_data["inputs"] = {
             i["name"]: listify(i.get("default")) for i in step_data.get("inputs", [])
         }
