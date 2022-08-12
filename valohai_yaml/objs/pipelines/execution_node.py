@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.pipelines.node import ErrorAction, Node
@@ -32,3 +32,13 @@ class ExecutionNode(Node):
         pipeline = context['pipeline']
         if self.step not in config.steps:
             lint_result.add_error(f'Pipeline {pipeline.name} node {self.name} step {self.step} does not exist')
+
+    def get_parameter_defaults(self) -> Dict[str, Any]:
+        if "parameters" not in self.override:
+            return {}
+        return {
+            param['name']: param['default']
+            for param
+            in self.override['parameters']
+            if 'default' in param
+        }
