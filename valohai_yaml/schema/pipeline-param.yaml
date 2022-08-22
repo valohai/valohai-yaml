@@ -1,0 +1,17 @@
+---
+title: Pipeline Parameter
+type: object
+additionalProperties: false
+properties:
+  name:
+    type: string
+  targets:
+    oneOf:
+      - type: string
+      - type: array
+        items:
+          type: string
+  target:
+    type: string
+  default:
+    description: The default value for the pipeline parameter.

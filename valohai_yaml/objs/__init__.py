@@ -8,6 +8,7 @@ from valohai_yaml.objs.pipelines.edge import Edge
 from valohai_yaml.objs.pipelines.execution_node import ExecutionNode
 from valohai_yaml.objs.pipelines.node import Node
 from valohai_yaml.objs.pipelines.pipeline import Pipeline
+from valohai_yaml.objs.pipelines.pipeline_parameter import PipelineParameter
 from valohai_yaml.objs.pipelines.task_node import TaskNode
 from valohai_yaml.objs.step import Step
 
@@ -24,4 +25,5 @@ __all__ = [
     'Pipeline',
     'Step',
     'TaskNode',
+    'PipelineParameter',
 ]

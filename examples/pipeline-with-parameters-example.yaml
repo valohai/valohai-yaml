@@ -1,0 +1,47 @@
+- step:
+    name: train_step
+    image: python:3.10
+    command:
+      - pip install valohai-utils
+      - python ./train.py {parameters}
+    parameters:
+      - name: id
+        type: string
+
+- pipeline:
+    name: Example Pipeline with Parameters
+    parameters:
+      - name: id
+        targets:
+          - train.parameter.id
+          - train_parallel.parameter.id
+    nodes:
+      - name: train
+        step: train_step
+        type: execution
+      - name: train_parallel
+        step: train_step
+        type: execution
+    edges: [ ]
+
+- pipeline:
+    name: Short hand parameter target
+    parameters:
+      - name: id
+        targets: train.parameter.id
+    nodes:
+      - name: train
+        step: train_step
+        type: execution
+    edges: [ ]
+
+- pipeline:
+    name: Short hand parameter target 2
+    parameters:
+      - name: id
+        target: train.parameter.id
+    nodes:
+      - name: train
+        step: train_step
+        type: execution
+    edges: [ ]

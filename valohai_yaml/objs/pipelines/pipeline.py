@@ -5,6 +5,7 @@ from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.pipelines.edge import Edge
 from valohai_yaml.objs.pipelines.node import Node
+from valohai_yaml.objs.pipelines.pipeline_parameter import PipelineParameter
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.lint import lint_iterables
 
@@ -17,11 +18,13 @@ class Pipeline(Item):
         *,
         name: str,
         nodes: List[Node],
-        edges: List[Edge]
+        edges: List[Edge],
+        parameters: List[PipelineParameter],
     ) -> None:
         self.name = name
         self.nodes = nodes
         self.edges = edges
+        self.parameters = parameters
 
     @property
     def node_map(self) -> OrderedDict:  # type: ignore[type-arg]
@@ -32,11 +35,12 @@ class Pipeline(Item):
         data = data.copy()
         data['edges'] = [Edge.parse(e) for e in data.pop('edges', ())]
         data['nodes'] = [Node.parse_qualifying(n) for n in data.pop('nodes', ())]
+        data['parameters'] = [PipelineParameter.parse(e) for e in data.pop('parameters', ())]
         return super().parse(data)
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, pipeline=self)
-        lint_iterables(lint_result, context, (self.nodes, self.edges))
+        lint_iterables(lint_result, context, (self.nodes, self.edges, self.parameters))
 
     def get_node_by(self, **kwargs: Any) -> Optional[Node]:
         """Get the first node that matches all the passed named arguments."""

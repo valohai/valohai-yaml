@@ -3,16 +3,12 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from valohai_yaml.excs import ValidationError
 from valohai_yaml.lint import LintResult
 from valohai_yaml.types import EdgeConfigurationDict, LintContext, SerializedDict
+from valohai_yaml.utils.node_socket_utils import split_socket_str
 
 if TYPE_CHECKING:
     from valohai_yaml.objs import Pipeline
 
 from valohai_yaml.objs.base import Item
-
-
-def _split_prop(prop: str) -> List[str]:
-    return prop.split('.', 2)
-
 
 edge_types = {'input', 'output', 'parameter', 'metadata', 'file'}
 
@@ -39,7 +35,7 @@ class Edge(Item):
 
     @source.setter
     def source(self, prop: str) -> None:
-        split = _split_prop(prop)
+        split = split_socket_str(prop)
         if len(split) != 3:
             raise ValidationError(f"Source specifier {prop!r} must have 3 parts (it has {len(split)})")
         self.source_node, self.source_type, self.source_key = split
@@ -50,7 +46,7 @@ class Edge(Item):
 
     @target.setter
     def target(self, prop: str) -> None:
-        split = _split_prop(prop)
+        split = split_socket_str(prop)
         if len(split) != 3:
             raise ValidationError(f"Target specifier {prop!r} must have 3 parts (it has {len(split)})")
         self.target_node, self.target_type, self.target_key = split
