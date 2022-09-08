@@ -1,4 +1,4 @@
-from valohai_yaml.objs import Config, DeploymentNode, Pipeline
+from valohai_yaml.objs import Config, DeploymentNode
 
 
 def test_pipeline_valid(pipeline_config: Config):
@@ -80,7 +80,3 @@ def test_empty_actions_not_serialized(pipeline_config: Config):
     assert train_node
     train_node.actions.clear()
     assert 'actions' not in train_node.serialize()
-
-
-def test_programmatic_pipeline_parameters():
-    assert Pipeline(name="...", nodes=[], edges=[]).parameters == []
