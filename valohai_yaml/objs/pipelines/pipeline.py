@@ -38,6 +38,12 @@ class Pipeline(Item):
         data['parameters'] = [PipelineParameter.parse(e) for e in data.pop('parameters', ())]
         return super().parse(data)
 
+    def get_data(self) -> SerializedDict:
+        data = super().get_data()
+        if not data.get('parameters'):
+            del data['parameters']
+        return data
+
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, pipeline=self)
         lint_iterables(lint_result, context, (self.nodes, self.edges, self.parameters))
