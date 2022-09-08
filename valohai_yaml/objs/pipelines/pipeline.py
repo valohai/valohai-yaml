@@ -19,12 +19,12 @@ class Pipeline(Item):
         name: str,
         nodes: List[Node],
         edges: List[Edge],
-        parameters: List[PipelineParameter],
+        parameters: Optional[List[PipelineParameter]] = None,
     ) -> None:
         self.name = name
         self.nodes = nodes
         self.edges = edges
-        self.parameters = parameters
+        self.parameters = (parameters or [])
 
     @property
     def node_map(self) -> OrderedDict:  # type: ignore[type-arg]
