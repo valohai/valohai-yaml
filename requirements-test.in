@@ -1,4 +1,0 @@
-coverage[toml]<6.3  # TODO: remove when no longer py3.6+
-pytest
-pytest-cov
-tomli<2.0.0
