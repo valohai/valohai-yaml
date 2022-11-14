@@ -36,10 +36,8 @@ def _replace_interpolation(parameter_map: ParameterMap, match: 'Match[str]') -> 
 
     if value.startswith('parameter-value:'):
         parameter_name = value.split(':', 1)[1]
-        p_value = parameter_map.values.get(parameter_name)
-        if p_value:
-            return quote(str(p_value))
-
+        if parameter_name in parameter_map.values:
+            return quote(str(parameter_map.values[parameter_name]))
     return match.group(0)  # Return the original otherwise
 
 
