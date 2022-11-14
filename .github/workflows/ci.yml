@@ -20,33 +20,29 @@ jobs:
           - '3.9'
           - '3.10'
     steps:
+      - uses: actions/checkout@v3
       - name: 'Set up Python ${{ matrix.python-version }}'
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '${{ matrix.python-version }}'
-      - name: Cache multiple paths
-        uses: actions/cache@v2
-        with:
-          path: $HOME/.cache/pip
-          key: '${{ runner.os }}-${{ hashFiles(''**/setup.py'') }}'
-      - uses: actions/checkout@v2
-      - run: pip install -U pip setuptools wheel
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            requirements*txt
       - run: 'pip install -e . -r requirements-test.txt'
       - run: py.test -vvv --cov .
       - uses: codecov/codecov-action@v2
   Lint:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - name: Cache multiple paths
-        uses: actions/cache@v2
-        with:
-          path: $HOME/.cache/pip
-          key: '${{ runner.os }}-${{ hashFiles(''**/setup.py'') }}'
-      - uses: actions/checkout@v2
-      - run: pip install -U pip setuptools wheel
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            requirements*txt
       - run: 'pip install -e . -r requirements-lint.txt'
       - run: flake8 valohai_yaml tests
       - run: mypy valohai_yaml --strict --show-error-codes
@@ -54,9 +50,9 @@ jobs:
   Build:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - uses: actions/checkout@v2
-      - run: pip install -U pip setuptools build
+      - run: pip install -U build
       - run: python -m build .

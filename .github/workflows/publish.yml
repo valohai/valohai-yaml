@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     steps:
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - uses: actions/checkout@v2
-      - run: pip install -U pip setuptools build twine
+      - run: pip install -U build twine
       - run: python -m build .
       - run: twine upload --verbose dist/*
         env:
