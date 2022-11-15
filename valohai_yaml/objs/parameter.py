@@ -179,16 +179,19 @@ class Parameter(Item):
                     raise InvalidType(f"nested list value {atom!r} for repeat-style multiple parameter not allowed")
                 out.extend(_format_atom(atom))
             return out
-        elif self.multiple == MultipleMode.SEPARATE:
+
+        if self.multiple == MultipleMode.SEPARATE:
             value_list = listify(value)
             # Guard against generating a `--foo=` when there are no values.
             if value_list:
                 return _format_atom(self.multiple_separator.join(str(atom) for atom in value_list))
             return None
-        elif not self.multiple:
+
+        if not self.multiple:
             if isinstance(value, list):
                 raise InvalidType(f"list value {value!r} for non-multiple parameter {self.name!r} not allowed")
             return _format_atom(value)
+
         raise NotImplementedError(f'unknown multiple type {self.multiple!r}')
 
     def lint(

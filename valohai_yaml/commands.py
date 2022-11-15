@@ -25,17 +25,21 @@ def quote_multiple(args: Optional[List[str]]) -> str:
 
 def _replace_interpolation(parameter_map: ParameterMap, match: 'Match[str]') -> str:
     value = match.group(1)
+
     if value in ('parameters', 'params'):
         return quote_multiple(parameter_map.build_parameters())
-    elif value.startswith('parameter:'):
+
+    if value.startswith('parameter:'):
         parameter_name = value.split(':', 1)[1]
         if parameter_name in parameter_map.parameters:
             return quote_multiple(parameter_map.build_parameter_by_name(parameter_name))
-    elif value.startswith('parameter-value:'):
+
+    if value.startswith('parameter-value:'):
         parameter_name = value.split(':', 1)[1]
         p_value = parameter_map.values.get(parameter_name)
         if p_value:
             return quote(str(p_value))
+
     return match.group(0)  # Return the original otherwise
 
 
