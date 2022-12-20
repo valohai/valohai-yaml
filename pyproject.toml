@@ -1,6 +1,52 @@
 [build-system]
-requires = [
-    "setuptools>=59",
-    "wheel",
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "valohai-yaml"
+dynamic = ["version"]
+description = "Valohai.yaml validation and parsing"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.6"
+authors = [
+    { name = "Valohai", email = "info@valohai.com" },
 ]
-build-backend = "setuptools.build_meta"
+keywords = [
+    "strings",
+    "utility",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "jsonschema",
+    "PyYAML",
+]
+
+[project.scripts]
+valohai-yaml = "valohai_yaml.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/valohai/valohai-yaml"
+
+[tool.hatch.version]
+path = "valohai_yaml/__init__.py"
+
+[tool.pytest]
+norecursedirs = [".git", ".tox", "dist"]
+
+[tool.pydocstyle]
+ignore = ["D100", "D104", "D203", "D212"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
