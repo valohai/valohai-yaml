@@ -3,7 +3,7 @@ name: Publish
   push:
     tags:
       - "v*"
-    
+
 jobs:
   Publish:
     runs-on: ubuntu-20.04

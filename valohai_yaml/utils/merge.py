@@ -16,10 +16,10 @@ def merge_dicts(
     skip_missing_a: bool = False,
     skip_missing_b: bool = False
 ) -> TD:
-    out = type(a)()  # type: TD
+    out: TD = type(a)()
 
     # Hack to keep the iteration order the same...
-    keys = list(a)  # type: List[Any]
+    keys: List[Any] = list(a)
     key_set = set(keys)
     keys += [k for k in b if k not in key_set]
 
