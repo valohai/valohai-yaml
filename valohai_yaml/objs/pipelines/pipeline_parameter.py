@@ -39,8 +39,8 @@ class PipelineParameter(Item):
         return super().parse(data)
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
-        pipeline = context['pipeline']  # type: Pipeline
-        config = context['config']  # type: Config
+        pipeline: Pipeline = context['pipeline']
+        config: Config = context['config']
         steps = config.steps
         node_map = pipeline.node_map
         for target in self.targets:

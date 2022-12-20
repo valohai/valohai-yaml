@@ -81,7 +81,7 @@ class Edge(Item):
         return result
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
-        pipeline = context['pipeline']  # type: Pipeline
+        pipeline: Pipeline = context['pipeline']
         node_map = pipeline.node_map
         if self.source_node not in node_map:
             lint_result.add_error(

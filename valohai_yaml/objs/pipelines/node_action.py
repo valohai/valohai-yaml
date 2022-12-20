@@ -27,9 +27,9 @@ class NodeAction(Item):
         if_: Union[None, str, List[str]],
         then: Union[None, str, List[str]]
     ) -> None:
-        self.when = {str(watom).lower() for watom in listify(when)}  # type: Set[str]
-        self.if_ = listify(if_)  # type: List[str]
-        self.then = listify(then)  # type: List[str]
+        self.when: Set[str] = {str(watom).lower() for watom in listify(when)}
+        self.if_: List[str] = listify(if_)
+        self.then: List[str] = listify(then)
 
     @classmethod
     def parse(cls, data: SerializedDict) -> 'NodeAction':

@@ -61,7 +61,7 @@ def build_command(
         raise TypeError("Passing in lists as ParameterMaps is no longer supported.")
 
     out_commands = []
-    commands = listify(command)  # type: List[str]
+    commands: List[str] = listify(command)
     for command in commands:
         # Only attempt formatting if the string smells like it should be formatted.
         # This allows the user to include shell syntax in the commands, if required.
