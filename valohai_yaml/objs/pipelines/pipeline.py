@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from collections import Counter, OrderedDict
 from typing import Any, List, Optional
 
 from valohai_yaml.lint import LintResult
@@ -45,6 +45,13 @@ class Pipeline(Item):
         return data
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
+        # ensure unique names for nodes
+        node_name_counts = Counter(node.name for node in self.nodes)
+        for name, times in node_name_counts.items():
+            if times > 1:
+                lint_result.add_error(f"Pipeline {self.name} has {times} nodes with the same name of {name}")
+
+        # lint each node, edge and parameter
         context = dict(context, pipeline=self)
         lint_iterables(lint_result, context, (self.nodes, self.edges, self.parameters))
 
