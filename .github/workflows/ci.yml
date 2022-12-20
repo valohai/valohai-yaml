@@ -43,10 +43,7 @@ jobs:
           cache-dependency-path: |
             pyproject.toml
             requirements*txt
-      - run: 'pip install -e . -r requirements-lint.txt'
-      - run: flake8 valohai_yaml tests
-      - run: mypy valohai_yaml --strict --show-error-codes
-      - run: mypy tests
+      - uses: pre-commit/action@v3.0.0
   Build:
     runs-on: ubuntu-20.04
     steps:
