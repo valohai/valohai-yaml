@@ -50,3 +50,18 @@ properties:
   environment:
     type: string
     description: Default execution environment (ID or substring of environment name)
+  time-limit:
+    oneOf:
+      - type: integer
+      - type: string
+    description: >
+      The time limit for the step (in seconds or as a string, e.g. "1h 30m 5s").
+      An unspecified value means "no timeout".
+  no-output-timeout:
+    oneOf:
+      - type: integer
+      - type: string
+    description: >
+      The time after which the step is considered to have died if no output has been generated
+      (in seconds or as a string (e.g. "1h 30m 5s")).
+      An unspecified value means "platform default".

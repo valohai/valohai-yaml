@@ -1,0 +1,18 @@
+---
+
+- step:
+    name: short-time-limit
+    image: busybox
+    command: foo {parameters}
+    time-limit: 300
+- step:
+    name: big-no-output-timeout
+    image: busybox
+    command: foo {parameters}
+    no-output-timeout: 86400
+- step:
+    name: human-readable-time-limit
+    image: busybox
+    command: foo {parameters}
+    time-limit: 1h 30m 5s
+    no-output-timeout: 48h

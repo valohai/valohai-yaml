@@ -1,4 +1,5 @@
 import copy
+import datetime
 from collections import OrderedDict
 from typing import Any, Dict, Iterable, List, Optional, Union
 
@@ -17,6 +18,7 @@ from valohai_yaml.objs.utils import (
     serialize_into,
 )
 from valohai_yaml.types import LintContext, SerializedDict
+from valohai_yaml.utils.duration import parse_duration
 from valohai_yaml.utils.lint import lint_iterables
 from valohai_yaml.utils.merge import merge_dicts, merge_simple
 
@@ -36,7 +38,9 @@ class Step(Item):
         mounts: Iterable[Mount] = (),
         environment_variables: Iterable[EnvironmentVariable] = (),
         environment: Optional[str] = None,
-        description: Optional[str] = None
+        description: Optional[str] = None,
+        time_limit: Optional[datetime.timedelta] = None,
+        no_output_timeout: Optional[datetime.timedelta] = None,
     ) -> None:
         self.name = name
         self.image = image
@@ -50,6 +54,9 @@ class Step(Item):
         self.parameters = check_type_and_dictify(parameters, Parameter, 'name')
         self.environment_variables = check_type_and_dictify(environment_variables, EnvironmentVariable, 'name')
 
+        self.time_limit = time_limit
+        self.no_output_timeout = no_output_timeout
+
     @classmethod
     def parse(cls, data: SerializedDict) -> 'Step':
         kwargs = data.copy()
@@ -57,6 +64,8 @@ class Step(Item):
         kwargs['inputs'] = consume_array_of(kwargs, 'inputs', Input)
         kwargs['mounts'] = consume_array_of(kwargs, 'mounts', Mount)
         kwargs['environment_variables'] = consume_array_of(kwargs, 'environment-variables', EnvironmentVariable)
+        kwargs['time_limit'] = parse_duration(kwargs.pop('time-limit', None))
+        kwargs['no_output_timeout'] = parse_duration(kwargs.pop('no-output-timeout', None))
         inst = cls(**kwargs)
         inst._original_data = data
         return inst
@@ -75,6 +84,8 @@ class Step(Item):
             ('environment', self.environment),
             ('environment-variables', self.environment_variables),
             ('description', self.description),
+            ('time-limit', int(self.time_limit.total_seconds()) if self.time_limit else None),
+            ('no-output-timeout', int(self.no_output_timeout.total_seconds()) if self.no_output_timeout else None),
         ]:
             serialize_into(val, key, source, flatten_dicts=True, elide_empty_iterables=True)
         return val
