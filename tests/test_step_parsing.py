@@ -139,3 +139,12 @@ def test_input_extras(input_extras_config):
 ])
 def test_input_keep_directories(value, expected):
     assert Input(name="foo", keep_directories=value).keep_directories == expected
+
+
+def test_timeouts(timeouts_config):
+    assert timeouts_config.steps['short-time-limit'].time_limit.total_seconds() == 300
+    assert timeouts_config.steps['short-time-limit'].no_output_timeout is None
+    assert timeouts_config.steps['big-no-output-timeout'].time_limit is None
+    assert timeouts_config.steps['big-no-output-timeout'].no_output_timeout.total_seconds() == 86400
+    assert timeouts_config.steps['human-readable-time-limit'].time_limit.total_seconds() == 5405
+    assert timeouts_config.steps['human-readable-time-limit'].no_output_timeout.total_seconds() == 86400 * 2  # 48h
