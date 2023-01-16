@@ -6,6 +6,8 @@
       Trains our core model. Remember to preprocess the dataset before training.
       Also, if hangs for more than 15 minutes without logs, kill the training,
       most likely has ran out of memory.
+    icon: https://valohai.com/assets/img/valohai-logo.svg
+    category: Training
     image: busybox
     command:
       - cd /tmp/code

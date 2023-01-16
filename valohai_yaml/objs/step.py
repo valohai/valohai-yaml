@@ -41,12 +41,16 @@ class Step(Item):
         description: Optional[str] = None,
         time_limit: Optional[datetime.timedelta] = None,
         no_output_timeout: Optional[datetime.timedelta] = None,
+        icon: Optional[str] = None,
+        category: Optional[str] = None,
     ) -> None:
         self.name = name
         self.image = image
         self.command = command
         self.description = description
         self.environment = (str(environment) if environment else None)
+        self.icon = (str(icon) if icon else None)
+        self.category = (str(category) if category else None)
 
         self.outputs = list(outputs)  # TODO: Improve handling
         self.mounts = check_type_and_listify(mounts, Mount)
@@ -86,6 +90,8 @@ class Step(Item):
             ('description', self.description),
             ('time-limit', int(self.time_limit.total_seconds()) if self.time_limit else None),
             ('no-output-timeout', int(self.no_output_timeout.total_seconds()) if self.no_output_timeout else None),
+            ('icon', self.icon),
+            ('category', self.category),
         ]:
             serialize_into(val, key, source, flatten_dicts=True, elide_empty_iterables=True)
         return val
