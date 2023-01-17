@@ -1,12 +1,15 @@
 name: CI
-'on':
+
+on:
   push:
     branches:
       - master
   pull_request:
     branches:
       - master
+
 jobs:
+
   Test:
     runs-on: '${{ matrix.os }}'
     strategy:
@@ -32,6 +35,7 @@ jobs:
       - run: 'pip install -e . -r requirements-test.txt'
       - run: py.test -vvv --cov .
       - uses: codecov/codecov-action@v2
+
   Lint:
     runs-on: ubuntu-20.04
     steps:
@@ -44,6 +48,7 @@ jobs:
             pyproject.toml
             requirements*txt
       - uses: pre-commit/action@v3.0.0
+
   Build:
     runs-on: ubuntu-20.04
     steps:
