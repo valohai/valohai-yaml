@@ -169,7 +169,7 @@ class Parameter(Item):
         pass_as_bits = pass_as_template.split()
 
         def _format_atom(value: Optional[ValueAtomType]) -> List[str]:
-            env = dict(name=self.name, value=value, v=value)
+            env = {"name": self.name, "value": value, "v": value}
             return [bit.format_map(env) for bit in pass_as_bits]
 
         if self.multiple == MultipleMode.REPEAT:
