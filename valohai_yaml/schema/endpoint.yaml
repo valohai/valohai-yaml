@@ -41,6 +41,10 @@ properties:
       Specifies the WSGI application to serve (e.g. a Flask application).
       Specify the module (i.e. `package.app`) or
       the module and the WSGI callable (i.e. `package.app:wsgi_callable`).
+  node-selector:
+    type: string
+    description: Kubernetes node selector specifies which nodes the deployment should be scheduled to.
+    pattern: "="
   resources:
     type: object
     description: Resource requirements and limits for the endpoint.
@@ -64,6 +68,13 @@ properties:
             type: number
           max:
             type: number
+      devices:
+        type: object
+        description: "Devices required e.g. 'nvidia.com/gpu: 1' for one NVIDIA GPU."
+        patternProperties:
+          "^.+$":
+            type: number
+            minimum: 1
 oneOf:
   - required:
       - server-command

@@ -23,3 +23,9 @@ def test_limited_endpoint_parse(endpoint_config):
     assert endpoint.resources['cpu']['max'] == 1.0
     assert endpoint.resources['memory']['min'] == 50
     assert endpoint.resources['memory']['max'] == 100
+
+
+def test_accelerated_endpoint_parse(endpoint_config):
+    endpoint = endpoint_config.endpoints['accelerated-endpoint']
+    assert endpoint.node_selector == 'accelerator=tesla-v100'
+    assert endpoint.resources['devices']['nvidia.com/gpu'] == 1
