@@ -1,7 +1,6 @@
 from collections import OrderedDict
-from typing import TYPE_CHECKING, Any, Callable, Iterable, List
+from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, Type, TypeVar
 from typing import MutableMapping as MutableMappingType
-from typing import Optional, Type, TypeVar
 
 from valohai_yaml.types import SerializedDict
 
@@ -54,8 +53,8 @@ def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr:
     return out
 
 
-def serialize_into(  # noqa: ANN301
-    dest,  # type: OrderedDict[str, Any]
+def serialize_into(
+    dest,  # type: OrderedDict[str, Any] # noqa: ANN001
     key: str,
     value: Any,
     *,

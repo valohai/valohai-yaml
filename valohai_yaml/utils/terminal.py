@@ -36,13 +36,13 @@ def style(  # noqa: C901
     if fg:
         try:
             bits.append('\033[%dm' % (_ansi_colors.index(fg) + 30))
-        except ValueError:
-            raise TypeError(f'Unknown color {fg!r}')
+        except ValueError as err:
+            raise TypeError(f'Unknown color {fg!r}') from err
     if bg:
         try:
             bits.append('\033[%dm' % (_ansi_colors.index(bg) + 40))
-        except ValueError:
-            raise TypeError(f'Unknown color {bg!r}')
+        except ValueError as err:
+            raise TypeError(f'Unknown color {bg!r}') from err
     if bold is not None:
         bits.append('\033[%dm' % (1 if bold else 22))
     if dim is not None:

@@ -53,8 +53,13 @@ print(config.steps['cool step'].command)
 # Development
 
 ```bash
-pip install -e .
-pip install -r requirements-lint.txt
-pip install -r requirements-test.txt
+# setup development dependencies
+pip install -e . -r requirements-test.txt pre-commit
+pre-commit install
+
+# run linting and type checks
+pre-commit run --all-files
+
+# run tests
 pytest
 ```
