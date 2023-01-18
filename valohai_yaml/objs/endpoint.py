@@ -19,6 +19,7 @@ class Endpoint(Item):
         port: Optional[Union[str, int]] = None,
         server_command: Optional[str] = None,
         wsgi: Optional[str] = None,
+        node_selector: Optional[str] = None,
         resources: Optional[EndpointResourcesDict] = None
     ) -> None:
         self.name = name
@@ -28,6 +29,7 @@ class Endpoint(Item):
         self.server_command = server_command
         self.wsgi = wsgi
         self.files = check_type_and_listify(files, File)
+        self.node_selector = node_selector
         self.resources = resources
 
     @classmethod
