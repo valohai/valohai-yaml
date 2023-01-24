@@ -1,5 +1,6 @@
 import pytest
 
+from valohai_yaml.objs import Config
 from valohai_yaml.objs.input import Input, KeepDirectories
 
 
@@ -148,3 +149,8 @@ def test_timeouts(timeouts_config):
     assert timeouts_config.steps['big-no-output-timeout'].no_output_timeout.total_seconds() == 86400
     assert timeouts_config.steps['human-readable-time-limit'].time_limit.total_seconds() == 5405
     assert timeouts_config.steps['human-readable-time-limit'].no_output_timeout.total_seconds() == 86400 * 2  # 48h
+
+
+def test_bling(example1_config: Config) -> None:
+    assert example1_config.steps['run training'].category == "Training"
+    assert example1_config.steps['run training'].icon == "https://valohai.com/assets/img/valohai-logo.svg"

@@ -65,3 +65,9 @@ properties:
       The time after which the step is considered to have died if no output has been generated
       (in seconds or as a string (e.g. "1h 30m 5s")).
       An unspecified value means "platform default".
+  icon:
+    type: string
+    description: URL to the icon representing the step
+  category:
+    type: string
+    description: Category name to group & organize steps in the UI
