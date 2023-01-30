@@ -4,6 +4,7 @@ from typing import Any, Iterable, List, Optional, Union
 from valohai_yaml.excs import InvalidType, ValidationErrors
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.parameter_widget import ParameterWidget
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils import listify
 
@@ -48,7 +49,8 @@ class Parameter(Item):
         pass_false_as: Optional[str] = None,
         choices: Optional[Iterable[ValueAtomType]] = None,
         multiple: Optional[Union[str, MultipleMode]] = None,
-        multiple_separator: str = ','
+        multiple_separator: str = ',',
+        widget: Optional[ParameterWidget] = None,
     ) -> None:
         self.name = name
         self.type = type
@@ -62,6 +64,8 @@ class Parameter(Item):
         self.choices = (list(choices) if choices else None)
         self.multiple = MultipleMode.cast(multiple)
         self.multiple_separator = str(multiple_separator or ',')
+        self.widget = widget
+
         self.default = (listify(default) if self.multiple else default)
         if self.type == 'flag':
             self.optional = True
@@ -193,6 +197,13 @@ class Parameter(Item):
             return _format_atom(value)
 
         raise NotImplementedError(f'unknown multiple type {self.multiple!r}')
+
+    @classmethod
+    def parse(cls, data: SerializedDict) -> 'Parameter':
+        kwargs = data.copy()
+        if 'widget' in data:
+            kwargs['widget'] = ParameterWidget.parse(data.get('widget'))
+        return super().parse(kwargs)
 
     def lint(
         self,

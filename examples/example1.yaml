@@ -57,3 +57,16 @@
         description: List of decoding function types
         type: string
         default: gauss
+
+      - name: sql-query
+        type: string
+        default: SELECT * FROM mytable
+        widget: sql
+
+      - name: output-alias
+        type: string
+        default: my-alias
+        widget:
+          type: DatumAlias
+          settings:
+            width: 123
