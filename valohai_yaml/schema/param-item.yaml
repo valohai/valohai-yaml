@@ -78,3 +78,16 @@ properties:
     description: |
       The separator to use when interpolating multiple values into a command parameter.
       Defaults to a comma.
+  widget:
+    oneOf:
+      - type: object
+        required:
+        - type
+        properties:
+          type:
+            type: string
+          settings:
+            type: object
+      - type: string
+    description: |
+      UI widget used for editing parameter values

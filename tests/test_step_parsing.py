@@ -26,7 +26,7 @@ def test_parse(example1_config):
 
     # test that we parsed all params
     parameters = step.parameters
-    assert len(parameters) == 7
+    assert len(parameters) == 9
     # test that we can access them by name
     assert parameters['seed'].default == 1
     assert parameters['decoder-spec'].default == 'gauss'
@@ -39,6 +39,8 @@ def test_parse(example1_config):
         'encoder-layers',
         'denoising-cost-x',
         'decoder-spec',
+        'sql-query',
+        'output-alias',
     ]
 
     # test that `get_step_by` works
@@ -154,3 +156,12 @@ def test_timeouts(timeouts_config):
 def test_bling(example1_config: Config) -> None:
     assert example1_config.steps['run training'].category == "Training"
     assert example1_config.steps['run training'].icon == "https://valohai.com/assets/img/valohai-logo.svg"
+
+
+def test_widget(example1_config: Config) -> None:
+    parameters = example1_config.steps['run training'].parameters
+    assert parameters['sql-query'].widget and parameters['sql-query'].widget.type == "sql"
+    widget = parameters['output-alias'].widget
+    assert widget and widget.type == "datumalias"
+    assert widget and widget.settings and widget.settings["width"] == 123
+    assert parameters['decoder-spec'].widget is None
