@@ -25,7 +25,7 @@ class ParameterWidget(Item):
         return self.type
 
     @classmethod
-    def parse(cls, data: Optional[Union['ParameterWidget', dict, str]]) -> 'ParameterWidget':
+    def parse(cls, data: Union['ParameterWidget', dict, str]) -> 'ParameterWidget':
         if isinstance(data, dict):
             return cls(
                 type=data['type'],

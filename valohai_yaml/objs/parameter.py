@@ -202,7 +202,7 @@ class Parameter(Item):
     def parse(cls, data: SerializedDict) -> 'Parameter':
         kwargs = data.copy()
         if 'widget' in data:
-            kwargs['widget'] = ParameterWidget.parse(data.get('widget'))
+            kwargs['widget'] = ParameterWidget.parse(data['widget'])
         return super().parse(kwargs)
 
     def lint(
