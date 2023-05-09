@@ -79,7 +79,7 @@ class Config(Item):
 
     def serialize(self) -> List[SerializedDict]:
         return list(chain(
-            ({'step': step.serialize()} for (key, step) in sorted(self.steps.items())),
+            ({'step': step.serialize()} for (key, step) in self.steps.items()),
             ({'endpoint': endpoint.serialize()} for (key, endpoint) in sorted(self.endpoints.items())),
             ({'pipeline': pipeline.serialize()} for (key, pipeline) in sorted(self.pipelines.items())),
         ))
@@ -162,7 +162,7 @@ class Config(Item):
     def __repr__(self) -> str:  # pragma: no cover  # noqa: D105
         return '<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>' % (
             len(self.steps),
-            sorted(self.steps),
+            self.steps,
             len(self.endpoints),
             sorted(self.endpoints),
             len(self.pipelines),
