@@ -1,5 +1,6 @@
 from typing import Iterator, List, Optional
 
+import yaml as pyyaml
 from jsonschema.exceptions import relevance
 
 from valohai_yaml.excs import ValidationError
@@ -60,7 +61,14 @@ def lint_file(file_path: str) -> LintResult:
 def lint(yaml: YamlReadable) -> LintResult:
     lr = LintResult()
 
-    data = read_yaml(yaml)
+    try:
+        data = read_yaml(yaml)
+    except pyyaml.YAMLError as err:
+        if hasattr(err, 'problem_mark'):
+            mark = err.problem_mark
+            indent_error = f"Indentation Error at line {mark.line + 1}, column {mark.column + 1}"
+            raise ValidationError(indent_error) from err
+
     validator = get_validator()
     errors = sorted(
         validator.iter_errors(data),
