@@ -22,6 +22,9 @@ class LintResult:
     def add_warning(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
         self.messages.append({'type': 'warning', 'message': message, 'location': location, 'exception': exception})
 
+    def add_hint(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
+        self.messages.append({'type': 'hint', 'message': message, 'location': location, 'exception': exception})
+
     @property
     def warning_count(self) -> int:
         return sum(1 for m in self.messages if m['type'] == 'warning')
@@ -87,6 +90,11 @@ def lint(yaml: YamlReadable) -> LintResult:
         styled_message = style(error.message, fg='red')
         styled_path = style('.'.join(obj_path), bold=True)
         lr.add_error(f'  {styled_validator} validation on {styled_schema_path}: {styled_message} ({styled_path})')
+        # when path has only 2 nodes. it means it has problem in main steps/pipelines/endpoints objects
+        if len(error.path) == 2 and not error.instance:
+            styled_hint = style(f'File contains valid yaml but there might be an indentation '
+                                f'error in following configuration: {styled_path}', fg='blue')
+            lr.add_hint(styled_hint)
 
     if len(errors) > 0:
         return lr
