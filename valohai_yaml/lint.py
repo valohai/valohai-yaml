@@ -41,6 +41,10 @@ class LintResult:
     def errors(self) -> Iterator[LintResultMessage]:
         return (m for m in self.messages if m['type'] == 'error')
 
+    @property
+    def hints(self) -> Iterator[LintResultMessage]:
+        return (m for m in self.messages if m['type'] == 'hint')
+
     def is_valid(self) -> bool:
         return (self.warning_count == 0 and self.error_count == 0)
 
