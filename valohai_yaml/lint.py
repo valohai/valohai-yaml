@@ -92,8 +92,11 @@ def lint(yaml: YamlReadable) -> LintResult:
         lr.add_error(f'  {styled_validator} validation on {styled_schema_path}: {styled_message} ({styled_path})')
         # when path has only 2 nodes. it means it has problem in main steps/pipelines/endpoints objects
         if len(error.path) == 2 and not error.instance:
-            styled_hint = style(f'File contains valid yaml but there might be an indentation '
-                                f'error in following configuration: {styled_path}', fg='blue')
+            styled_hint = style(
+                "File contains valid YAML but there might be an indentation "
+                f"error in following configuration: {styled_path}",
+                fg='blue',
+            )
             lr.add_hint(styled_hint)
 
     if len(errors) > 0:
