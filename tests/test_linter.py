@@ -29,7 +29,7 @@ def test_invalid_parameter_default(file, expected_message):
      '\x1b[34mFile contains valid YAML but there '
      'might be an indentation error in following '
      'configuration: \x1b[1m0.step\x1b'),
-    ('invalid-YAML-indentation.yaml', 'could not parse YAML: Indentation Error at line 3, column 10'),
+    ('invalid-YAML-indentation.yaml', 'Indentation Error at line 3, column 10'),
 ])
 def test_invalid_indentation(file, expected_message):
     items = lint_file(get_error_example_path(file))
