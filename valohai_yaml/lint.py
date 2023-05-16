@@ -71,6 +71,7 @@ def lint(yaml: YamlReadable) -> LintResult:
             mark = err.problem_mark
             indent_error = f"Indentation Error at line {mark.line + 1}, column {mark.column + 1}"
             raise ValidationError(indent_error) from err
+        raise pyyaml.YAMLError(str(err)) from err
 
     validator = get_validator()
     errors = sorted(
