@@ -1,0 +1,7 @@
+- step:
+  name: outdented
+    image: python:3.7
+    inputs: []
+    command:
+            - pip install -r requirements.txt
+            - python ./test.py {parameters}

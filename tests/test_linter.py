@@ -2,7 +2,7 @@ from itertools import chain
 
 import pytest
 
-from tests.utils import get_warning_example_path
+from tests.utils import get_error_example_path, get_warning_example_path
 from valohai_yaml.lint import lint_file
 
 
@@ -21,4 +21,17 @@ def test_optional_flag():
 def test_invalid_parameter_default(file, expected_message):
     items = lint_file(get_warning_example_path(file))
     messages = [item['message'] for item in chain(items.warnings, items.errors)]
+    assert any(expected_message in message for message in messages), messages  # pragma: no branch
+
+
+@pytest.mark.parametrize('file, expected_message', [
+    ('invalid-indentation-with-valid-YAML.yaml',
+     '\x1b[34mFile contains valid YAML but there '
+     'might be an indentation error in following '
+     'configuration: \x1b[1m0.step\x1b'),
+    ('invalid-YAML-indentation.yaml', 'Indentation Error at line 3, column 10'),
+])
+def test_invalid_indentation(file, expected_message):
+    items = lint_file(get_error_example_path(file))
+    messages = [item['message'] for item in chain(items.hints, items.errors)]
     assert any(expected_message in message for message in messages), messages  # pragma: no branch
