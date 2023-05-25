@@ -1,5 +1,6 @@
 from valohai_yaml.objs.config import Config
 from valohai_yaml.objs.endpoint import Endpoint
+from valohai_yaml.objs.enums import OverrideMode
 from valohai_yaml.objs.file import File
 from valohai_yaml.objs.mount import Mount
 from valohai_yaml.objs.parameter import Parameter
@@ -26,4 +27,5 @@ __all__ = [
     'Step',
     'TaskNode',
     'PipelineParameter',
+    'OverrideMode',
 ]

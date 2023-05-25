@@ -1,34 +1,12 @@
-from enum import Enum
 from typing import Any, Iterable, List, Optional, Union
 
 from valohai_yaml.excs import InvalidType, ValidationErrors
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.enums import MultipleMode, ValueAtomType, ValueType
 from valohai_yaml.objs.parameter_widget import ParameterWidget
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils import listify
-
-
-class MultipleMode(Enum):
-    """How to serialize multiple values given for a parameter."""
-
-    SEPARATE = 'separate'
-    REPEAT = 'repeat'
-
-    @classmethod
-    def cast(cls, value: Optional[Union['MultipleMode', str]]) -> Optional['MultipleMode']:
-        if not value:
-            return None
-        if isinstance(value, MultipleMode):
-            return value
-        value = str(value).lower()
-        if value == 'none':
-            return None
-        return MultipleMode(value)
-
-
-ValueAtomType = Union[float, str, int, bool]
-ValueType = Union[List[ValueAtomType], ValueAtomType]
 
 
 class Parameter(Item):

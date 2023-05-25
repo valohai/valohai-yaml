@@ -15,7 +15,7 @@ properties:
     type: array
     items:
       "$ref": "./node-action.json"
-  mode:
+  override-mode:
     type: string
     enum: [ "merge", "override" ]
   override:

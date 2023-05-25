@@ -1,31 +1,12 @@
-from enum import Enum
 from typing import List, Optional, Union
 
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.enums import ErrorAction
 from valohai_yaml.objs.pipelines.node_action import NodeAction
 from valohai_yaml.objs.utils import check_type_and_listify, consume_array_of
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.lint import lint_iterables
-
-
-class ErrorAction(Enum):
-    """What should happen when error occurs in nodes execution."""
-
-    STOP_ALL = 'stop-all'  # default: stop whole pipeline on error
-    STOP_NEXT = 'stop-next'  # stop only following nodes on error
-    CONTINUE = 'continue'  # continue pipeline as error never occurred
-
-    @classmethod
-    def cast(cls, value: Optional[Union['ErrorAction', str]]) -> 'ErrorAction':
-        if not value:
-            return ErrorAction.STOP_ALL
-        if isinstance(value, ErrorAction):
-            return value
-        value = str(value).lower()
-        if value == 'none':
-            return ErrorAction.STOP_ALL
-        return ErrorAction(value)
 
 
 class Node(Item):

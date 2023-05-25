@@ -1,14 +1,8 @@
 from collections import OrderedDict
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 
-from valohai_yaml.objs import (
-    Config,
-    DeploymentNode,
-    ExecutionNode,
-    Node,
-    Pipeline,
-    TaskNode,
-)
+from valohai_yaml.objs import Config, DeploymentNode, ExecutionNode, Node, OverrideMode, Pipeline, TaskNode
+from valohai_yaml.pipelines.override import merge_overridden_inputs
 from valohai_yaml.utils import listify
 
 ConvertedObject = Dict[str, Any]
@@ -18,10 +12,10 @@ class PipelineConverter:
     """Converts pipeline objects to Valohai API payloads."""
 
     def __init__(
-        self,
-        *,
-        config: Config,
-        commit_identifier: str,
+            self,
+            *,
+            config: Config,
+            commit_identifier: str,
     ) -> None:
         self.config = config
         self.commit_identifier = commit_identifier
@@ -53,38 +47,6 @@ class PipelineConverter:
         node_data["aliases"] = node.aliases
         return node_data
 
-    def _merge_overridden_inputs(self, overridden: List[OrderedDict], list2: List[OrderedDict]) -> List[OrderedDict]:
-        merged_list = []
-        dict1_map = {ordered_dict['name']: ordered_dict for ordered_dict in overridden}
-        for ordered_dict2 in list2:
-            name = ordered_dict2['name']
-            if name in dict1_map:
-
-                ordered_dict1 = dict1_map[name]
-                merged_dict = OrderedDict()
-
-                for key, value in ordered_dict1.items():
-                    if key == 'default':
-                        merged_dict[key] = self._merge_defaults(value, ordered_dict2.get(key))
-                    else:
-                        merged_dict[key] = value
-
-                merged_list.append(merged_dict)
-            else:
-                merged_list.append(ordered_dict2)
-
-        for ordered_dict1 in overridden:
-            name = ordered_dict1['name']
-            if name not in dict1_map:
-                merged_list.append(ordered_dict1)
-
-        return merged_list
-
-    def _merge_defaults(self, default1: Optional[Any], default2: Optional[Any]) -> List[str]:
-        default1 = [default1] if isinstance(default1, str) else (default1 if default1 else [])
-        default2 = [default2] if isinstance(default2, str) else (default2 if default2 else [])
-        return default1 + default2
-
     def convert_executionlike_node(self, node: Union[ExecutionNode, TaskNode]) -> ConvertedObject:
         node_data = node.serialize()
         step_name = node_data.pop("step")
@@ -94,11 +56,11 @@ class PipelineConverter:
             raise ValueError(f"Step {step_name} not found in {self.config}")
         step_data = step.serialize()
 
-        if node_data.get("mode"):
+        if node.override_mode == OverrideMode.MERGE:
             inputs = override.pop("inputs", {})
             inputs = [OrderedDict(input) for input in inputs] if inputs else []
-            merged_inputs = self._merge_overridden_inputs(inputs, step_data.get("inputs", []))
-            #todo: this is a hack to get the extend inputs but it needs to be extended to other fields as well
+            merged_inputs = merge_overridden_inputs(inputs, step_data.get("inputs", []))
+            # todo: this is a hack to get the extend inputs but it needs to be extended to other fields as well
             override.setdefault("inputs", []).extend(merged_inputs)
 
         step_data.update(override)

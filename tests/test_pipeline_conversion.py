@@ -22,11 +22,11 @@ def test_pipeline_conversion_override_order(pipeline_config: Config):
     assert isinstance(train_node["template"]["inputs"], dict)
 
 
-def test_pipeline_conversion_override_inputs(pipeline_overriden_config: Config):
+def test_pipeline_conversion_override_inputs(pipeline_overridden_config: Config):
     result = PipelineConverter(
-        config=pipeline_overriden_config,
+        config=pipeline_overridden_config,
         commit_identifier="latest",
-    ).convert_pipeline(pipeline_overriden_config.pipelines["My overriden input pipeline"])
+    ).convert_pipeline(pipeline_overridden_config.pipelines["My overriden input pipeline"])
     merged = next(node for node in result["nodes"] if node["name"] == "merged")
     overridden = next(node for node in result["nodes"] if node["name"] == "overridden")
     # If conversion order is incorrect, this will have remained a list

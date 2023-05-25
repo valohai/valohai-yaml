@@ -15,12 +15,12 @@
       - name: merged
         type: execution
         step: base step
-        mode: merge
+        override-mode: merge
         override:
              inputs:
                 - name: training-images
                   default: "test image 2"
-                  mode: merge
+
                 - name: training-labels
                   default: "test image 2"
       - name: overridden
