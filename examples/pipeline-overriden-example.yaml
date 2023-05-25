@@ -1,0 +1,35 @@
+- step:
+    name: base step
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: training-images
+        default: "test image"
+      - name: training-labels
+        default: "test image"
+
+- pipeline:
+    name: My overriden input pipeline
+    nodes:
+      - name: merged
+        type: execution
+        step: base step
+        mode: merge
+        override:
+             inputs:
+                - name: training-images
+                  default: "test image 2"
+                  mode: merge
+                - name: training-labels
+                  default: "test image 2"
+      - name: overridden
+        type: execution
+        step: base step
+        override:
+            inputs:
+                - name: training-images
+                  default: "test image 3"
+                - name: training-labels
+                  default: "test image 3"
+    edges: []
