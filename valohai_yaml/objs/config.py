@@ -8,6 +8,7 @@ from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.endpoint import Endpoint
 from valohai_yaml.objs.pipelines.pipeline import Pipeline
 from valohai_yaml.objs.step import Step
+from valohai_yaml.objs.task import Task
 from valohai_yaml.objs.utils import check_type_and_dictify
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.lint import lint_iterables
@@ -26,10 +27,12 @@ class Config(Item):
         self,
         *,
         steps: Iterable[Step] = (),
+        tasks: Iterable[Task] = (),
         endpoints: Iterable[Endpoint] = (),
         pipelines: Iterable[Pipeline] = ()
     ) -> None:
         self.steps = check_type_and_dictify(steps, Step, 'name')
+        self.tasks = check_type_and_dictify(tasks, Task, 'name')
         self.endpoints = check_type_and_dictify(endpoints, Endpoint, 'name')
         self.pipelines = check_type_and_dictify(pipelines, Pipeline, 'name')
 
@@ -56,6 +59,7 @@ class Config(Item):
             steps=parsers['step'][0],
             endpoints=parsers['endpoint'][0],
             pipelines=parsers['pipeline'][0],
+            tasks=parsers['task'][0],
         )
         inst._original_data = data
         inst._parse_warnings = parse_warnings
@@ -72,6 +76,7 @@ class Config(Item):
         pipelines: List[Pipeline] = []
         return {
             'step': ([], Step.parse),
+            'task': ([], Task.parse),
             'endpoint': ([], Endpoint.parse),
             'pipeline': (pipelines, Pipeline.parse),
             'blueprint': (pipelines, Pipeline.parse),  # Alias allowed for now
@@ -110,6 +115,7 @@ class Config(Item):
             self.steps,
             self.endpoints,
             self.pipelines,
+            self.tasks,
         ))
         return lint_result
 

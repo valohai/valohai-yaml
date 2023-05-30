@@ -1,0 +1,15 @@
+---
+type: object
+required:
+  - name
+  - rules
+  - style
+additionalProperties: false
+properties:
+  name:
+    type: string
+  style:
+    type: string
+    enum: [ "logspace", "multiple", "linear", "single", "random" ]
+  rules:
+    $ref: "./rule-item.json"

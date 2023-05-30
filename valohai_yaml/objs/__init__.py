@@ -11,6 +11,7 @@ from valohai_yaml.objs.pipelines.pipeline import Pipeline
 from valohai_yaml.objs.pipelines.pipeline_parameter import PipelineParameter
 from valohai_yaml.objs.pipelines.task_node import TaskNode
 from valohai_yaml.objs.step import Step
+from valohai_yaml.objs.task import Task
 
 __all__ = [
     'Config',
@@ -26,4 +27,5 @@ __all__ = [
     'Step',
     'TaskNode',
     'PipelineParameter',
+    'Task'
 ]
