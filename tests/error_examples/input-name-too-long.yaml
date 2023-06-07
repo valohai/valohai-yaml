@@ -1,5 +1,3 @@
----
-
 - step:
     name: very-bad-example
     image: tensorflow/tensorflow

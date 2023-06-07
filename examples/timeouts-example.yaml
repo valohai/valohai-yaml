@@ -1,5 +1,3 @@
----
-
 - step:
     name: short-time-limit
     image: busybox

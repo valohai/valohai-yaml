@@ -22,7 +22,7 @@ properties:
       "$ref": "./node-action.json"
   on-error:
     type: string
-    enum: [ "stop-all", "stop-next", "continue" ]
+    enum: ["stop-all", "stop-next", "continue"]
 required:
   - name
   - deployment

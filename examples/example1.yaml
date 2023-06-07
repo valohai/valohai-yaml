@@ -1,5 +1,3 @@
----
-
 - step:
     name: run training
     description: |
@@ -18,7 +16,7 @@
       - fuel-download mnist
       - fuel-convert mnist --dtype float32
       - mv mnist_float32.hdf5 mnist.hdf5
-      - 'python run.py train {params} -- mnist_all_full'
+      - "python run.py train {params} -- mnist_all_full"
     outputs:
       - name: bar
     parameters:

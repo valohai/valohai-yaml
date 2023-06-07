@@ -1,5 +1,3 @@
----
-
 - endpoint:
     name: server-endpoint-12
     image: python:3.6

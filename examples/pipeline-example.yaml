@@ -120,12 +120,12 @@
         actions:
           - when: node-complete
             then:
-            - noop
-            - noop
-            - noop
+              - noop
+              - noop
+              - noop
           - when:
-            - node-starting
-            - node-complete
+              - node-starting
+              - node-complete
             if: [a, b, c]
             then: noop
     edges:

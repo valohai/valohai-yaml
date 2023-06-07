@@ -1,5 +1,3 @@
----
-
 - step:
     name: run training
     image: tensorflow/tensorflow

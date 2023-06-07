@@ -1,5 +1,3 @@
----
-
 - step:
     name: batch inference
     description: Does inference on the given dataset producing a prediction report.
