@@ -16,4 +16,4 @@
         type: execution
         step: Execution
     edges:
-      - [ batch1.output.training-labels*, batch2.input ]
+      - [batch1.output.training-labels*, batch2.input]

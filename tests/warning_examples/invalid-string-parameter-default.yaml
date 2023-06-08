@@ -1,5 +1,3 @@
----
-
 - step:
     name: test
     image: tensorflow/tensorflow

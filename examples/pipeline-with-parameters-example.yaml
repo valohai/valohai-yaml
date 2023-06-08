@@ -22,7 +22,7 @@
       - name: train_parallel
         step: train_step
         type: execution
-    edges: [ ]
+    edges: []
 
 - pipeline:
     name: Short hand parameter target
@@ -33,7 +33,7 @@
       - name: train
         step: train_step
         type: execution
-    edges: [ ]
+    edges: []
 
 - pipeline:
     name: Short hand parameter target 2
@@ -44,4 +44,4 @@
       - name: train
         step: train_step
         type: execution
-    edges: [ ]
+    edges: []

@@ -1,5 +1,3 @@
----
-
 - step:
     name: example
     image: busybox

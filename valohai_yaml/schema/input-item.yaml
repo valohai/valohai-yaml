@@ -1,4 +1,3 @@
----
 type: object
 required:
   - name
@@ -34,8 +33,8 @@ properties:
       - type: boolean
       - type: string
         enum:
-          - "none"  # = false
-          - "full"  # = true
+          - "none" # = false
+          - "full" # = true
           - "suffix"
     default: false
     description: Whether to retain directories when using wildcards for this input.

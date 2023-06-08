@@ -26,4 +26,4 @@
         step: train
         type: task
     edges:
-      - [ preprocess.metadata.storeids, train.parameter.id ]
+      - [preprocess.metadata.storeids, train.parameter.id]

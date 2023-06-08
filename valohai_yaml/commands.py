@@ -77,7 +77,8 @@ def build_command(
             except ValueError as exc:  # pragma: no cover
                 warnings.warn(
                     f'failed to interpolate into {command!r}: {exc}',
-                    CommandInterpolationWarning
+                    CommandInterpolationWarning,
+                    stacklevel=2,
                 )
         out_commands.append(command.strip())
     return out_commands
