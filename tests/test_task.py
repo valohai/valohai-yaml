@@ -1,5 +1,5 @@
 from valohai_yaml.objs import Config, Task
-from valohai_yaml.objs.task import VariantParameterStyle
+from valohai_yaml.objs.variant_parameter import VariantParameterStyle
 
 
 def test_tasks_parameters(step_with_tasks: Config):

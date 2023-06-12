@@ -28,9 +28,9 @@
     parameters:
       - name:
         rules:
-            end: 25
-            start: 25
-            step: 1
+          end: 25
+          start: 25
+          step: 1
 - task:
     step: run training
     name: task 3 multiple
@@ -39,7 +39,7 @@
       - name: A
         style: multiple
         rules:
-            items: [25,26]
+          items: [25, 26]
 - task:
     name: task 4 logspace
     type: random_search
@@ -47,11 +47,11 @@
       - name: A
         style: logspace
         rules:
-           start: 25
-           end: 25
-           count: 4
-           base: 10
-           integerify: False
+          start: 25
+          end: 25
+          count: 4
+          base: 10
+          integerify: False
 
 - task:
     step: run training

@@ -21,7 +21,7 @@
       - name: A
         style: single
         rules:
-            value: 25
+          value: 25
 
 - task:
     step: run training
@@ -31,9 +31,9 @@
       - name: A
         style: linear
         rules:
-            end: 25
-            start: 25
-            step: 1
+          end: 25
+          start: 25
+          step: 1
 - task:
     step: run training
     name: task 3 multiple
@@ -42,7 +42,7 @@
       - name: A
         style: multiple
         rules:
-            items: [25,26]
+          items: [25, 26]
 - task:
     step: run training
     name: task 4 logspace
@@ -51,11 +51,11 @@
       - name: A
         style: logspace
         rules:
-           start: 25
-           end: 25
-           count: 4
-           base: 10
-           integerify: False
+          start: 25
+          end: 25
+          count: 4
+          base: 10
+          integerify: False
 
 - task:
     step: run training
@@ -65,9 +65,9 @@
       - name: A
         style: random
         rules:
-            min: 1
-            max: 25
-            count: 10
-            base: 10
-            distribution: uniform
-            integerify: False
+          min: 1
+          max: 25
+          count: 10
+          base: 10
+          distribution: uniform
+          integerify: False

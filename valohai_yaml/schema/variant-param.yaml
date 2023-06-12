@@ -1,4 +1,3 @@
----
 type: object
 required:
   - name
@@ -10,6 +9,11 @@ properties:
     type: string
   style:
     type: string
-    enum: [ "logspace", "multiple", "linear", "single", "random" ]
+    enum:
+      - linear
+      - logspace
+      - multiple
+      - random
+      - single
   rules:
-    $ref: "./rule-item.json"
+    $ref: "./variant-param-rule-item.json"
