@@ -1,0 +1,31 @@
+type: object
+additionalProperties: false
+properties:
+  start:
+    type: number
+  end:
+    type: number
+  step:
+    type: number
+  count:
+    type: number
+  base:
+    type: number
+  numberify:
+    type: boolean
+  value:
+    type: number
+  items:
+    type: array
+    items:
+      type: number
+  min:
+    type: number
+  max:
+    type: number
+  distribution:
+    type: string
+  seed:
+    type: number
+  integerify:
+    type: boolean

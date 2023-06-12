@@ -1,0 +1,19 @@
+type: object
+required:
+  - name
+  - rules
+  - style
+additionalProperties: false
+properties:
+  name:
+    type: string
+  style:
+    type: string
+    enum:
+      - linear
+      - logspace
+      - multiple
+      - random
+      - single
+  rules:
+    $ref: "./variant-param-rule-item.json"

@@ -9,3 +9,5 @@ items:
       "$ref": "./endpoint.json"
     pipeline:
       "$ref": "./pipeline.json"
+    task:
+      "$ref": "./task.json"

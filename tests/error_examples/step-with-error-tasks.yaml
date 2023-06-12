@@ -1,0 +1,67 @@
+---
+- step:
+    name: run training
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    inputs:
+      - name: training-set-images
+        default: http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz
+        description: the image data for the training set
+    parameters:
+      - name: A
+        type: integer
+        default: 1
+      - name: B
+        type: integer
+- task:
+    step: run training
+    type: bayesian_tpe
+    parameters:
+      - name: A
+        style: single
+        rules:
+
+- task:
+    step: run training
+    name: task 2 linear
+    type: manual_search
+    parameters:
+      - name:
+        rules:
+          end: 25
+          start: 25
+          step: 1
+- task:
+    step: run training
+    name: task 3 multiple
+    type: grid_search
+    parameters:
+      - name: A
+        style: multiple
+        rules:
+          items: [25, 26]
+- task:
+    name: task 4 logspace
+    type: random_search
+    parameters:
+      - name: A
+        style: logspace
+        rules:
+          start: 25
+          end: 25
+          count: 4
+          base: 10
+          integerify: False
+
+- task:
+    step: run training
+    name: task 5 random
+    type: distributed
+    parameters:
+      - rules:
+          min: 1
+          max: 25
+          count: 10
+          base: 10
+          distribution: uniform
+          integerify: False

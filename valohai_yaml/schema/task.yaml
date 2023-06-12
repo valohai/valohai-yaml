@@ -1,0 +1,39 @@
+type: object
+required:
+  - name
+  - step
+  - parameters
+additionalProperties: false
+properties:
+  step:
+    type: string
+    description: The step to run with.
+  execution_count:
+    type: integer
+  execution_batch_size:
+    type: integer
+  optimization_target_metric:
+    type: string
+  optimization_target_value:
+    type: float
+  engine:
+    type: string
+  type:
+    type: string
+    enum:
+      - bayesian_tpe
+      - distributed
+      - grid_search
+      - manual_search
+      - random_search
+  name:
+    type: string
+    description: The unique name for this task.
+  description:
+    type: string
+    description: Describes the task. This is shown as a help text in the user interface.
+  parameters:
+    description: The variant parameter definitions and default values to be interpolated into the command.
+    type: array
+    items:
+      "$ref": "./variant-param.json"
