@@ -2,10 +2,10 @@ import json
 import os
 import re
 from functools import lru_cache
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import yaml
-from jsonschema import Draft4Validator, RefResolver, ValidationError
+from jsonschema import Draft202012Validator, RefResolver, ValidationError
 
 from valohai_yaml.excs import ValidationErrors
 from valohai_yaml.types import YamlReadable
@@ -42,17 +42,11 @@ def get_schema(name: str) -> Dict[Any, Any]:
     raise ValueError(f'unable to read schema {name}')  # pragma: no cover
 
 
-def _legacy_compat_id_of(schema: Dict) -> Optional[str]:
-    # Compatibility id_of that works with both the old (Draft4) and
-    # new (2020) JSONSchema `id` specifier.
-    return schema["$id"] if "$id" in schema else schema.get("id")
-
-
-def get_validator() -> Draft4Validator:
+def get_validator() -> Draft202012Validator:
     schema = get_schema('base.json')
-    cls = Draft4Validator
+    cls = Draft202012Validator
     cls.check_schema(schema)
-    return cls(schema, resolver=LocalRefResolver.from_schema(schema, id_of=_legacy_compat_id_of))
+    return cls(schema, resolver=LocalRefResolver.from_schema(schema))
 
 
 def validate(yaml: YamlReadable, raise_exc: bool = True) -> List[ValidationError]:
