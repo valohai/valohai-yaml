@@ -1,4 +1,4 @@
-id: http://valohai.com/base.json
+$id: http://valohai.com/base.json
 type: array
 items:
   type: object

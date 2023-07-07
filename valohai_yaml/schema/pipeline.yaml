@@ -21,8 +21,8 @@ properties:
       anyOf:
         - type: array
           title: ShorthandEdge
-          additionalItems: false
-          items:
+          items: false # no additional items allowed beyond the below
+          prefixItems: # tuple validation
             - type: string
             - type: string
         - type: object
