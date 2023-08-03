@@ -1,0 +1,63 @@
+- step:
+    name: base step
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: training-images
+        default: "default step image"
+      - name: training-labels
+        default: "default step label"
+    parameters:
+      - name: a
+        type: string
+        default: "default step parameter A"
+      - name: b
+        type: string
+        default: "default step parameter B"
+
+- step:
+    name: second step
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: training-images-1
+        default: "default step image"
+      - name: training-labels-1
+        default: "default step label"
+    parameters:
+      - name: d
+        type: string
+        default: "default step parameter D"
+      - name: c
+        type: string
+        default: "default step parameter C"
+
+- pipeline:
+    name: My overriden input pipeline
+    nodes:
+      - name: merged
+        type: execution
+        step: base step
+        override:
+          inputs:
+            - name: training-labels
+              default: "merged node label"
+              optional: true
+            - name: training-labels-error
+              default: "merged node label with error"
+          parameters:
+            - name: a
+              default: "merged node parameter A"
+            - name: d
+              default: "merged node parameter D"
+      - name: overridden
+        type: execution
+        step: secon step
+        override:
+          inputs:
+            - name: training-images
+              default: "overridden node image"
+
+    edges: []

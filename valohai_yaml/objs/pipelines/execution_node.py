@@ -33,8 +33,20 @@ class ExecutionNode(Node):
         super().lint(lint_result, context)
         config = context['config']
         pipeline = context['pipeline']
-        if self.step not in config.steps:
-            lint_result.add_error(f'Pipeline {pipeline.name} node {self.name} step {self.step} does not exist')
+        step = config.steps.get(self.step)
+        error_prefix = f'Pipeline {pipeline.name} node {self.name} step {self.step}'
+        if not step:
+            lint_result.add_error(f'{error_prefix} does not exist')
+            return
+        step_inputs = step.inputs.keys()
+        step_parameters = step.parameters.keys()
+        if self.override is not None:
+            for input_name in self.override.inputs:
+                if input_name not in step_inputs:
+                    lint_result.add_error(f"{error_prefix}: input {input_name} does not exist in step")
+            for parameter_name in self.override.parameters:
+                if parameter_name not in step_parameters:
+                    lint_result.add_error(f"{error_prefix}: parameter {parameter_name} does not exist in step")
 
     def get_parameter_defaults(self) -> Dict[str, Any]:
         if not self.override or self.override.parameters is None:
