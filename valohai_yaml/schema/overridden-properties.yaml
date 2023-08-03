@@ -1,0 +1,37 @@
+---
+type: object
+additionalProperties: false
+properties:
+  command:
+    description: The command or commands to run.
+    oneOf:
+      - type: string
+      - type: array
+        items:
+          type: string
+  image:
+    type: string
+    description: The Docker image to use for this node.
+  inputs:
+    type: array
+    description: The inputs expected by the node.
+    items:
+      "$ref": "./input-item.json"
+  parameters:
+    description: The parameter definitions and default values to be interpolated into the command.
+    type: array
+    items:
+      "$ref": "./param-item.json"
+  mounts:
+    description: Custom mounts to enable, for private environments allowing them.
+    type: array
+    items:
+      "$ref": "./mount-item.json"
+  environment-variables:
+    type: array
+    items:
+      "$ref": "./environment-variable-item.json"
+    description: Environment variables and their default values for the node.
+  environment:
+    type: string
+    description: Default execution environment (ID or substring of environment name)

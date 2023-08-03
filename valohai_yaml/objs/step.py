@@ -63,11 +63,7 @@ class Step(Item):
 
     @classmethod
     def parse(cls, data: SerializedDict) -> 'Step':
-        kwargs = data.copy()
-        kwargs['parameters'] = consume_array_of(kwargs, 'parameters', Parameter)
-        kwargs['inputs'] = consume_array_of(kwargs, 'inputs', Input)
-        kwargs['mounts'] = consume_array_of(kwargs, 'mounts', Mount)
-        kwargs['environment_variables'] = consume_array_of(kwargs, 'environment-variables', EnvironmentVariable)
+        kwargs = parse_common_step_properties(data)
         kwargs['time_limit'] = parse_duration(kwargs.pop('time-limit', None))
         kwargs['no_output_timeout'] = parse_duration(kwargs.pop('no-output-timeout', None))
         inst = cls(**kwargs)
@@ -168,3 +164,13 @@ class Step(Item):
             copier=copy.deepcopy,
         )
         return result
+
+
+def parse_common_step_properties(data: SerializedDict) -> Dict[str, Any]:
+    """Parse common properties in step and override objects."""
+    kwargs = data.copy()
+    kwargs['parameters'] = consume_array_of(kwargs, 'parameters', Parameter)
+    kwargs['inputs'] = consume_array_of(kwargs, 'inputs', Input)
+    kwargs['mounts'] = consume_array_of(kwargs, 'mounts', Mount)
+    kwargs['environment_variables'] = consume_array_of(kwargs, 'environment-variables', EnvironmentVariable)
+    return kwargs
