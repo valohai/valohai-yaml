@@ -55,12 +55,12 @@ class PipelineConverter:
     def convert_executionlike_node(self, node: Union[ExecutionNode, TaskNode]) -> ConvertedObject:
         node_data = node.serialize()
         step_name = node_data.pop("step")
-        override = node_data.pop("override", {})
+        override_dict = node_data.pop("override", {})
         step = self.config.get_step_by(name=step_name)
         if not step:  # pragma: no cover
             raise ValueError(f"Step {step_name} not found in {self.config}")
         step_data = step.serialize()
-        step_data.update(override)
+        step_data.update(override_dict)
 
         runtime_config = step_data.setdefault("runtime_config", {})
         if "no-output-timeout" in step_data:

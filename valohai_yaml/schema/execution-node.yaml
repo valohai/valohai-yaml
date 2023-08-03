@@ -16,10 +16,7 @@ properties:
     items:
       "$ref": "./node-action.json"
   override:
-    # This is really Partial<Step>, but that's currently not expressible in JSON Schema.
-    # TODO: add validation/lint in valohai-yaml that attempts to merge this override
-    #       with the content of the step, then validate it against step.yaml
-    type: object
+    "$ref": "./overridden-properties.json"
 required:
   - name
   - step
