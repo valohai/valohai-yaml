@@ -1,0 +1,96 @@
+- step:
+    name: base step
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: training-images
+        default: "default step image"
+      - name: training-labels
+        default: "default step label"
+      - name: training-without-default
+    parameters:
+      - name: a
+        type: string
+        default: "default step parameter A"
+      - name: b
+        type: string
+        default: "default step parameter B"
+      - name: c
+        type: string
+
+- step:
+    name: second step
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: training-images-1
+        default: "default step image"
+      - name: training-labels-1
+        default: "default step label"
+    parameters:
+      - name: d
+        type: string
+        default: "default step parameter D"
+      - name: c
+        type: string
+        default: "default step parameter C"
+
+- pipeline:
+    name: My overriden input pipeline
+    nodes:
+      - name: merged
+        type: execution
+        step: base step
+        override:
+          image: "merge node image"
+          command:
+            - merge date
+          inputs:
+            - name: training-images
+              default: ["merged node image 1", "merged node image 2"]
+              optional: true
+            - name: training-labels
+              default: "merged node label"
+              optional: true
+          parameters:
+            - name: a
+              default: "merged node parameter A"
+            - name: c
+              default: "merged node parameter C"
+      - name: overridden
+        type: execution
+        step: base step
+        override:
+          inputs:
+            - name: training-images
+              default: "overridden node image"
+
+    edges: []
+
+- pipeline:
+    name: My parameter and input pipeline
+    nodes:
+      - name: merged
+        type: execution
+        step: base step
+        override:
+          inputs:
+            - name: training-labels
+              default: "merged node label"
+              optional: true
+          parameters:
+            - name: b
+              default: "merged node parameter b"
+      - name: overridden
+        type: execution
+        step: base step
+        override:
+          inputs:
+            - name: training-images
+              default: "overridden node image"
+            - name: training-without-default
+              default: "overridden node default"
+
+    edges: []

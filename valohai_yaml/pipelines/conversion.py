@@ -8,7 +8,7 @@ from valohai_yaml.objs import (
     Pipeline,
     TaskNode,
 )
-from valohai_yaml.utils import listify
+from valohai_yaml.objs.pipelines.override import Override
 
 ConvertedObject = Dict[str, Any]
 
@@ -54,27 +54,23 @@ class PipelineConverter:
 
     def convert_executionlike_node(self, node: Union[ExecutionNode, TaskNode]) -> ConvertedObject:
         node_data = node.serialize()
+        node_data.pop('override', None)  # we'll use the actual object, not the serialization
         step_name = node_data.pop("step")
-        override_dict = node_data.pop("override", {})
         step = self.config.get_step_by(name=step_name)
         if not step:  # pragma: no cover
             raise ValueError(f"Step {step_name} not found in {self.config}")
         step_data = step.serialize()
-        step_data.update(override_dict)
 
         runtime_config = step_data.setdefault("runtime_config", {})
         if "no-output-timeout" in step_data:
             runtime_config.setdefault("no_output_timeout", step_data.pop("no-output-timeout"))
 
-        parameters_from_node = node.get_parameter_defaults()
-        parameters_from_step = step.get_parameter_defaults(include_flags=True)
-        step_data["parameters"] = parameters_from_step
-        step_data["parameters"].update(parameters_from_node)
+        merge_with_step = Override.default_merge(node.override, step)
+        normalized_to_template = merge_with_step.normalize_to_template()
+        step_data.update(normalized_to_template)
 
-        step_data["inputs"] = {
-            i["name"]: listify(i.get("default")) for i in step_data.get("inputs", [])
-        }
         step_data.pop("mounts", None)
+
         node_data["template"] = {
             "commit": self.commit_identifier,
             "step": step_name,

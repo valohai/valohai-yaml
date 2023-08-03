@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import copy
 from collections import OrderedDict
-from typing import Iterable
+from typing import Any, Iterable
 
 from valohai_yaml.objs import Mount, Parameter
 from valohai_yaml.objs.base import Item
@@ -14,6 +15,8 @@ from valohai_yaml.objs.utils import (
     serialize_into,
 )
 from valohai_yaml.types import SerializedDict
+from valohai_yaml.utils import listify
+from valohai_yaml.utils.merge import merge_dicts, merge_simple
 
 
 class Override(Item):
@@ -69,3 +72,38 @@ class Override(Item):
                     elide_empty_iterables=True,
                 )
         return val
+
+    @classmethod
+    def default_merge(cls, a: Override | None, b: Any) -> Override:
+        result = copy.deepcopy(a) if a else cls()
+        result.parameters = merge_dicts(
+            b.parameters,
+            result.parameters,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
+        result.inputs = merge_dicts(
+            b.inputs,
+            result.inputs,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
+        result.environment_variables = merge_dicts(
+            b.environment_variables,
+            result.environment_variables,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
+        return result
+
+    def normalize_to_template(self) -> OrderedDict:
+        override = self.serialize()
+        override["inputs"] = {
+            input["name"]: listify(input.get("default", None))
+            for input in override.get("inputs", [])
+        }
+        override["parameters"] = {
+            parameter["name"]: parameter.get("default", None)
+            for parameter in override.get("parameters", [])
+        }
+        return override
