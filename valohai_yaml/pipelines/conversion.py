@@ -62,6 +62,10 @@ class PipelineConverter:
         step_data = step.serialize()
         step_data.update(override)
 
+        runtime_config = step_data.setdefault("runtime_config", {})
+        if "no-output-timeout" in step_data:
+            runtime_config.setdefault("no_output_timeout", step_data.pop("no-output-timeout"))
+
         parameters_from_node = node.get_parameter_defaults()
         parameters_from_step = step.get_parameter_defaults(include_flags=True)
         step_data["parameters"] = parameters_from_step

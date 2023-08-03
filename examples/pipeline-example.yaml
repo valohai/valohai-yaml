@@ -9,6 +9,8 @@
 - step:
     name: Train model
     image: busybox
+    # this sometimes gets stuck so we set a timeout
+    no-output-timeout: 6h
     command:
       - date
     inputs:
