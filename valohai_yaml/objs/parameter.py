@@ -83,7 +83,7 @@ class Parameter(Item):
         if self.multiple:
             data['multiple'] = data['multiple'].value
         else:
-            data.pop('multiple-separator', None)
+            data.pop('multiple_separator', None)
         return data
 
     def _validate_value(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
