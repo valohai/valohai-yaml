@@ -1,4 +1,4 @@
-
+import sys
 from typing import Any, Dict, List, Union
 
 from valohai_yaml.objs import (
@@ -7,11 +7,24 @@ from valohai_yaml.objs import (
     ExecutionNode,
     Node,
     Pipeline,
+    PipelineParameter,
     TaskNode,
 )
 from valohai_yaml.objs.pipelines.override import Override
 
 ConvertedObject = Dict[str, Any]
+
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict
+    class ConvertedPipeline(TypedDict):
+        """TypedDict for converted Pipeline object."""
+
+        edges: List[ConvertedObject]
+        nodes: List[ConvertedObject]
+        parameters: Dict[str, ConvertedObject]
+else:
+    ConvertedPipeline = ConvertedObject
 
 
 class PipelineConverter:
@@ -26,10 +39,21 @@ class PipelineConverter:
         self.config = config
         self.commit_identifier = commit_identifier
 
-    def convert_pipeline(self, pipeline: Pipeline) -> Dict[str, List[ConvertedObject]]:
+    def convert_pipeline(self, pipeline: Pipeline) -> ConvertedPipeline:
         return {
             "edges": [edge.get_expanded() for edge in pipeline.edges],
             "nodes": [self.convert_node(node) for node in pipeline.nodes],
+            "parameters": {
+                parameter.name: self.convert_parameter(parameter)
+                for parameter in pipeline.parameters
+            },
+        }
+
+    def convert_parameter(self, parameter: PipelineParameter) -> ConvertedObject:
+        """Convert a pipeline parameter to a config-expression payload."""
+        return {
+            "config": {**parameter.serialize()},
+            "expression": parameter.default if parameter.default else "",
         }
 
     def convert_node(self, node: Node) -> ConvertedObject:
