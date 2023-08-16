@@ -54,12 +54,11 @@ print(config.steps['cool step'].command)
 
 ```bash
 # setup development dependencies
-pip install -e . -r requirements-test.txt pre-commit
-pre-commit install
+make dev
 
 # run linting and type checks
-pre-commit run --all-files
+make lint
 
 # run tests
-pytest
+make test
 ```
