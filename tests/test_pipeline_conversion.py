@@ -50,3 +50,24 @@ def test_pipeline_conversion_override_inputs(pipeline_overridden_config: Config)
     assert overridden["template"]["inputs"].get('training-images', [])[0] == 'overridden node image'
     assert len(overridden["template"]["inputs"].get('training-images', [])) == 1
     assert len(overridden["template"]["parameters"].items()) == 3
+
+
+def test_pipeline_parameter_conversion(pipeline_with_parameters_config):
+    parameter_name = "id"
+    for _name, pipe in pipeline_with_parameters_config.pipelines.items():
+        result = PipelineConverter(
+            config=pipeline_with_parameters_config,
+            commit_identifier="latest",
+        ).convert_pipeline(pipe)
+        assert isinstance(result["parameters"], dict)
+        assert result["parameters"][parameter_name]
+
+        parameter = result["parameters"][parameter_name]
+        assert parameter["config"]["targets"]
+        assert "target" not in parameter["config"]
+        assert isinstance(parameter["config"]["targets"], list)
+
+        # When pipeline parameter has no default value, the expression should be empty
+        parameter_config = next(param for param in pipe.parameters if param.name == parameter_name)
+        expression_value = parameter_config.default if parameter_config.default else ""
+        assert parameter["expression"] == expression_value

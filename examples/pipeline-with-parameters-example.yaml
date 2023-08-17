@@ -15,6 +15,7 @@
         targets:
           - train.parameter.id
           - train_parallel.parameter.id
+        default: 123
     nodes:
       - name: train
         step: train_step
