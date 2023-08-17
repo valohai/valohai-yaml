@@ -7,6 +7,14 @@
     parameters:
       - name: id
         type: string
+      - name: param0-float
+        type: float
+      - name: param0-int
+        type: integer
+      - name: param0-string
+        type: string
+      - name: param0-flag
+        type: flag
 
 - pipeline:
     name: Example Pipeline with Parameters
@@ -16,6 +24,22 @@
           - train.parameter.id
           - train_parallel.parameter.id
         default: 123
+      - name: param0-float
+        targets:
+          - train.parameter.param0-float
+        default: 0.0
+      - name: param0-int
+        targets:
+          - train.parameter.param0-int
+        default: 0
+      - name: param0-string
+        targets:
+          - train.parameter.param0-string
+        default: ""
+      - name: param0-flag
+        targets:
+          - train.parameter.param0-flag
+        default: false
     nodes:
       - name: train
         step: train_step

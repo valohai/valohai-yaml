@@ -53,7 +53,7 @@ class PipelineConverter:
         """Convert a pipeline parameter to a config-expression payload."""
         return {
             "config": {**parameter.serialize()},
-            "expression": parameter.default if parameter.default else "",
+            "expression": parameter.default if parameter.default is not None else "",
         }
 
     def convert_node(self, node: Node) -> ConvertedObject:
