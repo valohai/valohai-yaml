@@ -1,4 +1,4 @@
-from valohai_yaml.objs import Config, DeploymentNode
+from valohai_yaml.objs import Config, DeploymentNode, ExecutionNode
 
 
 def test_pipeline_valid(pipeline_config: Config):
@@ -80,3 +80,12 @@ def test_empty_actions_not_serialized(pipeline_config: Config):
     assert train_node
     train_node.actions.clear()
     assert 'actions' not in train_node.serialize()
+
+
+def test_empty_override_not_serialized(pipeline_config: Config):
+    pl = pipeline_config.pipelines["My medium pipeline"]
+    train_node = pl.get_node_by(name='train')
+    assert isinstance(train_node, ExecutionNode)
+    assert train_node and train_node.override
+    train_node.override = None
+    assert 'override' not in train_node.serialize()
