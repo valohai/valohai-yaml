@@ -4,7 +4,7 @@ from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.pipelines.node import ErrorAction, Node
 from valohai_yaml.objs.pipelines.node_action import NodeAction
 from valohai_yaml.objs.pipelines.override import Override
-from valohai_yaml.types import LintContext, NodeOverrideDict
+from valohai_yaml.types import LintContext, NodeOverrideDict, SerializedDict
 
 
 class ExecutionNode(Node):
@@ -57,3 +57,9 @@ class ExecutionNode(Node):
             in self.override.parameters.items()
             if parameter.default is not None
         }
+
+    def serialize(self) -> SerializedDict:
+        ser = dict(super().serialize())
+        if not ser.get('override'):
+            ser.pop('override', None)
+        return ser
