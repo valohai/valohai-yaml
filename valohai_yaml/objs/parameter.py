@@ -113,12 +113,18 @@ class Parameter(Item):
             try:
                 value = int(str(value), 10)
             except ValueError:
-                errors.append(f"{value} is not an integer")
+                if value == "":
+                    errors.append("No value supplied")
+                else:
+                    errors.append(f"{value} is not an integer")
         elif self.type == "float":
             try:
                 value = float(str(value))
             except ValueError:
-                errors.append(f"{value} is not a floating-point number")
+                if value == "":
+                    errors.append("No value supplied")
+                else:
+                    errors.append(f"{value} is not a floating-point number")
         return value
 
     def validate(self, value: ValueType) -> ValueType:
@@ -134,6 +140,9 @@ class Parameter(Item):
 
         if not self.multiple and isinstance(value, (list, tuple)):
             errors.append("Only a single value is allowed")
+
+        if value is None:
+            errors.append("No value supplied")
 
         for atom in listify(value):
             if isinstance(atom, list):  # type guard
