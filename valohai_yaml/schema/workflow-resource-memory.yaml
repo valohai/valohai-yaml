@@ -1,0 +1,8 @@
+type: object
+description: Memory requirements and limits in MB e.g. 100 is 100 MB.
+additionalProperties: false
+properties:
+  min:
+    type: number
+  max:
+    type: number
