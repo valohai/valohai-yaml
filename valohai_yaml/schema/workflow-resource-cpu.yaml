@@ -1,0 +1,8 @@
+type: object
+description: CPU resource requirements and limits in vCPU counts e.g. 0.1 is 10% of one CPU.
+additionalProperties: false
+properties:
+  min:
+    type: number
+  max:
+    type: number

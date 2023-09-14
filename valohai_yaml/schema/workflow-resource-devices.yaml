@@ -1,0 +1,6 @@
+type: object
+description: "Devices required e.g. 'nvidia.com/gpu: 1' for one NVIDIA GPU."
+patternProperties:
+  "^.+$":
+    type: number
+    minimum: 1

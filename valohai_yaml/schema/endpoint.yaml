@@ -49,30 +49,11 @@ properties:
     additionalProperties: false
     properties:
       cpu:
-        type: object
-        description: CPU resource requirements and limits in vCPU counts e.g. 0.1 is 10% of one CPU.
-        additionalProperties: false
-        properties:
-          min:
-            type: number
-          max:
-            type: number
+        "$ref": "./workflow-resource-cpu.json"
       memory:
-        type: object
-        description: Memory requirements and limits in MB e.g. 100 is 100 MB.
-        additionalProperties: false
-        properties:
-          min:
-            type: number
-          max:
-            type: number
+        "$ref": "./workflow-resource-memory.json"
       devices:
-        type: object
-        description: "Devices required e.g. 'nvidia.com/gpu: 1' for one NVIDIA GPU."
-        patternProperties:
-          "^.+$":
-            type: number
-            minimum: 1
+        "$ref": "./workflow-resource-devices.json"
 oneOf:
   - required:
       - server-command
