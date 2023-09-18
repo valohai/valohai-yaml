@@ -21,8 +21,8 @@ class ValidationErrors(ValidationError):
         super().__init__(
             '%d errors: %s' % (
                 len(errors),
-                ', '.join(getattr(e, 'message', e) for e in self.errors)
-            )
+                ', '.join(getattr(e, 'message', e) for e in self.errors),
+            ),
         )
 
     def __iter__(self) -> Iterator[ErrorType]:

@@ -52,6 +52,7 @@ select = [
     "ANN", # annotations
     "B", # bugbear
     "C", # complexity & comprehensions
+    "COM", # trailing commas
     "D", # docstrings
     "E", # pycodestyle
     "F", # pyflakes

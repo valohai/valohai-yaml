@@ -104,7 +104,7 @@ class Step(Item):
     def build_command(
         self,
         parameter_values: Dict[str, Any],
-        command: Optional[Union[List[str], str]] = None
+        command: Optional[Union[List[str], str]] = None,
     ) -> List[str]:
         """
         Build the command for this step using the given parameter values.

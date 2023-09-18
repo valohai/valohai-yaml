@@ -48,12 +48,12 @@ class PipelineParameter(Item):
             if not socket_type.startswith('parameter'):
                 lint_result.add_error(
                     f'Pipeline "{pipeline.name}" parameter "{self.name}" target "{target}": socket type "{socket_type}"'
-                    f' is not supported.'
+                    f' is not supported.',
                 )
             if target_node_name not in node_map:
                 lint_result.add_error(
                     f'Pipeline "{pipeline.name}" parameter "{self.name}" target "{target}": the node '
-                    f'"{target_node_name}" does not exist.'
+                    f'"{target_node_name}" does not exist.',
                 )
             else:
                 node = node_map[target_node_name]
@@ -63,5 +63,5 @@ class PipelineParameter(Item):
                     if target_parameter_name not in step.parameters:
                         lint_result.add_error(
                             f'Pipeline "{pipeline.name}" parameter "{self.name}" target "{target}": the parameter '
-                            f'"{target_parameter_name}" does not exist in step "{step.name}".'
+                            f'"{target_parameter_name}" does not exist in step "{step.name}".',
                         )

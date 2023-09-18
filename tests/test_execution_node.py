@@ -7,25 +7,25 @@ def test_get_parameter_defaults():
             {
                 "name": "input 1",
                 "default": "file.txt",
-            }
+            },
         ],
         "parameters": [
             {
                 "name": "epochs",
                 "default": 10,
-                "type": "integer"
+                "type": "integer",
             },
             {
                 "name": "learning_rate",
                 "default": 0.001,
-                "type": "float"
-            }
-        ]
+                "type": "float",
+            },
+        ],
     }
     node = ExecutionNode(
         name="test",
         step="test",
-        override=override
+        override=override,
     )
     params = node.get_parameter_defaults()
     assert "epochs" in params

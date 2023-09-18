@@ -11,7 +11,7 @@ class File(Item):
         *,
         name: str,
         path: str,
-        description: Optional[str] = None
+        description: Optional[str] = None,
     ) -> None:
         self.name = name
         self.path = path

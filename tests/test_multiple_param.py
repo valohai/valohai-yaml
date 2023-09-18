@@ -11,7 +11,7 @@ def test_multiple_param_build(multiple_param_config):
         '--encoder-layers=1000-500-250-250-250-10 '  # dash-separated
         '--denoising-cost-x=1000,1,0.01,0.01,0.01,0.01,0.01 '  # comma-separated
         '--decoder-spec gauss '  # repeated
-        '--decoder-spec railgun'  # repeated
+        '--decoder-spec railgun',  # repeated
     ]
     assert step.build_command({'encoder-layers': 6, 'denoising-cost-x': (2, 'e')}) == [
         'echo '
@@ -19,21 +19,21 @@ def test_multiple_param_build(multiple_param_config):
         '--encoder-layers=6 '  # dash-separated
         '--denoising-cost-x=2,e '  # comma-separated
         '--decoder-spec gauss '  # repeated
-        '--decoder-spec railgun'  # repeated
+        '--decoder-spec railgun',  # repeated
     ]
     assert step.build_command({'encoder-layers': None, 'denoising-cost-x': (2, 'e')}) == [
         'echo '
         '--unlabeled-samples=60000 '
         '--denoising-cost-x=2,e '  # comma-separated
         '--decoder-spec gauss '  # repeated
-        '--decoder-spec railgun'  # repeated
+        '--decoder-spec railgun',  # repeated
     ]
     assert step.build_command({'encoder-layers': [], 'denoising-cost-x': (2, 'e')}) == [
         'echo '
         '--unlabeled-samples=60000 '
         '--denoising-cost-x=2,e '  # comma-separated
         '--decoder-spec gauss '  # repeated
-        '--decoder-spec railgun'  # repeated
+        '--decoder-spec railgun',  # repeated
     ]
 
 

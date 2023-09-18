@@ -36,7 +36,7 @@ class Input(Item):
         optional: bool = False,
         description: Optional[str] = None,
         keep_directories: KeepDirectoriesValue = False,
-        filename: Optional[str] = None
+        filename: Optional[str] = None,
     ) -> None:
         self.name = name
         self.default = default  # may be None, a string or a list of strings

@@ -20,7 +20,7 @@ class Endpoint(Item):
         server_command: Optional[str] = None,
         wsgi: Optional[str] = None,
         node_selector: Optional[str] = None,
-        resources: Optional[EndpointResourcesDict] = None
+        resources: Optional[EndpointResourcesDict] = None,
     ) -> None:
         self.name = name
         self.description = description

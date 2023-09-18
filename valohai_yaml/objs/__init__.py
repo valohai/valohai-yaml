@@ -27,5 +27,5 @@ __all__ = [
     'Step',
     'TaskNode',
     'PipelineParameter',
-    'Task'
+    'Task',
 ]
