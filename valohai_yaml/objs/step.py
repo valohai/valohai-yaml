@@ -43,10 +43,12 @@ class Step(Item):
         no_output_timeout: Optional[datetime.timedelta] = None,
         icon: Optional[str] = None,
         category: Optional[str] = None,
+        source_path: Optional[str] = None,
     ) -> None:
         self.name = name
         self.image = image
         self.command = command
+        self.source_path = source_path
         self.description = description
         self.environment = (str(environment) if environment else None)
         self.icon = (str(icon) if icon else None)
@@ -66,6 +68,7 @@ class Step(Item):
         kwargs = parse_common_step_properties(data)
         kwargs['time_limit'] = parse_duration(kwargs.pop('time-limit', None))
         kwargs['no_output_timeout'] = parse_duration(kwargs.pop('no-output-timeout', None))
+        kwargs['source_path'] = kwargs.pop("source-path", None)
         inst = cls(**kwargs)
         inst._original_data = data
         return inst
@@ -88,6 +91,7 @@ class Step(Item):
             ('no-output-timeout', int(self.no_output_timeout.total_seconds()) if self.no_output_timeout else None),
             ('icon', self.icon),
             ('category', self.category),
+            ('source-path', self.source_path),
         ]:
             serialize_into(val, key, source, flatten_dicts=True, elide_empty_iterables=True)
         return val
@@ -125,10 +129,16 @@ class Step(Item):
         # merge defaults with passed values
         # ignore flag default values as they are special
         # undefined flag will remain undefined regardless of default value
-        values = dict(self.get_parameter_defaults(include_flags=False), **parameter_values)
+        values = dict(
+            self.get_parameter_defaults(include_flags=False),
+            **parameter_values,
+        )
+        special = {}
+        if self.source_path is not None:
+            special['source-path'] = self.source_path
 
         parameter_map = ParameterMap(parameters=self.parameters, values=values)
-        return build_command(command, parameter_map)
+        return build_command(command, parameter_map, special_interpolations=special)
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, step=self)

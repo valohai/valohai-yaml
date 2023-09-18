@@ -12,6 +12,10 @@ properties:
       - type: array
         items:
           type: string
+  source-path:
+    description: >
+      The original source file that this step comes from, relative to this config file.
+    type: string
   name:
     type: string
     description: The unique name for this step.
