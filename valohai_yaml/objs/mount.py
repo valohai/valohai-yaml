@@ -14,7 +14,7 @@ class Mount(Item):
         destination: str,
         readonly: bool = False,
         type: Optional[str] = None,
-        options: Optional[MountOptions] = None
+        options: Optional[MountOptions] = None,
     ) -> None:
         if options is None:
             options = {}

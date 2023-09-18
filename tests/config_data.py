@@ -3,7 +3,7 @@ echo_step = {
         'name': 'greeting',
         'command': 'echo HELLO WORLD',
         'image': 'busybox',
-    }
+    },
 }
 
 list_step = {
@@ -11,7 +11,7 @@ list_step = {
         'name': 'list files',
         'command': 'ls',
         'image': 'busybox',
-    }
+    },
 }
 
 endpoint_with_input = {
@@ -24,10 +24,10 @@ endpoint_with_input = {
             {
                 "name": "model",
                 "description": "Model output file from TensorFlow",
-                "path": "model.pb"
-            }
-        ]
-    }
+                "path": "model.pb",
+            },
+        ],
+    },
 }
 
 endpoint_without_input = {
@@ -35,8 +35,8 @@ endpoint_without_input = {
         "name": "greet",
         "image": "python:3.6",
         "server-command": "python -m wsgiref.simple_server",
-        "description": "say hello"
-    }
+        "description": "say hello",
+    },
 }
 
 complex_step = {

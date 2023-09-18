@@ -27,7 +27,7 @@ def parse_duration_string(duration_str: str) -> datetime.timedelta:
 
 
 def parse_duration(
-    duration_value: Union[int, str, None]
+    duration_value: Union[int, str, None],
 ) -> Optional[datetime.timedelta]:
     if duration_value is None:
         return None

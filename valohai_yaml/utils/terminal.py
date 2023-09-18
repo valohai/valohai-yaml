@@ -29,7 +29,7 @@ def style(  # noqa: C901
     underline: Optional[bool] = None,
     blink: Optional[bool] = None,
     reverse: Optional[bool] = None,
-    reset: bool = True
+    reset: bool = True,
 ) -> str:
     """Styles a text with ANSI styles and returns the new string."""
     bits = []

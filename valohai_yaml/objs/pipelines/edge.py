@@ -21,7 +21,7 @@ class Edge(Item):
         *,
         source: str,
         target: str,
-        configuration: Optional[EdgeConfigurationDict] = None
+        configuration: Optional[EdgeConfigurationDict] = None,
     ) -> None:
         if configuration is None:
             configuration = {}
@@ -85,19 +85,19 @@ class Edge(Item):
         node_map = pipeline.node_map
         if self.source_node not in node_map:
             lint_result.add_error(
-                f'Pipeline {pipeline.name} edge source node {self.source_node} does not exist'
+                f'Pipeline {pipeline.name} edge source node {self.source_node} does not exist',
             )
         if self.target_node not in node_map:
             lint_result.add_error(
-                f'Pipeline {pipeline.name} edge target node {self.target_node} does not exist'
+                f'Pipeline {pipeline.name} edge target node {self.target_node} does not exist',
             )
         if self.source_type not in edge_types:
             lint_result.add_error(
                 f'Pipeline {pipeline.name} source type {self.source_type} '
-                f'(between {self.source_node} and {self.target_node}) not valid'
+                f'(between {self.source_node} and {self.target_node}) not valid',
             )
         if self.target_type not in edge_types:
             lint_result.add_error(
                 f'Pipeline {pipeline.name} target type {self.target_type} '
-                f'(between {self.source_node} and {self.target_node}) not valid'
+                f'(between {self.source_node} and {self.target_node}) not valid',
             )

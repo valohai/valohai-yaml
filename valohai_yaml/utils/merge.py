@@ -14,7 +14,7 @@ def merge_dicts(
     merger: Callable[[TMerge, TMerge], TMerge],
     copier: Callable[[TCopy], TCopy] = lambda v: v,
     skip_missing_a: bool = False,
-    skip_missing_b: bool = False
+    skip_missing_b: bool = False,
 ) -> TD:
     out: TD = type(a)()
 

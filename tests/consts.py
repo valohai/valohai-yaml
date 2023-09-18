@@ -25,7 +25,7 @@ invalid_obj = [
     {
         'step': {
             'nerm': 'blerp',
-        }
+        },
     },
 ]
 
@@ -35,7 +35,7 @@ valid_obj = [
             'name': 'foo',
             'command': 'foo',
             'image': 'foo',
-        }
+        },
     },
     {
         'endpoint': {
@@ -43,13 +43,13 @@ valid_obj = [
             'image': 'xyz',
             'port': 1453,
             'server-command': './hs.sh',
-        }
+        },
     },
     {
         'endpoint': {
             'name': 'xyz',
             'image': 'xyz',
             'wsgi': 'hs:sh',
-        }
+        },
     },
 ]

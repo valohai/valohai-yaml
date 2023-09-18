@@ -35,5 +35,5 @@ class DeploymentNode(Node):
 
         if not self.name:
             lint_result.add_error(
-                'Deployment has no name'
+                'Deployment has no name',
             )

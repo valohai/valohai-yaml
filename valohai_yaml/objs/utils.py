@@ -59,7 +59,7 @@ def serialize_into(
     value: Any,
     *,
     flatten_dicts: bool = False,
-    elide_empty_iterables: bool = False
+    elide_empty_iterables: bool = False,
 ) -> None:
     if value is None:
         return

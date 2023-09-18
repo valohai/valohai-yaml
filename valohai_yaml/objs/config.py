@@ -29,7 +29,7 @@ class Config(Item):
         steps: Iterable[Step] = (),
         tasks: Iterable[Task] = (),
         endpoints: Iterable[Endpoint] = (),
-        pipelines: Iterable[Pipeline] = ()
+        pipelines: Iterable[Pipeline] = (),
     ) -> None:
         self.steps = check_type_and_dictify(steps, Step, 'name')
         self.tasks = check_type_and_dictify(tasks, Task, 'name')

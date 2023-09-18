@@ -12,7 +12,7 @@ class EnvironmentVariable(Item):
         name: str,
         default: Optional[str] = None,
         optional: bool = True,
-        description: Optional[str] = None
+        description: Optional[str] = None,
     ) -> None:
         self.name = name
         self.default = default  # may be None or a string

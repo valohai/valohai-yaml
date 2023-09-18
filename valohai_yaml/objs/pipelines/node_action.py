@@ -25,7 +25,7 @@ class NodeAction(Item):
         *,
         when: Union[str, Iterable[str]],
         if_: Union[None, str, List[str]],
-        then: Union[None, str, List[str]]
+        then: Union[None, str, List[str]],
     ) -> None:
         self.when: Set[str] = {str(watom).lower() for watom in listify(when)}
         self.if_: List[str] = listify(if_)
@@ -48,10 +48,10 @@ class NodeAction(Item):
         for when in self.when:
             if when not in WELL_KNOWN_WHENS:
                 lint_result.add_warning(
-                    f'"when" value {self.when} is not well-known; the action might never be triggered'
+                    f'"when" value {self.when} is not well-known; the action might never be triggered',
                 )
         for then in self.then:
             if then not in WELL_KNOWN_THENS:
                 lint_result.add_warning(
-                    f'"then" value {self.then} is not well-known; the action might do nothing'
+                    f'"then" value {self.then} is not well-known; the action might do nothing',
                 )
