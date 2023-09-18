@@ -34,8 +34,23 @@ def test_command_override(example1_config):
 
 def test_nonexistent_interpolation_keys():
     empty_parameter_map = ParameterMap(parameters={}, values={})
-    interp_command = build_command(['Where are the ${shell_unicorns}? The {parameters} are here!'], empty_parameter_map)
+    interp_command = build_command(
+        ['Where are the ${shell_unicorns}? The {parameters} are here!'],
+        empty_parameter_map,
+    )
     assert interp_command == ['Where are the ${shell_unicorns}? The  are here!']
+
+
+def test_interpolate_special():
+    empty_parameter_map = ParameterMap(parameters={}, values={})
+    interp_command = build_command(
+        ['python {source-path}'],
+        empty_parameter_map,
+        special_interpolations={
+            'source-path': 'foo.py',
+        },
+    )
+    assert interp_command == ['python foo.py']
 
 
 parameter_test_values = {
