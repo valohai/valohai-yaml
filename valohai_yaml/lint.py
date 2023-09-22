@@ -1,4 +1,4 @@
-from typing import Iterator, List, Optional
+from typing import Any, Iterator, List, Optional
 
 import yaml as pyyaml
 from jsonschema.exceptions import relevance
@@ -49,39 +49,28 @@ class LintResult:
         return (self.warning_count == 0 and self.error_count == 0)
 
 
-def lint_file(file_path: str) -> LintResult:
+def lint_file(file_path: str, *, validate_schema: bool = True) -> LintResult:
     """
     Validate & lint `file_path` and return a LintResult.
 
     :param file_path: YAML filename
+    :param validate_schema: Whether to validate against the JSON schema before attempting to parse and lint.
+                            This should generally always be true, but can be disabled for testing purposes.
     :return: LintResult object
     """
     with open(file_path) as yaml:
         try:
-            return lint(yaml)
+            return lint(yaml, validate_schema=validate_schema)
         except Exception as e:
             lr = LintResult()
             lr.add_error(f'could not parse YAML: {e}', exception=e)
             return lr
 
 
-def lint(yaml: YamlReadable) -> LintResult:
-    lr = LintResult()
-
-    try:
-        data = read_yaml(yaml)
-    except pyyaml.YAMLError as err:
-        if hasattr(err, 'problem_mark'):
-            mark = err.problem_mark
-            indent_error = f"Indentation Error at line {mark.line + 1}, column {mark.column + 1}"
-            lr.add_error(indent_error)
-        else:
-            lr.add_error(str(err))
-        return lr
-
-    validator = get_validator()
+def _validate_json_schema(lr: LintResult, data: Any) -> int:
+    """Validate against the JSON schema; add errors to `lr` and return the number of errors."""
     errors = sorted(
-        validator.iter_errors(data),
+        get_validator().iter_errors(data),
         key=lambda error: (relevance(error), repr(error.path)),
     )
     for error in errors:
@@ -105,8 +94,35 @@ def lint(yaml: YamlReadable) -> LintResult:
                 fg='blue',
             )
             lr.add_hint(styled_hint)
+    return len(errors)
 
-    if len(errors) > 0:
+
+def lint(
+    yaml: YamlReadable,
+    *,
+    validate_schema: bool = True,
+) -> LintResult:
+    """
+    Validate & lint `yaml` and return a `LintResult`.
+
+    :param yaml: YAML string or file-like object
+    :param validate_schema: Whether to validate against the JSON schema before attempting to parse and lint.
+                            This should generally always be true, but can be disabled for testing purposes.
+    """
+    lr = LintResult()
+    try:
+        data = read_yaml(yaml)
+    except pyyaml.YAMLError as err:
+        if hasattr(err, 'problem_mark'):
+            mark = err.problem_mark
+            indent_error = f"Indentation Error at line {mark.line + 1}, column {mark.column + 1}"
+            lr.add_error(indent_error)
+        else:
+            lr.add_error(str(err))
+        return lr
+
+    if validate_schema and _validate_json_schema(lr, data):
+        # If validation found errors, don't try to parse the data
         return lr
 
     try:
