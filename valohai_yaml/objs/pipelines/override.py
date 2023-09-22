@@ -4,6 +4,7 @@ import copy
 from collections import OrderedDict
 from typing import Iterable
 
+from valohai_yaml.lint import LintResult
 from valohai_yaml.objs import Mount, Parameter
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.environment_variable import EnvironmentVariable
@@ -14,9 +15,22 @@ from valohai_yaml.objs.utils import (
     check_type_and_listify,
     serialize_into,
 )
-from valohai_yaml.types import SerializedDict
+from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils import listify
 from valohai_yaml.utils.merge import merge_dicts, merge_simple
+
+# These are used by `Override.parse()` to cull out fields that are not
+# readable by the constructor, to allow leniently parsing some legacy
+# files that aren't technically valid.
+OVERRIDABLE_FIELDS = {
+    "command",
+    "environment",
+    "environment_variables",
+    "image",
+    "inputs",
+    "mounts",
+    "parameters",
+}
 
 
 class Override(Item):
@@ -85,10 +99,29 @@ class Override(Item):
 
     @classmethod
     def parse(cls, data: SerializedDict) -> Override:
-        kwargs = parse_common_step_properties(data)
-        inst = cls(**kwargs)
+        inst = cls(**{
+            key: value
+            for key, value
+            in parse_common_step_properties(data).items()
+            # We snip out any fields that aren't readable by the constructor
+            # at this point, so that we can leniently parse legacy files that
+            # aren't technically valid.  Since the original data remains in
+            # `_original_data`, we can still lint against it.
+            if key in OVERRIDABLE_FIELDS
+        })
         inst._original_data = data
         return inst
+
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
+        # We should actually never get here with modern JSON schemata
+        original_data = getattr(self, "_original_data", {})
+        if isinstance(original_data, dict):
+            for key in original_data:
+                if key not in OVERRIDABLE_FIELDS:
+                    lint_result.add_warning(
+                        f"Unknown field {key!r} in override; "
+                        "should it be nested under `parameters` or `inputs`?",
+                    )
 
     def serialize(self) -> OrderedDict:  # type: ignore[type-arg]
         val: OrderedDict = OrderedDict()

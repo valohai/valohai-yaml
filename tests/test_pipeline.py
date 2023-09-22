@@ -1,3 +1,5 @@
+from tests.utils import get_warning_example_path
+from valohai_yaml.lint import lint_file
 from valohai_yaml.objs import Config, DeploymentNode, ExecutionNode
 
 
@@ -89,3 +91,10 @@ def test_empty_override_not_serialized(pipeline_config: Config):
     assert train_node and train_node.override
     train_node.override = None
     assert 'override' not in train_node.serialize()
+
+
+def test_invalid_override_is_parsed_but_warns():
+    path = get_warning_example_path("override-with-extra-fields-warning.yaml")
+    items = lint_file(path, validate_schema=False)
+    assert items.warning_count == 1
+    assert next(items.warnings)["message"].startswith("Unknown field")

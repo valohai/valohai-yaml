@@ -1,0 +1,19 @@
+- step:
+    name: base step
+    image: busybox
+    command:
+      - date
+    inputs:
+      - name: training-images
+        default: "default step image"
+
+- pipeline:
+    name: Pipeline
+    nodes:
+      - name: merged
+        type: execution
+        step: base step
+        override:
+          # this should be in override.inputs:
+          training-images: s3://hello/hello.jpg
+    edges: []
