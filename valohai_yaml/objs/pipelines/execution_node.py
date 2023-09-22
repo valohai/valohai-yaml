@@ -38,9 +38,10 @@ class ExecutionNode(Node):
         if not step:
             lint_result.add_error(f'{error_prefix} does not exist')
             return
-        step_inputs = step.inputs.keys()
-        step_parameters = step.parameters.keys()
         if self.override is not None:
+            self.override.lint(lint_result, context)
+            step_inputs = step.inputs.keys()
+            step_parameters = step.parameters.keys()
             for input_name in self.override.inputs:
                 if input_name not in step_inputs:
                     lint_result.add_error(f"{error_prefix}: input {input_name} does not exist in step")
