@@ -1,5 +1,4 @@
-import sys
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, TypedDict, Union
 
 from valohai_yaml.objs import (
     Config,
@@ -15,16 +14,12 @@ from valohai_yaml.objs.pipelines.override import Override
 ConvertedObject = Dict[str, Any]
 
 
-if sys.version_info >= (3, 8):
-    from typing import TypedDict
-    class ConvertedPipeline(TypedDict):
-        """TypedDict for converted Pipeline object."""
+class ConvertedPipeline(TypedDict):
+    """TypedDict for converted Pipeline object."""
 
-        edges: List[ConvertedObject]
-        nodes: List[ConvertedObject]
-        parameters: Dict[str, ConvertedObject]
-else:
-    ConvertedPipeline = ConvertedObject
+    edges: List[ConvertedObject]
+    nodes: List[ConvertedObject]
+    parameters: Dict[str, ConvertedObject]
 
 
 class PipelineConverter:

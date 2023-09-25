@@ -28,7 +28,7 @@ class LocalRefResolver(RefResolver):  # type: ignore[misc]
         raise NotImplementedError('remote URL resolution is not supported for security reasons')  # pragma: no cover
 
 
-@lru_cache()
+@lru_cache
 def get_schema(name: str) -> Dict[Any, Any]:
     json_filename = os.path.join(SCHEMATA_DIRECTORY, name)
     yaml_filename = os.path.splitext(json_filename)[0] + '.yaml'

@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, Type, TypeVar
-from typing import MutableMapping as MutableMappingType
+from typing import OrderedDict as OrderedDictType
 
 from valohai_yaml.types import SerializedDict
 
@@ -39,8 +39,7 @@ def check_type_and_listify(
     return out
 
 
-# TODO: use `typing.OrderedDict` as return type when only 3.7.2+ supported
-def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr: str) -> MutableMappingType[str, T]:
+def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr: str) -> OrderedDictType[str, T]:
     """Check that all items in the `source` iterable are of the type `type` and map them into an OrderedDict."""
     out = OrderedDict()  # type: OrderedDict[str, T]
     if source is None:
