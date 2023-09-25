@@ -41,7 +41,7 @@ def check_type_and_listify(
 
 def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr: str) -> OrderedDictType[str, T]:
     """Check that all items in the `source` iterable are of the type `type` and map them into an OrderedDict."""
-    out = OrderedDict()  # type: OrderedDict[str, T]
+    out: OrderedDict[str, T] = OrderedDict()
     if source is None:
         return out
 
@@ -53,7 +53,7 @@ def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr:
 
 
 def serialize_into(
-    dest,  # type: OrderedDict[str, Any] # noqa: ANN001
+    dest: OrderedDict[str, Any],
     key: str,
     value: Any,
     *,
