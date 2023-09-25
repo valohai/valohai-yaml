@@ -14,14 +14,14 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-20.04
+          - ubuntu-22.04
         python-version:
           - "3.8"
           - "3.9"
           - "3.10"
           - "3.11"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Set up Python ${{ matrix.python-version }}"
         uses: actions/setup-python@v4
         with:
@@ -32,12 +32,12 @@ jobs:
             requirements*txt
       - run: "pip install -e . -r requirements-test.txt"
       - run: py.test -vvv --cov .
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
 
   Lint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
@@ -48,9 +48,9 @@ jobs:
       - uses: pre-commit/action@v3.0.0
 
   Build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
