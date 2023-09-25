@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "Valohai.yaml validation and parsing"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 authors = [
     { name = "Valohai", email = "info@valohai.com" },
 ]
@@ -20,10 +20,10 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Software Development :: Libraries",
 ]
 dependencies = [
@@ -44,7 +44,7 @@ path = "valohai_yaml/__init__.py"
 norecursedirs = [".git", ".tox", "dist"]
 
 [tool.ruff]
-target-version = "py37"
+target-version = "py38"
 line-length = 120
 mccabe.max-complexity = 10
 flake8-tidy-imports.ban-relative-imports = "all"
