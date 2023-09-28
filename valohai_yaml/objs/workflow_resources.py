@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from valohai_yaml.excs import ValidationError
 from valohai_yaml.objs.base import Item
 from valohai_yaml.types import SerializedDict
 
@@ -27,9 +28,12 @@ class WorkloadResources(Item):
     def _parse_args(self, resources: dict) -> None:
         if not resources:
             return
-        self.cpu = ResourceCPU(resources["cpu"])
-        self.memory = ResourceMemory(resources["memory"])
-        self.devices = ResourceDevices(resources["devices"])
+        try:
+            self.cpu = ResourceCPU(resources["cpu"])
+            self.memory = ResourceMemory(resources["memory"])
+            self.devices = ResourceDevices(resources["devices"])
+        except KeyError as error:
+            raise ValidationError(f'Missing resources property: {error}') from error
 
 
 class ResourceCPU(Item):
