@@ -39,7 +39,8 @@ class WorkloadResources(Item):
 class ResourceCPU(Item):
     """CPU configuration."""
 
-    def __init__(self, cpu_resource: OrderedDict[str, int]) -> None:
+    # TODO after removing support for Python 3.8 set cpu_resource type: OrderedDict[str, int]
+    def __init__(self, cpu_resource) -> None:  # noqa: ANN001
         self.max: int = cpu_resource['max']
         self.min: int = cpu_resource['min']
 
