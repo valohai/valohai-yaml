@@ -1,6 +1,5 @@
 from collections import OrderedDict
 
-from valohai_yaml.excs import ValidationError
 from valohai_yaml.objs.base import Item
 from valohai_yaml.types import SerializedDict
 
@@ -10,6 +9,7 @@ class WorkloadResources(Item):
     Represents a workload resource definition.
 
     Resources include: cpu, memory, devices.
+    Both the resources and their properties are optional.
     """
 
     def __init__(
@@ -28,12 +28,13 @@ class WorkloadResources(Item):
     def _parse_args(self, resources: dict) -> None:
         if not resources:
             return
-        try:
-            self.cpu = ResourceCPU(resources["cpu"])
-            self.memory = ResourceMemory(resources["memory"])
-            self.devices = ResourceDevices(resources["devices"])
-        except KeyError as error:
-            raise ValidationError(f'Missing resources property: {error}') from error
+
+        if cpu := resources.get('cpu'):
+            self.cpu = ResourceCPU(cpu)
+        if memory := resources.get('memory'):
+            self.memory = ResourceMemory(memory)
+        if devices := resources.get('devices'):
+            self.devices = ResourceDevices(devices)
 
 
 class ResourceCPU(Item):
@@ -41,8 +42,8 @@ class ResourceCPU(Item):
 
     # TODO after removing support for Python 3.8 set cpu_resource type: OrderedDict[str, int]
     def __init__(self, cpu_resource) -> None:  # noqa: ANN001
-        self.max: int = cpu_resource['max']
-        self.min: int = cpu_resource['min']
+        self.max: int | None = cpu_resource.get('max')
+        self.min: int | None = cpu_resource.get('min')
 
     def __repr__(self) -> str:
         """CPU data."""
@@ -53,8 +54,8 @@ class ResourceMemory(Item):
     """Memory configuration."""
 
     def __init__(self, memory_resource: dict) -> None:
-        self.max: int = memory_resource['max']
-        self.min: int = memory_resource['min']
+        self.max: int | None = memory_resource.get('max')
+        self.min: int | None = memory_resource.get('min')
 
     def __repr__(self) -> str:
         """Memory data."""
