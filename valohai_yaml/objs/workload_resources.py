@@ -29,11 +29,11 @@ class WorkloadResources(Item):
         if not resources:
             return
 
-        if cpu := resources.get('cpu'):
+        if cpu := resources.get("cpu"):
             self.cpu = ResourceCPU(cpu)
-        if memory := resources.get('memory'):
+        if memory := resources.get("memory"):
             self.memory = ResourceMemory(memory)
-        if devices := resources.get('devices'):
+        if devices := resources.get("devices"):
             self.devices = ResourceDevices(devices)
 
 
@@ -42,8 +42,8 @@ class ResourceCPU(Item):
 
     # TODO after removing support for Python 3.8 set cpu_resource type: OrderedDict[str, int]
     def __init__(self, cpu_resource) -> None:  # noqa: ANN001
-        self.max: int | None = cpu_resource.get('max')
-        self.min: int | None = cpu_resource.get('min')
+        self.max: int | None = cpu_resource.get("max")
+        self.min: int | None = cpu_resource.get("min")
 
     def __repr__(self) -> str:
         """CPU data."""
@@ -54,8 +54,8 @@ class ResourceMemory(Item):
     """Memory configuration."""
 
     def __init__(self, memory_resource: dict) -> None:
-        self.max: int | None = memory_resource.get('max')
-        self.min: int | None = memory_resource.get('min')
+        self.max: int | None = memory_resource.get("max")
+        self.min: int | None = memory_resource.get("min")
 
     def __repr__(self) -> str:
         """Memory data."""
@@ -76,7 +76,7 @@ class ResourceDevices(Item):
 
     def __repr__(self) -> str:
         """List the devices."""
-        return f'ResourceDevices({self.devices})'
+        return f"ResourceDevices({self.devices})"
 
     def get_data(self) -> SerializedDict:
         return self.devices
