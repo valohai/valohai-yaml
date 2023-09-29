@@ -17,7 +17,7 @@ from valohai_yaml.objs.utils import (
     consume_array_of,
     serialize_into,
 )
-from valohai_yaml.objs.workflow_resources import WorkloadResources
+from valohai_yaml.objs.workload_resources import WorkloadResources
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.duration import parse_duration
 from valohai_yaml.utils.lint import lint_iterables
