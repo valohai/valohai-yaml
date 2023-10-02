@@ -9,7 +9,7 @@ def read_yaml(yaml: YamlReadable) -> Any:
     if isinstance(yaml, (dict, list)):  # Smells already parsed
         return yaml
     if isinstance(yaml, bytes):
-        yaml = yaml.decode('utf-8')
+        yaml = yaml.decode("utf-8")
     return safe_load(yaml)  # can be a stream or a string
 
 

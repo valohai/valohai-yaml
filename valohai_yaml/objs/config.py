@@ -31,13 +31,13 @@ class Config(Item):
         endpoints: Iterable[Endpoint] = (),
         pipelines: Iterable[Pipeline] = (),
     ) -> None:
-        self.steps = check_type_and_dictify(steps, Step, 'name')
-        self.tasks = check_type_and_dictify(tasks, Task, 'name')
-        self.endpoints = check_type_and_dictify(endpoints, Endpoint, 'name')
-        self.pipelines = check_type_and_dictify(pipelines, Pipeline, 'name')
+        self.steps = check_type_and_dictify(steps, Step, "name")
+        self.tasks = check_type_and_dictify(tasks, Task, "name")
+        self.endpoints = check_type_and_dictify(endpoints, Endpoint, "name")
+        self.pipelines = check_type_and_dictify(pipelines, Pipeline, "name")
 
     @classmethod
-    def parse(cls, data: Any) -> 'Config':
+    def parse(cls, data: Any) -> "Config":
         """
         Parse a Config structure out of a Python dict (that's likely deserialized from YAML).
 
@@ -54,12 +54,12 @@ class Config(Item):
                     items.append(parse(datum[type]))
                     break
             else:
-                parse_warnings.append(f'No parser for {datum}')
+                parse_warnings.append(f"No parser for {datum}")
         inst = cls(
-            steps=parsers['step'][0],
-            endpoints=parsers['endpoint'][0],
-            pipelines=parsers['pipeline'][0],
-            tasks=parsers['task'][0],
+            steps=parsers["step"][0],
+            endpoints=parsers["endpoint"][0],
+            pipelines=parsers["pipeline"][0],
+            tasks=parsers["task"][0],
         )
         inst._original_data = data
         inst._parse_warnings = parse_warnings
@@ -75,19 +75,27 @@ class Config(Item):
         """
         pipelines: List[Pipeline] = []
         return {
-            'step': ([], Step.parse),
-            'task': ([], Task.parse),
-            'endpoint': ([], Endpoint.parse),
-            'pipeline': (pipelines, Pipeline.parse),
-            'blueprint': (pipelines, Pipeline.parse),  # Alias allowed for now
+            "step": ([], Step.parse),
+            "task": ([], Task.parse),
+            "endpoint": ([], Endpoint.parse),
+            "pipeline": (pipelines, Pipeline.parse),
+            "blueprint": (pipelines, Pipeline.parse),  # Alias allowed for now
         }
 
     def serialize(self) -> List[SerializedDict]:
-        return list(chain(
-            ({'step': step.serialize()} for (key, step) in self.steps.items()),
-            ({'endpoint': endpoint.serialize()} for (key, endpoint) in sorted(self.endpoints.items())),
-            ({'pipeline': pipeline.serialize()} for (key, pipeline) in sorted(self.pipelines.items())),
-        ))
+        return list(
+            chain(
+                ({"step": step.serialize()} for (key, step) in self.steps.items()),
+                (
+                    {"endpoint": endpoint.serialize()}
+                    for (key, endpoint) in sorted(self.endpoints.items())
+                ),
+                (
+                    {"pipeline": pipeline.serialize()}
+                    for (key, pipeline) in sorted(self.pipelines.items())
+                ),
+            ),
+        )
 
     def lint(  # type: ignore[override]
         self,
@@ -111,12 +119,16 @@ class Config(Item):
             for warning in self._parse_warnings:
                 lint_result.add_warning(warning)
 
-        lint_iterables(lint_result, context, (
-            self.steps,
-            self.endpoints,
-            self.pipelines,
-            self.tasks,
-        ))
+        lint_iterables(
+            lint_result,
+            context,
+            (
+                self.steps,
+                self.endpoints,
+                self.pipelines,
+                self.tasks,
+            ),
+        )
         return lint_result
 
     def get_step_by(self, **kwargs: Any) -> Optional[Step]:
@@ -143,7 +155,7 @@ class Config(Item):
         return None
 
     @classmethod
-    def default_merge(cls, a: 'Config', b: 'Config') -> 'Config':
+    def default_merge(cls, a: "Config", b: "Config") -> "Config":
         result = merge_simple(a, b)
         result.steps = merge_dicts(
             a.steps,
@@ -166,11 +178,14 @@ class Config(Item):
         return result
 
     def __repr__(self) -> str:  # pragma: no cover  # noqa: D105
-        return '<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>' % (
-            len(self.steps),
-            self.steps,
-            len(self.endpoints),
-            sorted(self.endpoints),
-            len(self.pipelines),
-            sorted(self.pipelines),
+        return (
+            "<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>"
+            % (
+                len(self.steps),
+                self.steps,
+                len(self.endpoints),
+                sorted(self.endpoints),
+                len(self.pipelines),
+                sorted(self.pipelines),
+            )
         )

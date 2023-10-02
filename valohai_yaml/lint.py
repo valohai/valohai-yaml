@@ -16,37 +16,73 @@ class LintResult:
     def __init__(self) -> None:
         self.messages: List[LintResultMessage] = []
 
-    def add_error(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
-        self.messages.append({'type': 'error', 'message': message, 'location': location, 'exception': exception})
+    def add_error(
+        self,
+        message: str,
+        location: None = None,
+        exception: Optional[Exception] = None,
+    ) -> None:
+        self.messages.append(
+            {
+                "type": "error",
+                "message": message,
+                "location": location,
+                "exception": exception,
+            },
+        )
 
-    def add_warning(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
-        self.messages.append({'type': 'warning', 'message': message, 'location': location, 'exception': exception})
+    def add_warning(
+        self,
+        message: str,
+        location: None = None,
+        exception: Optional[Exception] = None,
+    ) -> None:
+        self.messages.append(
+            {
+                "type": "warning",
+                "message": message,
+                "location": location,
+                "exception": exception,
+            },
+        )
 
-    def add_hint(self, message: str, location: None = None, exception: Optional[Exception] = None) -> None:
-        self.messages.append({'type': 'hint', 'message': message, 'location': location, 'exception': exception})
+    def add_hint(
+        self,
+        message: str,
+        location: None = None,
+        exception: Optional[Exception] = None,
+    ) -> None:
+        self.messages.append(
+            {
+                "type": "hint",
+                "message": message,
+                "location": location,
+                "exception": exception,
+            },
+        )
 
     @property
     def warning_count(self) -> int:
-        return sum(1 for m in self.messages if m['type'] == 'warning')
+        return sum(1 for m in self.messages if m["type"] == "warning")
 
     @property
     def error_count(self) -> int:
-        return sum(1 for m in self.messages if m['type'] == 'error')
+        return sum(1 for m in self.messages if m["type"] == "error")
 
     @property
     def warnings(self) -> Iterator[LintResultMessage]:
-        return (m for m in self.messages if m['type'] == 'warning')
+        return (m for m in self.messages if m["type"] == "warning")
 
     @property
     def errors(self) -> Iterator[LintResultMessage]:
-        return (m for m in self.messages if m['type'] == 'error')
+        return (m for m in self.messages if m["type"] == "error")
 
     @property
     def hints(self) -> Iterator[LintResultMessage]:
-        return (m for m in self.messages if m['type'] == 'hint')
+        return (m for m in self.messages if m["type"] == "hint")
 
     def is_valid(self) -> bool:
-        return (self.warning_count == 0 and self.error_count == 0)
+        return self.warning_count == 0 and self.error_count == 0
 
 
 def lint_file(file_path: str, *, validate_schema: bool = True) -> LintResult:
@@ -63,7 +99,7 @@ def lint_file(file_path: str, *, validate_schema: bool = True) -> LintResult:
             return lint(yaml, validate_schema=validate_schema)
         except Exception as e:
             lr = LintResult()
-            lr.add_error(f'could not parse YAML: {e}', exception=e)
+            lr.add_error(f"could not parse YAML: {e}", exception=e)
             return lr
 
 
@@ -76,22 +112,23 @@ def _validate_json_schema(lr: LintResult, data: Any) -> int:
     for error in errors:
         simplified_schema_path = [
             el
-            for el
-            in list(error.relative_schema_path)
-            if el not in ('properties', 'items')
+            for el in list(error.relative_schema_path)
+            if el not in ("properties", "items")
         ]
         obj_path = [str(el) for el in error.path]
         styled_validator = style(error.validator.title(), bold=True)
-        styled_schema_path = style('.'.join(simplified_schema_path), bold=True)
-        styled_message = style(error.message, fg='red')
-        styled_path = style('.'.join(obj_path), bold=True)
-        lr.add_error(f'  {styled_validator} validation on {styled_schema_path}: {styled_message} ({styled_path})')
+        styled_schema_path = style(".".join(simplified_schema_path), bold=True)
+        styled_message = style(error.message, fg="red")
+        styled_path = style(".".join(obj_path), bold=True)
+        lr.add_error(
+            f"  {styled_validator} validation on {styled_schema_path}: {styled_message} ({styled_path})",
+        )
         # when path has only 2 nodes. it means it has problem in main steps/pipelines/endpoints objects
         if len(error.path) == 2 and not error.instance:
             styled_hint = style(
                 "File contains valid YAML but there might be an indentation "
                 f"error in following configuration: {styled_path}",
-                fg='blue',
+                fg="blue",
             )
             lr.add_hint(styled_hint)
     return len(errors)
@@ -113,9 +150,11 @@ def lint(
     try:
         data = read_yaml(yaml)
     except pyyaml.YAMLError as err:
-        if hasattr(err, 'problem_mark'):
+        if hasattr(err, "problem_mark"):
             mark = err.problem_mark
-            indent_error = f"Indentation Error at line {mark.line + 1}, column {mark.column + 1}"
+            indent_error = (
+                f"Indentation Error at line {mark.line + 1}, column {mark.column + 1}"
+            )
             lr.add_error(indent_error)
         else:
             lr.add_error(str(err))
@@ -127,6 +166,7 @@ def lint(
 
     try:
         from valohai_yaml.objs import Config
+
         config = Config.parse(data)
     except ValidationError as err:  # Could happen before we get to linting things
         lr.add_error(str(err), exception=err)

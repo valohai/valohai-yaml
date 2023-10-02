@@ -7,11 +7,15 @@ from valohai_yaml.types import SerializedDict
 if TYPE_CHECKING:
     from valohai_yaml.objs.base import Item
 
-TItem = TypeVar('TItem', bound='Item')
-T = TypeVar('T')
+TItem = TypeVar("TItem", bound="Item")
+T = TypeVar("T")
 
 
-def consume_array_of(source: SerializedDict, key: str, type: Type[TItem]) -> List[TItem]:
+def consume_array_of(
+    source: SerializedDict,
+    key: str,
+    type: Type[TItem],
+) -> List[TItem]:
     return [type.parse(datum) for datum in source.pop(key, ())]
 
 
@@ -39,7 +43,11 @@ def check_type_and_listify(
     return out
 
 
-def check_type_and_dictify(source: Optional[Iterable[Any]], type: Type[T], attr: str) -> OrderedDictType[str, T]:
+def check_type_and_dictify(
+    source: Optional[Iterable[Any]],
+    type: Type[T],
+    attr: str,
+) -> OrderedDictType[str, T]:
     """Check that all items in the `source` iterable are of the type `type` and map them into an OrderedDict."""
     out = OrderedDict()  # type: OrderedDict[str, T]
     if source is None:
@@ -77,4 +85,4 @@ def serialize_into(
 
 
 def _serialize_if_able(v: Any) -> Any:
-    return (v.serialize() if hasattr(v, 'serialize') else v)
+    return v.serialize() if hasattr(v, "serialize") else v

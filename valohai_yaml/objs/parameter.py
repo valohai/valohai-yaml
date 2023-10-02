@@ -12,17 +12,20 @@ from valohai_yaml.utils import listify
 class MultipleMode(Enum):
     """How to serialize multiple values given for a parameter."""
 
-    SEPARATE = 'separate'
-    REPEAT = 'repeat'
+    SEPARATE = "separate"
+    REPEAT = "repeat"
 
     @classmethod
-    def cast(cls, value: Optional[Union['MultipleMode', str]]) -> Optional['MultipleMode']:
+    def cast(
+        cls,
+        value: Optional[Union["MultipleMode", str]],
+    ) -> Optional["MultipleMode"]:
         if not value:
             return None
         if isinstance(value, MultipleMode):
             return value
         value = str(value).lower()
-        if value == 'none':
+        if value == "none":
             return None
         return MultipleMode(value)
 
@@ -38,7 +41,7 @@ class Parameter(Item):
         self,
         *,
         name: str,
-        type: str = 'string',
+        type: str = "string",
         optional: bool = False,
         min: Optional[ValueAtomType] = None,
         max: Optional[ValueAtomType] = None,
@@ -49,7 +52,7 @@ class Parameter(Item):
         pass_false_as: Optional[str] = None,
         choices: Optional[Iterable[ValueAtomType]] = None,
         multiple: Optional[Union[str, MultipleMode]] = None,
-        multiple_separator: str = ',',
+        multiple_separator: str = ",",
         widget: Optional[ParameterWidget] = None,
     ) -> None:
         self.name = name
@@ -61,57 +64,61 @@ class Parameter(Item):
         self.pass_as = pass_as
         self.pass_true_as = pass_true_as
         self.pass_false_as = pass_false_as
-        self.choices = (list(choices) if choices else None)
+        self.choices = list(choices) if choices else None
         self.multiple = MultipleMode.cast(multiple)
-        self.multiple_separator = str(multiple_separator or ',')
+        self.multiple_separator = str(multiple_separator or ",")
         self.widget = widget
 
-        self.default = (listify(default) if self.multiple else default)
-        if self.type == 'flag':
+        self.default = listify(default) if self.multiple else default
+        if self.type == "flag":
             self.optional = True
             self.choices = [True, False]
             if self.multiple:
-                raise ValueError('Flag parameters can\'t be multiple')
+                raise ValueError("Flag parameters can't be multiple")
         else:
             self.pass_true_as = self.pass_false_as = None
 
     def get_data(self) -> SerializedDict:
         data = super().get_data()
-        if self.type == 'flag':
-            data.pop('optional', None)
-            data.pop('choices', None)
+        if self.type == "flag":
+            data.pop("optional", None)
+            data.pop("choices", None)
         if self.multiple:
-            data['multiple'] = data['multiple'].value
+            data["multiple"] = data["multiple"].value
         else:
-            data.pop('multiple_separator', None)
+            data.pop("multiple_separator", None)
         return data
 
     def _validate_value(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
         try:
             if self.min is not None and value < self.min:  # type: ignore
-                errors.append(f'{value} is less than the minimum allowed ({self.min})')
+                errors.append(f"{value} is less than the minimum allowed ({self.min})")
         except TypeError:  # Could occur if types are incompatible
             pass
         try:
             if self.max is not None and value > self.max:  # type: ignore
-                errors.append(f'{value} is greater than the maximum allowed ({self.max})')
+                errors.append(
+                    f"{value} is greater than the maximum allowed ({self.max})",
+                )
         except TypeError:
             pass
         if self.choices is not None and value not in self.choices:
-            errors.append(f'{value} is not among the choices allowed ({self.choices!r})')
+            errors.append(
+                f"{value} is not among the choices allowed ({self.choices!r})",
+            )
         return value
 
     def _validate_type(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
-        if self.type == 'integer':
+        if self.type == "integer":
             try:
                 value = int(str(value), 10)
             except ValueError:
-                errors.append(f'{value} is not an integer')
-        elif self.type == 'float':
+                errors.append(f"{value} is not an integer")
+        elif self.type == "float":
             try:
                 value = float(str(value))
             except ValueError:
-                errors.append(f'{value} is not a floating-point number')
+                errors.append(f"{value} is not a floating-point number")
         return value
 
     def validate(self, value: ValueType) -> ValueType:
@@ -126,7 +133,7 @@ class Parameter(Item):
         validated_values = []
 
         if not self.multiple and isinstance(value, (list, tuple)):
-            errors.append('Only a single value is allowed')
+            errors.append("Only a single value is allowed")
 
         for atom in listify(value):
             if isinstance(atom, list):  # type guard
@@ -144,12 +151,12 @@ class Parameter(Item):
 
     @property
     def default_pass_as(self) -> str:
-        if self.type == 'flag':
-            return '--{name}'
-        return '--{name}={value}'
+        if self.type == "flag":
+            return "--{name}"
+        return "--{name}={value}"
 
     def _get_pass_as_template(self, value: Optional[ValueType]) -> Optional[str]:
-        if self.type == 'flag':
+        if self.type == "flag":
             if self.pass_true_as or self.pass_false_as:
                 return (self.pass_true_as if value else self.pass_false_as) or None
             if not value:
@@ -180,7 +187,9 @@ class Parameter(Item):
             out = []
             for atom in listify(value):
                 if isinstance(atom, list):
-                    raise InvalidType(f"nested list value {atom!r} for repeat-style multiple parameter not allowed")
+                    raise InvalidType(
+                        f"nested list value {atom!r} for repeat-style multiple parameter not allowed",
+                    )
                 out.extend(_format_atom(atom))
             return out
 
@@ -188,21 +197,25 @@ class Parameter(Item):
             value_list = listify(value)
             # Guard against generating a `--foo=` when there are no values.
             if value_list:
-                return _format_atom(self.multiple_separator.join(str(atom) for atom in value_list))
+                return _format_atom(
+                    self.multiple_separator.join(str(atom) for atom in value_list),
+                )
             return None
 
         if not self.multiple:
             if isinstance(value, list):
-                raise InvalidType(f"list value {value!r} for non-multiple parameter {self.name!r} not allowed")
+                raise InvalidType(
+                    f"list value {value!r} for non-multiple parameter {self.name!r} not allowed",
+                )
             return _format_atom(value)
 
-        raise NotImplementedError(f'unknown multiple type {self.multiple!r}')
+        raise NotImplementedError(f"unknown multiple type {self.multiple!r}")
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> 'Parameter':
+    def parse(cls, data: SerializedDict) -> "Parameter":
         kwargs = data.copy()
-        if 'widget' in data:
-            kwargs['widget'] = ParameterWidget.parse(data['widget'])
+        if "widget" in data:
+            kwargs["widget"] = ParameterWidget.parse(data["widget"])
         return super().parse(kwargs)
 
     def lint(
@@ -210,30 +223,40 @@ class Parameter(Item):
         lint_result: LintResult,
         context: LintContext,
     ) -> None:
-        original_data = (self._original_data or {})
-        has_pass_as = bool(original_data.get('pass-as'))
-        has_pass_true_as = bool(original_data.get('pass-true-as'))
-        has_pass_false_as = bool(original_data.get('pass-false-as'))
+        original_data = self._original_data or {}
+        has_pass_as = bool(original_data.get("pass-as"))
+        has_pass_true_as = bool(original_data.get("pass-true-as"))
+        has_pass_false_as = bool(original_data.get("pass-false-as"))
         prefix = f'Step {context["step"].name}, parameter {self.name}'
-        if self.type == 'flag':
-            if original_data.get('optional'):
-                lint_result.add_warning(f'{prefix}: `optional` has no effect on flag-type parameters')
+        if self.type == "flag":
+            if original_data.get("optional"):
+                lint_result.add_warning(
+                    f"{prefix}: `optional` has no effect on flag-type parameters",
+                )
             if (has_pass_true_as or has_pass_false_as) and has_pass_as:
-                lint_result.add_warning(f'{prefix}: `pass-as` has no effect with `pass-true-as`/`pass-false-as`')
+                lint_result.add_warning(
+                    f"{prefix}: `pass-as` has no effect with `pass-true-as`/`pass-false-as`",
+                )
         else:
             if has_pass_true_as:
-                lint_result.add_warning(f'{prefix}: `pass-true-as` has no effect on non-flag parameters')
+                lint_result.add_warning(
+                    f"{prefix}: `pass-true-as` has no effect on non-flag parameters",
+                )
             if has_pass_false_as:
-                lint_result.add_warning(f'{prefix}: `pass-false-as` has no effect on non-flag parameters')
+                lint_result.add_warning(
+                    f"{prefix}: `pass-false-as` has no effect on non-flag parameters",
+                )
 
         if self.default:
             errors = []
             for default_value in listify(self.default):
-                if self.type == 'string' and not isinstance(default_value, str):
-                    errors.append(f'`default` value {default_value!r} is not a string (got a {type(default_value)})')
+                if self.type == "string" and not isinstance(default_value, str):
+                    errors.append(
+                        f"`default` value {default_value!r} is not a string (got a {type(default_value)})",
+                    )
                 else:
                     self._validate_type(default_value, errors)
                     self._validate_value(default_value, errors)
 
             for message in errors:
-                lint_result.add_warning(f'{prefix}: default {message}')
+                lint_result.add_warning(f"{prefix}: default {message}")

@@ -72,9 +72,15 @@ class PipelineConverter:
         node_data["aliases"] = node.aliases
         return node_data
 
-    def convert_executionlike_node(self, node: Union[ExecutionNode, TaskNode]) -> ConvertedObject:
+    def convert_executionlike_node(
+        self,
+        node: Union[ExecutionNode, TaskNode],
+    ) -> ConvertedObject:
         node_data = node.serialize()
-        node_data.pop('override', {})  # we'll use the actual object, not the serialization
+        node_data.pop(
+            "override",
+            {},
+        )  # we'll use the actual object, not the serialization
         step_name = node_data.pop("step")
         step = self.config.get_step_by(name=step_name)
         if not step:  # pragma: no cover
@@ -83,7 +89,10 @@ class PipelineConverter:
 
         runtime_config = step_data.setdefault("runtime_config", {})
         if "no-output-timeout" in step_data:
-            runtime_config.setdefault("no_output_timeout", step_data.pop("no-output-timeout"))
+            runtime_config.setdefault(
+                "no_output_timeout",
+                step_data.pop("no-output-timeout"),
+            )
 
         override = Override.merge_with_step(node.override, step)
         overridden_to_template = Override.serialize_to_template(override)

@@ -29,26 +29,30 @@ class PipelineParameter(Item):
             self.targets = check_type_and_listify(targets, str)
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> 'PipelineParameter':
+    def parse(cls, data: SerializedDict) -> "PipelineParameter":
         data = data.copy()
         # targets can be a string or a list of strings
-        if 'target' in data:
-            if 'targets' in data:
-                raise TypeError("Pipeline parameter cannot have both: target and targets")
-            data['targets'] = [data.pop('target')]
+        if "target" in data:
+            if "targets" in data:
+                raise TypeError(
+                    "Pipeline parameter cannot have both: target and targets",
+                )
+            data["targets"] = [data.pop("target")]
         return super().parse(data)
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
-        pipeline: Pipeline = context['pipeline']
-        config: Config = context['config']
+        pipeline: Pipeline = context["pipeline"]
+        config: Config = context["config"]
         steps = config.steps
         node_map = pipeline.node_map
         for target in self.targets:
-            target_node_name, socket_type, target_parameter_name = split_socket_str(target)
-            if not socket_type.startswith('parameter'):
+            target_node_name, socket_type, target_parameter_name = split_socket_str(
+                target,
+            )
+            if not socket_type.startswith("parameter"):
                 lint_result.add_error(
                     f'Pipeline "{pipeline.name}" parameter "{self.name}" target "{target}": socket type "{socket_type}"'
-                    f' is not supported.',
+                    f" is not supported.",
                 )
             if target_node_name not in node_map:
                 lint_result.add_error(
@@ -58,6 +62,7 @@ class PipelineParameter(Item):
             else:
                 node = node_map[target_node_name]
                 from valohai_yaml.objs import ExecutionNode
+
                 if isinstance(node, ExecutionNode):
                     step = steps[node.step]
                     if target_parameter_name not in step.parameters:

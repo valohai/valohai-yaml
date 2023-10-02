@@ -88,27 +88,26 @@ class Override(Item):
         """Serialize an override object to a template for a node."""
         template = override.serialize()
         template["inputs"] = {
-            name: listify(input.default)
-            for name, input in override.inputs.items()
+            name: listify(input.default) for name, input in override.inputs.items()
         }
         template["parameters"] = {
-            name: param.default
-            for name, param in override.parameters.items()
+            name: param.default for name, param in override.parameters.items()
         }
         return template
 
     @classmethod
     def parse(cls, data: SerializedDict) -> Override:
-        inst = cls(**{
-            key: value
-            for key, value
-            in parse_common_step_properties(data).items()
-            # We snip out any fields that aren't readable by the constructor
-            # at this point, so that we can leniently parse legacy files that
-            # aren't technically valid.  Since the original data remains in
-            # `_original_data`, we can still lint against it.
-            if key in OVERRIDABLE_FIELDS
-        })
+        inst = cls(
+            **{
+                key: value
+                for key, value in parse_common_step_properties(data).items()
+                # We snip out any fields that aren't readable by the constructor
+                # at this point, so that we can leniently parse legacy files that
+                # aren't technically valid.  Since the original data remains in
+                # `_original_data`, we can still lint against it.
+                if key in OVERRIDABLE_FIELDS
+            },
+        )
         inst._original_data = data
         return inst
 

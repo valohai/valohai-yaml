@@ -14,32 +14,35 @@ class CommandInterpolationWarning(UserWarning):
     """Warning issued when command interpolation fails."""
 
 
-interpolable_re = re.compile(r'{(.+?)}')
+interpolable_re = re.compile(r"{(.+?)}")
 
 
 def quote_multiple(args: Optional[List[str]]) -> str:
     if not args:
-        return ''
-    return ' '.join(quote(arg) for arg in args)
+        return ""
+    return " ".join(quote(arg) for arg in args)
 
 
-def _replace_interpolation(parameter_map: ParameterMap, match: 'Match[str]',
-                           special_interpolations: Dict[str, str]) -> str:
+def _replace_interpolation(
+    parameter_map: ParameterMap,
+    match: "Match[str]",
+    special_interpolations: Dict[str, str],
+) -> str:
     value = match.group(1)
 
     if value in special_interpolations:
         return quote(special_interpolations[value])
 
-    if value in ('parameters', 'params'):
+    if value in ("parameters", "params"):
         return quote_multiple(parameter_map.build_parameters())
 
-    if value.startswith('parameter:'):
-        parameter_name = value.split(':', 1)[1]
+    if value.startswith("parameter:"):
+        parameter_name = value.split(":", 1)[1]
         if parameter_name in parameter_map.parameters:
             return quote_multiple(parameter_map.build_parameter_by_name(parameter_name))
 
-    if value.startswith('parameter-value:'):
-        parameter_name = value.split(':', 1)[1]
+    if value.startswith("parameter-value:"):
+        parameter_name = value.split(":", 1)[1]
         if parameter_name in parameter_map.values:
             return quote(str(parameter_map.values[parameter_name]))
     return match.group(0)  # Return the original otherwise
@@ -85,7 +88,7 @@ def build_command(
                 )
             except ValueError as exc:  # pragma: no cover
                 warnings.warn(
-                    f'failed to interpolate into {command!r}: {exc}',
+                    f"failed to interpolate into {command!r}: {exc}",
                     CommandInterpolationWarning,
                     stacklevel=2,
                 )

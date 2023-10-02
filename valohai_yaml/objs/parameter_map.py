@@ -6,7 +6,12 @@ from valohai_yaml.objs.parameter import Parameter
 class ParameterMap:
     """Container for an execution's parameters and the values assigned."""
 
-    def __init__(self, *, parameters: Mapping[str, Parameter], values: Mapping[str, Any]) -> None:
+    def __init__(
+        self,
+        *,
+        parameters: Mapping[str, Parameter],
+        values: Mapping[str, Any],
+    ) -> None:
         self.parameters = parameters
         self.values = values
 

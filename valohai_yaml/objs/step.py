@@ -50,59 +50,81 @@ class Step(Item):
         self.command = command
         self.source_path = source_path
         self.description = description
-        self.environment = (str(environment) if environment else None)
-        self.icon = (str(icon) if icon else None)
-        self.category = (str(category) if category else None)
+        self.environment = str(environment) if environment else None
+        self.icon = str(icon) if icon else None
+        self.category = str(category) if category else None
 
         self.outputs = list(outputs)  # TODO: Improve handling
         self.mounts = check_type_and_listify(mounts, Mount)
-        self.inputs = check_type_and_dictify(inputs, Input, 'name')
-        self.parameters = check_type_and_dictify(parameters, Parameter, 'name')
-        self.environment_variables = check_type_and_dictify(environment_variables, EnvironmentVariable, 'name')
+        self.inputs = check_type_and_dictify(inputs, Input, "name")
+        self.parameters = check_type_and_dictify(parameters, Parameter, "name")
+        self.environment_variables = check_type_and_dictify(
+            environment_variables,
+            EnvironmentVariable,
+            "name",
+        )
 
         self.time_limit = time_limit
         self.no_output_timeout = no_output_timeout
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> 'Step':
+    def parse(cls, data: SerializedDict) -> "Step":
         kwargs = parse_common_step_properties(data)
-        kwargs['time_limit'] = parse_duration(kwargs.pop('time-limit', None))
-        kwargs['no_output_timeout'] = parse_duration(kwargs.pop('no-output-timeout', None))
-        kwargs['source_path'] = kwargs.pop("source-path", None)
+        kwargs["time_limit"] = parse_duration(kwargs.pop("time-limit", None))
+        kwargs["no_output_timeout"] = parse_duration(
+            kwargs.pop("no-output-timeout", None),
+        )
+        kwargs["source_path"] = kwargs.pop("source-path", None)
         inst = cls(**kwargs)
         inst._original_data = data
         return inst
 
     def serialize(self) -> OrderedDict:  # type: ignore[type-arg]
-        val = OrderedDict([
-            ('name', self.name),
-            ('image', self.image),
-            ('command', self.command),
-        ])
+        val = OrderedDict(
+            [
+                ("name", self.name),
+                ("image", self.image),
+                ("command", self.command),
+            ],
+        )
         for key, source in [
-            ('parameters', self.parameters),
-            ('inputs', self.inputs),
-            ('mounts', self.mounts),
-            ('outputs', self.outputs),
-            ('environment', self.environment),
-            ('environment-variables', self.environment_variables),
-            ('description', self.description),
-            ('time-limit', int(self.time_limit.total_seconds()) if self.time_limit else None),
-            ('no-output-timeout', int(self.no_output_timeout.total_seconds()) if self.no_output_timeout else None),
-            ('icon', self.icon),
-            ('category', self.category),
-            ('source-path', self.source_path),
+            ("parameters", self.parameters),
+            ("inputs", self.inputs),
+            ("mounts", self.mounts),
+            ("outputs", self.outputs),
+            ("environment", self.environment),
+            ("environment-variables", self.environment_variables),
+            ("description", self.description),
+            (
+                "time-limit",
+                int(self.time_limit.total_seconds()) if self.time_limit else None,
+            ),
+            (
+                "no-output-timeout",
+                int(self.no_output_timeout.total_seconds())
+                if self.no_output_timeout
+                else None,
+            ),
+            ("icon", self.icon),
+            ("category", self.category),
+            ("source-path", self.source_path),
         ]:
-            serialize_into(val, key, source, flatten_dicts=True, elide_empty_iterables=True)
+            serialize_into(
+                val,
+                key,
+                source,
+                flatten_dicts=True,
+                elide_empty_iterables=True,
+            )
         return val
 
     def get_parameter_defaults(self, include_flags: bool = True) -> Dict[str, Any]:
         """Get a dict mapping parameter names to their defaults (if set)."""
         return {
             name: parameter.default
-            for (name, parameter)
-            in self.parameters.items()
-            if parameter.default is not None and (include_flags or parameter.type != 'flag')
+            for (name, parameter) in self.parameters.items()
+            if parameter.default is not None
+            and (include_flags or parameter.type != "flag")
         }
 
     def build_command(
@@ -124,7 +146,7 @@ class Step(Item):
         :param command: Overriding command; leave falsy to not override.
         :return: list of commands
         """
-        command = (command or self.command)
+        command = command or self.command
 
         # merge defaults with passed values
         # ignore flag default values as they are special
@@ -135,7 +157,7 @@ class Step(Item):
         )
         special = {}
         if self.source_path is not None:
-            special['source-path'] = self.source_path
+            special["source-path"] = self.source_path
 
         parameter_map = ParameterMap(parameters=self.parameters, values=values)
         return build_command(command, parameter_map, special_interpolations=special)
@@ -143,16 +165,20 @@ class Step(Item):
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, step=self)
 
-        lint_iterables(lint_result, context, (
-            self.parameters,
-            self.inputs,
-            self.mounts,
-            self.environment_variables,
-            self.outputs,
-        ))
+        lint_iterables(
+            lint_result,
+            context,
+            (
+                self.parameters,
+                self.inputs,
+                self.mounts,
+                self.environment_variables,
+                self.outputs,
+            ),
+        )
 
     @classmethod
-    def default_merge(cls, a: 'Step', b: 'Step') -> 'Step':
+    def default_merge(cls, a: "Step", b: "Step") -> "Step":
         result = merge_simple(a, b)
         result.parameters = merge_dicts(
             a.parameters,
@@ -179,8 +205,12 @@ class Step(Item):
 def parse_common_step_properties(data: SerializedDict) -> Dict[str, Any]:
     """Parse common properties in step and override objects."""
     kwargs = data.copy()
-    kwargs['parameters'] = consume_array_of(kwargs, 'parameters', Parameter)
-    kwargs['inputs'] = consume_array_of(kwargs, 'inputs', Input)
-    kwargs['mounts'] = consume_array_of(kwargs, 'mounts', Mount)
-    kwargs['environment_variables'] = consume_array_of(kwargs, 'environment-variables', EnvironmentVariable)
+    kwargs["parameters"] = consume_array_of(kwargs, "parameters", Parameter)
+    kwargs["inputs"] = consume_array_of(kwargs, "inputs", Input)
+    kwargs["mounts"] = consume_array_of(kwargs, "mounts", Mount)
+    kwargs["environment_variables"] = consume_array_of(
+        kwargs,
+        "environment-variables",
+        EnvironmentVariable,
+    )
     return kwargs
