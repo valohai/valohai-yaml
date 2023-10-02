@@ -11,13 +11,13 @@ from valohai_yaml.excs import ValidationErrors
 from valohai_yaml.types import YamlReadable
 from valohai_yaml.utils import read_yaml
 
-SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'schema')
+SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), "schema")
 
 
 class LocalRefResolver(RefResolver):  # type: ignore[misc]
     """Loads relative URLs (as it were) from the `schema` directory."""
 
-    local_scope_re = re.compile(r'^https?://valohai.com/(.+\.json)$')
+    local_scope_re = re.compile(r"^https?://valohai.com/(.+\.json)$")
 
     def resolve_from_url(self, url: str) -> Dict[Any, Any]:
         local_match = self.local_scope_re.match(url)
@@ -25,25 +25,27 @@ class LocalRefResolver(RefResolver):  # type: ignore[misc]
             schema = get_schema(name=local_match.group(1))
             self.store[url] = schema
             return schema
-        raise NotImplementedError('remote URL resolution is not supported for security reasons')  # pragma: no cover
+        raise NotImplementedError(
+            "remote URL resolution is not supported for security reasons",
+        )  # pragma: no cover
 
 
 @lru_cache
 def get_schema(name: str) -> Dict[Any, Any]:
     json_filename = os.path.join(SCHEMATA_DIRECTORY, name)
-    yaml_filename = os.path.splitext(json_filename)[0] + '.yaml'
+    yaml_filename = os.path.splitext(json_filename)[0] + ".yaml"
     for filename, loader in [
         (json_filename, json.load),
         (yaml_filename, yaml.safe_load),
     ]:
         if os.path.isfile(filename):
-            with open(filename, encoding='utf-8') as infp:
+            with open(filename, encoding="utf-8") as infp:
                 return loader(infp)  # type: ignore
-    raise ValueError(f'unable to read schema {name}')  # pragma: no cover
+    raise ValueError(f"unable to read schema {name}")  # pragma: no cover
 
 
 def get_validator() -> Draft202012Validator:
-    schema = get_schema('base.json')
+    schema = get_schema("base.json")
     cls = Draft202012Validator
     cls.check_schema(schema)
     return cls(schema, resolver=LocalRefResolver.from_schema(schema))

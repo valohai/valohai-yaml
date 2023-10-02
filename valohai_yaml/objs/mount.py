@@ -21,23 +21,25 @@ class Mount(Item):
         self.source = source
         self.destination = destination
         self.readonly = bool(readonly)
-        self.type = (str(type).lower() if type else None)
+        self.type = str(type).lower() if type else None
         self.options = options
 
     @classmethod
-    def parse(cls, data: Union[SerializedDict, str]) -> 'Mount':
+    def parse(cls, data: Union[SerializedDict, str]) -> "Mount":
         if isinstance(data, str):
-            source, destination = str(data).split(':', 1)
+            source, destination = str(data).split(":", 1)
             data = {
-                'source': source,
-                'destination': destination,
+                "source": source,
+                "destination": destination,
             }
         return super().parse(data)
 
     def get_data(self) -> SerializedDict:
         data = super().get_data()
         if self.options:
-            data['options'] = {str(k): v for (k, v) in self.options.items() if v is not None}
+            data["options"] = {
+                str(k): v for (k, v) in self.options.items() if v is not None
+            }
         else:
-            data.pop('options', None)
+            data.pop("options", None)
         return data

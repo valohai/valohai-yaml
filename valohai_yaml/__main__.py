@@ -8,11 +8,11 @@ from valohai_yaml.lint import LintResult, lint
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument(
-        '--strict-warnings',
-        action='store_true',
-        help='exit with error if there are warnings',
+        "--strict-warnings",
+        action="store_true",
+        help="exit with error if there are warnings",
     )
-    ap.add_argument('file', nargs='+', help='file(s) to validate')
+    ap.add_argument("file", nargs="+", help="file(s) to validate")
     args = ap.parse_args(argv)
     errors = warnings = 0
     for file in args.file:
@@ -21,7 +21,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         warnings += result.warning_count
 
     if errors or warnings:
-        print(f'*** {errors} errors, {warnings} warnings')
+        print(f"*** {errors} errors, {warnings} warnings")
 
     return 1 if errors or (args.strict_warnings and warnings) else 0
 
@@ -29,15 +29,15 @@ def main(argv: Optional[List[str]] = None) -> int:
 def process_file(file: str) -> LintResult:
     header_printed = False
 
-    with open(file, 'rb') as stream:
+    with open(file, "rb") as stream:
         result = lint(stream)
 
     for item in result.messages:
         if not header_printed:
-            print('>>>', file)
+            print(">>>", file)
             header_printed = True
         print(f"{item['type']}: {item['message']}")
-        print('-' * 60)
+        print("-" * 60)
     return result
 
 

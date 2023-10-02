@@ -24,24 +24,26 @@ class Pipeline(Item):
         self.name = name
         self.nodes = nodes
         self.edges = edges
-        self.parameters = (parameters or [])
+        self.parameters = parameters or []
 
     @property
     def node_map(self) -> OrderedDict:  # type: ignore[type-arg]
         return OrderedDict((node.name, node) for node in self.nodes)
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> 'Pipeline':
+    def parse(cls, data: SerializedDict) -> "Pipeline":
         data = data.copy()
-        data['edges'] = [Edge.parse(e) for e in data.pop('edges', ())]
-        data['nodes'] = [Node.parse_qualifying(n) for n in data.pop('nodes', ())]
-        data['parameters'] = [PipelineParameter.parse(e) for e in data.pop('parameters', ())]
+        data["edges"] = [Edge.parse(e) for e in data.pop("edges", ())]
+        data["nodes"] = [Node.parse_qualifying(n) for n in data.pop("nodes", ())]
+        data["parameters"] = [
+            PipelineParameter.parse(e) for e in data.pop("parameters", ())
+        ]
         return super().parse(data)
 
     def get_data(self) -> SerializedDict:
         data = super().get_data()
-        if not data.get('parameters'):
-            del data['parameters']
+        if not data.get("parameters"):
+            del data["parameters"]
         return data
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
@@ -49,7 +51,9 @@ class Pipeline(Item):
         node_name_counts = Counter(node.name for node in self.nodes)
         for name, times in node_name_counts.items():
             if times > 1:
-                lint_result.add_error(f"Pipeline {self.name} has {times} nodes with the same name of {name}")
+                lint_result.add_error(
+                    f"Pipeline {self.name} has {times} nodes with the same name of {name}",
+                )
 
         # lint each node, edge and parameter
         context = dict(context, pipeline=self)

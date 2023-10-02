@@ -6,4 +6,4 @@ def test_listify():
     assert listify([]) == []
     assert listify(()) == []
     assert listify(6) == [6]
-    assert listify('foo') == ['foo']
+    assert listify("foo") == ["foo"]

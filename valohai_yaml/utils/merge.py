@@ -3,9 +3,9 @@ from typing import Any, Callable, List, MutableMapping, TypeVar
 
 MISSING = object()
 
-TMerge = TypeVar('TMerge')
-TCopy = TypeVar('TCopy')
-TD = TypeVar('TD', bound=MutableMapping[Any, Any])
+TMerge = TypeVar("TMerge")
+TCopy = TypeVar("TCopy")
+TD = TypeVar("TD", bound=MutableMapping[Any, Any])
 
 
 def merge_dicts(

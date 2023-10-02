@@ -33,9 +33,9 @@ class Endpoint(Item):
         self.resources = resources
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> 'Endpoint':
+    def parse(cls, data: SerializedDict) -> "Endpoint":
         data = dict(
             data,
-            files=[File.parse(f) for f in data.get('files', ())],
+            files=[File.parse(f) for f in data.get("files", ())],
         )
         return super().parse(data)

@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 def lint_iterables(
-    lint_result: 'LintResult',
+    lint_result: "LintResult",
     context: LintContext,
     iterables: Iterable[Iterable[Any]],
 ) -> None:
@@ -15,5 +15,5 @@ def lint_iterables(
         if isinstance(iterable, dict):
             iterable = iterable.values()
         for item in iterable:
-            if hasattr(item, 'lint'):
+            if hasattr(item, "lint"):
                 item.lint(lint_result, context)

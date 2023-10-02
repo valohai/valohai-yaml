@@ -4,18 +4,18 @@ from typing import List, Optional, Union
 from valohai_yaml.objs.base import Item
 from valohai_yaml.types import SerializedDict
 
-KeepDirectoriesValue = Union[bool, str, 'KeepDirectories']
+KeepDirectoriesValue = Union[bool, str, "KeepDirectories"]
 
 
 class KeepDirectories(Enum):
     """How to retain directories when using storage wildcards."""
 
-    NONE = 'none'
-    SUFFIX = 'suffix'
-    FULL = 'full'
+    NONE = "none"
+    SUFFIX = "suffix"
+    FULL = "full"
 
     @classmethod
-    def cast(cls, value: KeepDirectoriesValue) -> 'KeepDirectories':
+    def cast(cls, value: KeepDirectoriesValue) -> "KeepDirectories":
         if isinstance(value, KeepDirectories):
             return value
         if not value:
@@ -48,7 +48,7 @@ class Input(Item):
     def get_data(self) -> SerializedDict:
         data = super().get_data()
         if self.keep_directories is not KeepDirectories.NONE:
-            data['keep_directories'] = data['keep_directories'].value
+            data["keep_directories"] = data["keep_directories"].value
         else:
-            data.pop('keep_directories', None)
+            data.pop("keep_directories", None)
         return data

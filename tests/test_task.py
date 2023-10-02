@@ -11,5 +11,5 @@ def test_tasks_parameters(step_with_tasks: Config):
         assert tasks[task].step in steps
         assert isinstance(tasks[task].parameters, list)
         if len(tasks[task].parameters) > 0:
-            assert tasks[task].parameters[0].name == 'A'
+            assert tasks[task].parameters[0].name == "A"
             assert isinstance(tasks[task].parameters[0].style, VariantParameterStyle)

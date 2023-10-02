@@ -16,5 +16,6 @@ def parse(yaml: YamlReadable, validate: bool = True) -> Config:
         return Config()
     if validate:  # pragma: no branch
         from valohai_yaml.validation import validate as do_validate
+
         do_validate(data, raise_exc=True)
     return Config.parse(data)

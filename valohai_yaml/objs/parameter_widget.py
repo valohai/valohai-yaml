@@ -19,17 +19,17 @@ class ParameterWidget(Item):
     def serialize(self) -> Optional[Union[SerializedDict, str]]:
         if self.settings:
             return {
-                'type': self.type,
-                'settings': self.settings,
+                "type": self.type,
+                "settings": self.settings,
             }
         return self.type
 
     @classmethod
-    def parse(cls, data: Union['ParameterWidget', dict, str]) -> 'ParameterWidget':
+    def parse(cls, data: Union["ParameterWidget", dict, str]) -> "ParameterWidget":
         if isinstance(data, dict):
             return cls(
-                type=data['type'],
-                settings=data.get('settings'),
+                type=data["type"],
+                settings=data.get("settings"),
             )
 
         if isinstance(data, cls):

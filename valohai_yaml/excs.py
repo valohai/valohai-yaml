@@ -19,9 +19,10 @@ class ValidationErrors(ValidationError):
     def __init__(self, errors: List[ErrorType]) -> None:
         self.errors = errors
         super().__init__(
-            '%d errors: %s' % (
+            "%d errors: %s"
+            % (
                 len(errors),
-                ', '.join(getattr(e, 'message', e) for e in self.errors),
+                ", ".join(getattr(e, "message", e) for e in self.errors),
             ),
         )
 

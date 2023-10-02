@@ -6,7 +6,7 @@ from valohai_yaml.objs.utils import serialize_into
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.merge import merge_simple
 
-T = TypeVar('T', bound='Item')
+T = TypeVar("T", bound="Item")
 
 
 class Item:
@@ -21,7 +21,7 @@ class Item:
     def get_data(self) -> SerializedDict:
         """Get the object's data for serialization."""
         data = vars(self).copy()
-        data.pop('_original_data', None)
+        data.pop("_original_data", None)
         return data
 
     def serialize(self) -> Any:  # type = Any because subclasses may override
@@ -29,31 +29,36 @@ class Item:
         # Default sorting except always start with 'name'
         sorted_items = sorted(
             self.get_data().items(),
-            key=lambda kv: kv[0] if kv[0] != 'name' else '\t',
+            key=lambda kv: kv[0] if kv[0] != "name" else "\t",
         )
 
         for key, value in sorted_items:
             if value is None:
                 continue
-            key = key.replace('_', '-')
+            key = key.replace("_", "-")
             serialize_into(out, key, value)
         return out
 
     @classmethod
     def parse(cls: Type[T], data: SerializedDict) -> T:
-        inst = cls(**{
-            key.replace('-', '_'): value
-            for (key, value)
-            in data.items()
-            if not key.startswith('_')
-        })
+        inst = cls(
+            **{
+                key.replace("-", "_"): value
+                for (key, value) in data.items()
+                if not key.startswith("_")
+            },
+        )
         inst._original_data = data
         return inst
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         pass
 
-    def merge_with(self: T, other: T, strategy: Optional[Callable[[T, T], T]] = None) -> T:
+    def merge_with(
+        self: T,
+        other: T,
+        strategy: Optional[Callable[[T, T], T]] = None,
+    ) -> T:
         if strategy is None:
             strategy = self.default_merge
         return strategy(self, other)

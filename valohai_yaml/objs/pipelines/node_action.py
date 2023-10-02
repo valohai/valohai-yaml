@@ -6,14 +6,14 @@ from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils import listify
 
 WELL_KNOWN_WHENS = {
-    'node-complete',  # Node completed (successfully)
-    'node-starting',  # Node about to start
-    'node-error',  # Node errored
+    "node-complete",  # Node completed (successfully)
+    "node-starting",  # Node about to start
+    "node-error",  # Node errored
 }
 
 WELL_KNOWN_THENS = {
-    'noop',  # For testing
-    'stop-pipeline',
+    "noop",  # For testing
+    "stop-pipeline",
 }
 
 
@@ -32,15 +32,15 @@ class NodeAction(Item):
         self.then: List[str] = listify(then)
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> 'NodeAction':
+    def parse(cls, data: SerializedDict) -> "NodeAction":
         data = data.copy()
-        data['if_'] = data.pop('if', [])
+        data["if_"] = data.pop("if", [])
         return super().parse(data)
 
     def get_data(self) -> SerializedDict:
         data = super().get_data()
-        data['if'] = data.pop('if_')
-        data['when'] = sorted(data.pop('when'))
+        data["if"] = data.pop("if_")
+        data["when"] = sorted(data.pop("when"))
         return data
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
