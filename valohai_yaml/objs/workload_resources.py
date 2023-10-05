@@ -4,39 +4,6 @@ from valohai_yaml.objs.base import Item
 from valohai_yaml.types import SerializedDict
 
 
-class WorkloadResources(Item):
-    """
-    Represents a workload resource definition.
-
-    Resources include: cpu, memory, devices.
-    Both the resources and their properties are optional.
-    """
-
-    def __init__(
-        self,
-        *args: OrderedDict,
-    ) -> None:
-        self.cpu: ResourceCPU | None = None
-        self.memory: ResourceMemory | None = None
-        self.devices: ResourceDevices | None = None
-        self._parse_args(args[0])
-
-    def __repr__(self) -> str:
-        """Resources contents."""
-        return f'WorkflowResources("cpu": {self.cpu}, "memory": {self.memory}, "devices": {self.devices})'
-
-    def _parse_args(self, resources: dict) -> None:
-        if not resources:
-            return
-
-        if cpu := resources.get("cpu"):
-            self.cpu = ResourceCPU(cpu)
-        if memory := resources.get("memory"):
-            self.memory = ResourceMemory(memory)
-        if devices := resources.get("devices"):
-            self.devices = ResourceDevices(devices)
-
-
 class ResourceCPU(Item):
     """CPU configuration."""
 
@@ -80,3 +47,36 @@ class ResourceDevices(Item):
 
     def get_data(self) -> SerializedDict:
         return self.devices
+
+
+class WorkloadResources(Item):
+    """
+    Represents a workload resource definition.
+
+    Resources include: cpu, memory, devices.
+    Both the resources and their properties are optional.
+    """
+
+    def __init__(
+        self,
+        *args: OrderedDict,
+    ) -> None:
+        self.cpu: ResourceCPU | None = None
+        self.memory: ResourceMemory | None = None
+        self.devices: ResourceDevices | None = None
+        self._parse_args(args[0])
+
+    def __repr__(self) -> str:
+        """Resources contents."""
+        return f'WorkflowResources("cpu": {self.cpu}, "memory": {self.memory}, "devices": {self.devices})'
+
+    def _parse_args(self, resources: dict) -> None:
+        if not resources:
+            return
+
+        if cpu := resources.get("cpu"):
+            self.cpu = ResourceCPU(cpu)
+        if memory := resources.get("memory"):
+            self.memory = ResourceMemory(memory)
+        if devices := resources.get("devices"):
+            self.devices = ResourceDevices(devices)
