@@ -9,8 +9,8 @@ class ResourceCPU(Item):
 
     def __init__(
         self,
-        max_value: int | None,
-        min_value: int | None,
+        max_value: Optional[int],
+        min_value: Optional[int],
     ) -> None:
         self.max = max_value
         self.min = min_value
@@ -25,8 +25,8 @@ class ResourceMemory(Item):
 
     def __init__(
         self,
-        max_value: int | None,
-        min_value: int | None,
+        max_value: Optional[int],
+        min_value: Optional[int],
     ) -> None:
         self.max = max_value
         self.min = min_value
@@ -67,9 +67,9 @@ class WorkloadResources(Item):
     def __init__(
         self,
         *,
-        cpu: ResourceCPU | None,
-        memory: ResourceMemory | None,
-        devices: ResourceDevices | None,
+        cpu: Optional[ResourceCPU],
+        memory: Optional[ResourceMemory],
+        devices: Optional[ResourceDevices],
     ) -> None:
         self.cpu = cpu
         self.memory = memory
@@ -86,19 +86,22 @@ class WorkloadResources(Item):
         return super().parse(data_with_resources)
 
     @classmethod
-    def _parse_cpu(cls, cpu_data: dict | None) -> Optional["ResourceCPU"]:
+    def _parse_cpu(cls, cpu_data: Optional[dict]) -> Optional["ResourceCPU"]:
         if not cpu_data:
             return None
         return ResourceCPU(cpu_data.get("max"), cpu_data.get("min"))
 
     @classmethod
-    def _parse_memory(cls, memory_data: dict | None) -> Optional["ResourceMemory"]:
+    def _parse_memory(cls, memory_data: Optional[dict]) -> Optional["ResourceMemory"]:
         if not memory_data:
             return None
         return ResourceMemory(memory_data.get("max"), memory_data.get("min"))
 
     @classmethod
-    def _parse_devices(cls, devices_data: dict | None) -> Optional["ResourceDevices"]:
+    def _parse_devices(
+        cls,
+        devices_data: Optional[dict],
+    ) -> Optional["ResourceDevices"]:
         if not devices_data:
             return None
         return ResourceDevices(devices_data)
