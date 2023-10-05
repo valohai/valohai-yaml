@@ -68,7 +68,7 @@ class Step(Item):
 
         self.time_limit = time_limit
         self.no_output_timeout = no_output_timeout
-        self.resources = WorkloadResources(resources) if resources else None
+        self.resources = WorkloadResources.parse(resources) if resources else None
 
     @classmethod
     def parse(cls, data: SerializedDict) -> "Step":

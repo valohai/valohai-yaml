@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from typing import Optional
 
 from valohai_yaml.objs.base import Item
 from valohai_yaml.types import SerializedDict
@@ -7,10 +7,13 @@ from valohai_yaml.types import SerializedDict
 class ResourceCPU(Item):
     """CPU configuration."""
 
-    # TODO after removing support for Python 3.8 set cpu_resource type: OrderedDict[str, int]
-    def __init__(self, cpu_resource) -> None:  # noqa: ANN001
-        self.max: int | None = cpu_resource.get("max")
-        self.min: int | None = cpu_resource.get("min")
+    def __init__(
+        self,
+        max_value: int | None,
+        min_value: int | None,
+    ) -> None:
+        self.max = max_value
+        self.min = min_value
 
     def __repr__(self) -> str:
         """CPU data."""
@@ -20,9 +23,13 @@ class ResourceCPU(Item):
 class ResourceMemory(Item):
     """Memory configuration."""
 
-    def __init__(self, memory_resource: dict) -> None:
-        self.max: int | None = memory_resource.get("max")
-        self.min: int | None = memory_resource.get("min")
+    def __init__(
+        self,
+        max_value: int | None,
+        min_value: int | None,
+    ) -> None:
+        self.max = max_value
+        self.min = min_value
 
     def __repr__(self) -> str:
         """Memory data."""
@@ -59,24 +66,43 @@ class WorkloadResources(Item):
 
     def __init__(
         self,
-        *args: OrderedDict,
+        *,
+        cpu: ResourceCPU | None,
+        memory: ResourceMemory | None,
+        devices: ResourceDevices | None,
     ) -> None:
-        self.cpu: ResourceCPU | None = None
-        self.memory: ResourceMemory | None = None
-        self.devices: ResourceDevices | None = None
-        self._parse_args(args[0])
+        self.cpu = cpu
+        self.memory = memory
+        self.devices = devices
+
+    @classmethod
+    def parse(cls, data: SerializedDict) -> "WorkloadResources":
+        data_with_resources = dict(
+            data,
+            cpu=cls._parse_cpu(data.get("cpu")),
+            memory=cls._parse_memory(data.get("memory")),
+            devices=cls._parse_devices(data.get("devices")),
+        )
+        return super().parse(data_with_resources)
+
+    @classmethod
+    def _parse_cpu(cls, cpu_data: dict | None) -> Optional["ResourceCPU"]:
+        if not cpu_data:
+            return None
+        return ResourceCPU(cpu_data.get("max"), cpu_data.get("min"))
+
+    @classmethod
+    def _parse_memory(cls, memory_data: dict | None) -> Optional["ResourceMemory"]:
+        if not memory_data:
+            return None
+        return ResourceMemory(memory_data.get("max"), memory_data.get("min"))
+
+    @classmethod
+    def _parse_devices(cls, devices_data: dict | None) -> Optional["ResourceDevices"]:
+        if not devices_data:
+            return None
+        return ResourceDevices(devices_data)
 
     def __repr__(self) -> str:
         """Resources contents."""
-        return f'WorkflowResources("cpu": {self.cpu}, "memory": {self.memory}, "devices": {self.devices})'
-
-    def _parse_args(self, resources: dict) -> None:
-        if not resources:
-            return
-
-        if cpu := resources.get("cpu"):
-            self.cpu = ResourceCPU(cpu)
-        if memory := resources.get("memory"):
-            self.memory = ResourceMemory(memory)
-        if devices := resources.get("devices"):
-            self.devices = ResourceDevices(devices)
+        return f'WorkloadResources("cpu": {self.cpu}, "memory": {self.memory}, "devices": {self.devices})'

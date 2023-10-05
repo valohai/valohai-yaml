@@ -25,7 +25,7 @@ RESOURCE_DATA = {
 
 def test_create_resources():
     """All YAML properties are correctly parsed into the object."""
-    resources = WorkloadResources(OrderedDict(RESOURCE_DATA))
+    resources = WorkloadResources.parse(OrderedDict(RESOURCE_DATA))
 
     assert isinstance(resources.cpu, ResourceCPU)
     assert resources.cpu.min == 1
@@ -41,8 +41,7 @@ def test_create_resources():
 
 def test_missing_resources():
     """None of the workload properties are required."""
-    yaml = OrderedDict([])
-    resources = WorkloadResources(yaml)
+    resources = WorkloadResources.parse(OrderedDict([]))
 
     assert resources.cpu is None
     assert resources.memory is None
@@ -75,4 +74,4 @@ def create_resources(resource_name, missing_key) -> WorkloadResources:
     resource_data = copy.deepcopy(RESOURCE_DATA)
     resource_data[resource_name].pop(missing_key)
 
-    return WorkloadResources(OrderedDict(resource_data))
+    return WorkloadResources.parse(OrderedDict(resource_data))
