@@ -45,7 +45,7 @@ class Step(Item):
         icon: Optional[str] = None,
         category: Optional[str] = None,
         source_path: Optional[str] = None,
-        resources: Optional[OrderedDict] = None,
+        resources: Optional[WorkloadResources] = None,
     ) -> None:
         self.name = name
         self.image = image
@@ -68,7 +68,7 @@ class Step(Item):
 
         self.time_limit = time_limit
         self.no_output_timeout = no_output_timeout
-        self.resources = WorkloadResources.parse(resources) if resources else None
+        self.resources = resources
 
     @classmethod
     def parse(cls, data: SerializedDict) -> "Step":

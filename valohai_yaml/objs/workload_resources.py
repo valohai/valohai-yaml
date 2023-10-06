@@ -39,7 +39,7 @@ class ResourceMemory(Item):
 class ResourceDevices(Item):
     """Devices configuration."""
 
-    def __init__(self, devices: dict) -> None:
+    def __init__(self, devices: SerializedDict) -> None:
         """
         Devices list device name: nr of devices.
 
