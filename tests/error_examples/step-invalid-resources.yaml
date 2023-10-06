@@ -1,0 +1,7 @@
+- step:
+    name: contains partial workload resources
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    resources:
+      cpu:
+        min: Not a number

@@ -17,6 +17,7 @@ from valohai_yaml.objs.utils import (
     consume_array_of,
     serialize_into,
 )
+from valohai_yaml.objs.workload_resources import WorkloadResources
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.duration import parse_duration
 from valohai_yaml.utils.lint import lint_iterables
@@ -44,6 +45,7 @@ class Step(Item):
         icon: Optional[str] = None,
         category: Optional[str] = None,
         source_path: Optional[str] = None,
+        resources: Optional[WorkloadResources] = None,
     ) -> None:
         self.name = name
         self.image = image
@@ -66,6 +68,7 @@ class Step(Item):
 
         self.time_limit = time_limit
         self.no_output_timeout = no_output_timeout
+        self.resources = resources
 
     @classmethod
     def parse(cls, data: SerializedDict) -> "Step":
@@ -108,6 +111,7 @@ class Step(Item):
             ("icon", self.icon),
             ("category", self.category),
             ("source-path", self.source_path),
+            ("resources", self.resources),
         ]:
             serialize_into(
                 val,
