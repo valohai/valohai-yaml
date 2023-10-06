@@ -9,11 +9,11 @@ class ResourceCPU(Item):
 
     def __init__(
         self,
-        max_value: Optional[int],
-        min_value: Optional[int],
+        max: Optional[int] = None,
+        min: Optional[int] = None,
     ) -> None:
-        self.max = max_value
-        self.min = min_value
+        self.max = max
+        self.min = min
 
     def __repr__(self) -> str:
         """CPU data."""
@@ -25,11 +25,11 @@ class ResourceMemory(Item):
 
     def __init__(
         self,
-        max_value: Optional[int],
-        min_value: Optional[int],
+        max: Optional[int] = None,
+        min: Optional[int] = None,
     ) -> None:
-        self.max = max_value
-        self.min = min_value
+        self.max = max
+        self.min = min
 
     def __repr__(self) -> str:
         """Memory data."""
@@ -47,6 +47,16 @@ class ResourceDevices(Item):
         'nvidia.com/cpu': 2, 'nvidia.com/gpu': 1.
         """
         self.devices: dict[str, int] = devices
+
+    @classmethod
+    def parse(cls, data: SerializedDict) -> "ResourceDevices":
+        """
+        Initialize a devices resource.
+
+        Properties are not known beforehand, so are added as-is.
+        This is a convenience method added for usage uniformity.
+        """
+        return ResourceDevices(data)
 
     def __repr__(self) -> str:
         """List the devices."""
@@ -77,34 +87,16 @@ class WorkloadResources(Item):
 
     @classmethod
     def parse(cls, data: SerializedDict) -> "WorkloadResources":
+        cpu_data = data.get("cpu")
+        memory_data = data.get("memory")
+        device_data = data.get("devices")
         data_with_resources = dict(
             data,
-            cpu=cls._parse_cpu(data.get("cpu")),
-            memory=cls._parse_memory(data.get("memory")),
-            devices=cls._parse_devices(data.get("devices")),
+            cpu=ResourceCPU.parse(cpu_data) if cpu_data else None,
+            memory=ResourceMemory.parse(memory_data) if memory_data else None,
+            devices=ResourceDevices.parse(device_data) if device_data else None,
         )
         return super().parse(data_with_resources)
-
-    @classmethod
-    def _parse_cpu(cls, cpu_data: Optional[dict]) -> Optional["ResourceCPU"]:
-        if not cpu_data:
-            return None
-        return ResourceCPU(cpu_data.get("max"), cpu_data.get("min"))
-
-    @classmethod
-    def _parse_memory(cls, memory_data: Optional[dict]) -> Optional["ResourceMemory"]:
-        if not memory_data:
-            return None
-        return ResourceMemory(memory_data.get("max"), memory_data.get("min"))
-
-    @classmethod
-    def _parse_devices(
-        cls,
-        devices_data: Optional[dict],
-    ) -> Optional["ResourceDevices"]:
-        if not devices_data:
-            return None
-        return ResourceDevices(devices_data)
 
     def __repr__(self) -> str:
         """Resources contents."""
