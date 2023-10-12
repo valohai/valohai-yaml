@@ -52,6 +52,7 @@ def test_parse(example1_config):
     assert step == config.get_step_by(index=0)
     assert step == config.get_step_by(name="run training")
     assert step == config.get_step_by(image="busybox")
+    assert step == config.get_step_by(**{"upload-store": "my-store"})
     assert not config.get_step_by(image="bdfaweq")
     assert not config.get_step_by()
 

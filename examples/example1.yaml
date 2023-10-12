@@ -7,6 +7,7 @@
     icon: https://valohai.com/assets/img/valohai-logo.svg
     category: Training
     image: busybox
+    upload-store: my-store
     command:
       - cd /tmp/code
       - conda env create -q
