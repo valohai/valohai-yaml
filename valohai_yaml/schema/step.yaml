@@ -22,6 +22,10 @@ properties:
   image:
     type: string
     description: The Docker image to use for this step.
+  upload-store:
+    type: string
+    maxLength: 64
+    description: The output data store name or UUID.
   description:
     type: string
     description: Describes the step. This is shown as a help text in the user interface.

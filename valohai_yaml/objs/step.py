@@ -40,6 +40,7 @@ class Step(Item):
         environment_variables: Iterable[EnvironmentVariable] = (),
         environment: Optional[str] = None,
         description: Optional[str] = None,
+        upload_store: Optional[str] = None,
         time_limit: Optional[datetime.timedelta] = None,
         no_output_timeout: Optional[datetime.timedelta] = None,
         icon: Optional[str] = None,
@@ -56,6 +57,7 @@ class Step(Item):
         self.environment = str(environment) if environment else None
         self.icon = str(icon) if icon else None
         self.category = str(category) if category else None
+        self.upload_store = str(upload_store) if upload_store else None
 
         self.outputs = list(outputs)  # TODO: Improve handling
         self.mounts = check_type_and_listify(mounts, Mount)
@@ -81,6 +83,7 @@ class Step(Item):
         )
         kwargs["source_path"] = kwargs.pop("source-path", None)
         kwargs["stop_condition"] = kwargs.pop("stop-condition", None)
+        kwargs["upload_store"] = kwargs.pop("upload-store", None)
         inst = cls(**kwargs)
         inst._original_data = data
         return inst
@@ -116,6 +119,7 @@ class Step(Item):
             ("source-path", self.source_path),
             ("resources", self.resources),
             ("stop-condition", self.stop_condition),
+            ("upload-store", self.upload_store),
         ]:
             serialize_into(
                 val,
