@@ -100,3 +100,15 @@ def test_parameter_value_with_falsy_values(example1_config):
         ],
     )
     assert command[0] == "env ds='' eps=0 runrunrun"
+
+
+def test_parameter_omit_with_none_value(example1_config):
+    command = example1_config.steps["run training"].build_command(
+        parameter_values={
+            "num-epochs": None,
+        },
+        command=[
+            "echo {parameters}; echo {parameter:num-epochs}",
+        ],
+    )
+    assert "num-epochs" not in command[0]
