@@ -73,18 +73,19 @@ def test_boolean_pass_as_param_parse(boolean_param_pass_as_config):
     step = boolean_param_pass_as_config.steps["test"]
     # "naughty" has `pass-false-as` so it's always emitted unless explicitly true
     assert step.build_command({"case-insensitive": True}) == [
-        "foo --ignore-case --naughty=not-naughty",
+        "foo --ignore-case",
     ]
     assert step.build_command({"case-insensitive": False}) == [
-        "foo --case-sensitive --naughty=not-naughty",
-    ]
-    assert step.build_command({"nice": True, "naughty": True}) == [
-        "foo --case-sensitive --behave-nice",
-    ]
-    assert step.build_command({"nice": False, "naughty": True}) == [
         "foo --case-sensitive",
     ]
-    assert step.build_command({}) == ["foo --case-sensitive --naughty=not-naughty"]
+    assert step.build_command({"nice": True, "naughty": True}) == [
+        "foo --behave-nice",
+    ]
+    assert step.build_command({"nice": False, "naughty": True}) == [
+        "foo",
+    ]
+    # None values should be omitted, use boolean values to bring parameters in use.
+    assert step.build_command({}) == ["foo"]
 
 
 def test_optional_default_param_parse(optional_default_param_config):
