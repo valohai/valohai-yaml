@@ -1,0 +1,10 @@
+- step:
+    name: no-stop-step
+    command: echo "i might be stoppable"
+    image: alpine/alpine
+- task:
+    name: no-stop
+    step: no-stop-step
+    type: grid_search
+    parameters: []
+    stop-condition: "can't stop me now"

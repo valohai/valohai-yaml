@@ -20,7 +20,7 @@ from valohai_yaml.objs.utils import (
 from valohai_yaml.objs.workload_resources import WorkloadResources
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.duration import parse_duration
-from valohai_yaml.utils.lint import lint_iterables
+from valohai_yaml.utils.lint import lint_expression, lint_iterables
 from valohai_yaml.utils.merge import merge_dicts, merge_simple
 
 
@@ -46,6 +46,7 @@ class Step(Item):
         category: Optional[str] = None,
         source_path: Optional[str] = None,
         resources: Optional[WorkloadResources] = None,
+        stop_condition: Optional[str] = None,
     ) -> None:
         self.name = name
         self.image = image
@@ -69,6 +70,7 @@ class Step(Item):
         self.time_limit = time_limit
         self.no_output_timeout = no_output_timeout
         self.resources = resources
+        self.stop_condition = stop_condition
 
     @classmethod
     def parse(cls, data: SerializedDict) -> "Step":
@@ -78,6 +80,7 @@ class Step(Item):
             kwargs.pop("no-output-timeout", None),
         )
         kwargs["source_path"] = kwargs.pop("source-path", None)
+        kwargs["stop_condition"] = kwargs.pop("stop-condition", None)
         inst = cls(**kwargs)
         inst._original_data = data
         return inst
@@ -112,6 +115,7 @@ class Step(Item):
             ("category", self.category),
             ("source-path", self.source_path),
             ("resources", self.resources),
+            ("stop-condition", self.stop_condition),
         ]:
             serialize_into(
                 val,
@@ -167,7 +171,7 @@ class Step(Item):
         return build_command(command, parameter_map, special_interpolations=special)
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
-        context = dict(context, step=self)
+        context = dict(context, step=self, object_type="step")
 
         lint_iterables(
             lint_result,
@@ -180,6 +184,7 @@ class Step(Item):
                 self.outputs,
             ),
         )
+        lint_expression(lint_result, context, "stop-condition", self.stop_condition)
 
     @classmethod
     def default_merge(cls, a: "Step", b: "Step") -> "Step":

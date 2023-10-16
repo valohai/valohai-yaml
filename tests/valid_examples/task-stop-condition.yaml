@@ -1,0 +1,10 @@
+- step:
+    name: can-stop
+    command: echo "i will stop"
+    image: alpine/alpine
+- task:
+    name: can-stop
+    step: can-stop
+    type: grid_search
+    parameters: []
+    stop-condition: stop > 1

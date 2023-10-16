@@ -2,7 +2,11 @@ from itertools import chain
 
 import pytest
 
-from tests.utils import get_error_example_path, get_warning_example_path
+from tests.utils import (
+    get_error_example_path,
+    get_valid_example_path,
+    get_warning_example_path,
+)
 from valohai_yaml.lint import lint_file
 
 
@@ -52,3 +56,36 @@ def test_invalid_indentation(file, expected_message):
     assert any(
         expected_message in message for message in messages
     ), messages  # pragma: no branch
+
+
+@pytest.mark.parametrize(
+    "file_path",
+    [
+        "step-stop-condition.yaml",
+        "task-stop-condition.yaml",
+    ],
+)
+def test_expression_lint_ok(file_path):
+    items = lint_file(get_valid_example_path(file_path))
+    assert items.is_valid(), [
+        item["message"] for item in chain(items.hints, items.errors)
+    ]
+
+
+@pytest.mark.parametrize(
+    "file_path, expected_message",
+    [
+        (
+            "step-stop-condition.yaml",
+            "Step no-stop, `stop-condition` is not a valid expression:",
+        ),
+        (
+            "task-stop-condition.yaml",
+            "Task no-stop, `stop-condition` is not a valid expression:",
+        ),
+    ],
+)
+def test_expression_lint_fail(file_path, expected_message):
+    items = lint_file(get_error_example_path(file_path))
+    messages = [item["message"] for item in chain(items.hints, items.errors)]
+    assert any(expected_message in message for message in messages), messages

@@ -1,0 +1,5 @@
+- step:
+    name: no-stop
+    command: echo "i will not stop"
+    image: alpine/alpine
+    stop-condition: stop me if you can
