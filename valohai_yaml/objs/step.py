@@ -9,7 +9,7 @@ from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.environment_variable import EnvironmentVariable
 from valohai_yaml.objs.input import Input
 from valohai_yaml.objs.mount import Mount
-from valohai_yaml.objs.parameter import Parameter
+from valohai_yaml.objs.parameter import Parameter, ValueType
 from valohai_yaml.objs.parameter_map import ParameterMap
 from valohai_yaml.objs.utils import (
     check_type_and_dictify,
@@ -129,7 +129,7 @@ class Step(Item):
 
     def build_command(
         self,
-        parameter_values: Dict[str, Any],
+        parameter_values: Dict[str, Optional[ValueType]],
         command: Optional[Union[List[str], str]] = None,
     ) -> List[str]:
         """
