@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, Optional
 
 from valohai_yaml.objs.base import Item
 from valohai_yaml.types import SerializedDict
@@ -46,7 +46,7 @@ class ResourceDevices(Item):
         Keys (and number of items) unknown, e.g.:
         'nvidia.com/cpu': 2, 'nvidia.com/gpu': 1.
         """
-        self.devices: dict[str, int] = devices
+        self.devices: Dict[str, int] = devices
 
     @classmethod
     def parse(cls, data: SerializedDict) -> "ResourceDevices":
