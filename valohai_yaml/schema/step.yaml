@@ -74,3 +74,14 @@ properties:
   category:
     type: string
     description: Category name to group & organize steps in the UI
+  resources:
+    type: object
+    description: Resource requirements and limits for the workflow.
+    additionalProperties: false
+    properties:
+      cpu:
+        "$ref": "./workflow-resource-cpu.json"
+      memory:
+        "$ref": "./workflow-resource-memory.json"
+      devices:
+        "$ref": "./workflow-resource-devices.json"
