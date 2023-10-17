@@ -85,3 +85,5 @@ properties:
         "$ref": "./workflow-resource-memory.json"
       devices:
         "$ref": "./workflow-resource-devices.json"
+  stop-condition:
+    type: string

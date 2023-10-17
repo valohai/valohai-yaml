@@ -1,0 +1,5 @@
+- step:
+    name: can-stop
+    command: echo "i will stop"
+    image: alpine/alpine
+    stop-condition: stop > 1

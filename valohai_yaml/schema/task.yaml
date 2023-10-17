@@ -37,3 +37,5 @@ properties:
     type: array
     items:
       "$ref": "./variant-param.json"
+  stop-condition:
+    type: string

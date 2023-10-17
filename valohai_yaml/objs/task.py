@@ -3,12 +3,15 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
+from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.utils import (
     check_type_and_listify,
     consume_array_of,
 )
 from valohai_yaml.objs.variant_parameter import VariantParameter
+from valohai_yaml.types import LintContext
+from valohai_yaml.utils.lint import lint_expression
 
 
 class TaskType(Enum):
@@ -55,6 +58,7 @@ class Task(Item):
         optimization_target_metric: str | None = None,
         optimization_target_value: float | None = None,
         engine: str | None = None,
+        stop_condition: str | None = None,
     ) -> None:
         self.name = name
         self.step = step
@@ -65,11 +69,17 @@ class Task(Item):
         self.optimization_target_metric = optimization_target_metric
         self.optimization_target_value = optimization_target_value
         self.engine = engine
+        self.stop_condition = stop_condition
 
     @classmethod
     def parse(cls, data: Any) -> Task:
         kwargs = data.copy()
         kwargs["parameters"] = consume_array_of(kwargs, "parameters", VariantParameter)
+        kwargs["stop_condition"] = kwargs.pop("stop-condition", None)
         inst = cls(**kwargs)
         inst._original_data = data
         return inst
+
+    def lint(self, lint_result: LintResult, context: LintContext) -> None:
+        context = dict(context, task=self, object_type="task")
+        lint_expression(lint_result, context, "stop-condition", self.stop_condition)
