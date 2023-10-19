@@ -2,6 +2,7 @@
     name: run training
     image: tensorflow/tensorflow
     command: python -u /tmp/code/my_mnist.py
+    upload-store: 547de42b-2736-4746-9a60-851e09fee525
     inputs:
       - name: training-set-images
         default: http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz

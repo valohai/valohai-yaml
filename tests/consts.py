@@ -33,6 +33,7 @@ invalid_obj = [
     {
         "step": {
             "nerm": "blerp",
+            "upload-store": 0,
         },
     },
 ]
@@ -41,6 +42,7 @@ valid_obj = [
     {
         "step": {
             "name": "foo",
+            "upload-store": "foo",
             "command": "foo",
             "image": "foo",
         },

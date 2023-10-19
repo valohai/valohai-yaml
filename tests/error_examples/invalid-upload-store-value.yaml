@@ -1,0 +1,6 @@
+- step:
+    name: preprocess
+    image: python:3.7
+    upload-store: This is a test string exactly with  65 characters long in length.
+    command:
+      - python ./preprocess.py

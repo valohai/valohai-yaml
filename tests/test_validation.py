@@ -110,3 +110,4 @@ def test_error_list():
         ("Additional properties are not allowed" in err) for err in errs
     )  # pragma: no branch
     assert any(("required property" in err) for err in errs)  # pragma: no branch
+    assert any(("0 is not of type 'string'" in err) for err in errs)
