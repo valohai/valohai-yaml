@@ -4,6 +4,7 @@ from collections import OrderedDict
 from typing import Any, Dict, Iterable, List, Optional, Union
 
 from valohai_yaml.commands import build_command
+from valohai_yaml.excs import LevalNotAvailable
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.environment_variable import EnvironmentVariable
@@ -20,7 +21,8 @@ from valohai_yaml.objs.utils import (
 from valohai_yaml.objs.workload_resources import WorkloadResources
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.duration import parse_duration
-from valohai_yaml.utils.lint import lint_expression, lint_iterables
+from valohai_yaml.utils.expression_lint import lint_expression
+from valohai_yaml.utils.lint import lint_iterables
 from valohai_yaml.utils.merge import merge_dicts, merge_simple
 
 
@@ -188,7 +190,10 @@ class Step(Item):
                 self.outputs,
             ),
         )
-        lint_expression(lint_result, context, "stop-condition", self.stop_condition)
+        try:
+            lint_expression(lint_result, context, "stop-condition", self.stop_condition)
+        except LevalNotAvailable:
+            pass
 
     @classmethod
     def default_merge(cls, a: "Step", b: "Step") -> "Step":

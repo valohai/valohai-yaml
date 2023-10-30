@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
+from valohai_yaml.excs import LevalNotAvailable
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.utils import (
@@ -11,7 +12,7 @@ from valohai_yaml.objs.utils import (
 )
 from valohai_yaml.objs.variant_parameter import VariantParameter
 from valohai_yaml.types import LintContext
-from valohai_yaml.utils.lint import lint_expression
+from valohai_yaml.utils.expression_lint import lint_expression
 
 
 class TaskType(Enum):
@@ -82,4 +83,7 @@ class Task(Item):
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, task=self, object_type="task")
-        lint_expression(lint_result, context, "stop-condition", self.stop_condition)
+        try:
+            lint_expression(lint_result, context, "stop-condition", self.stop_condition)
+        except LevalNotAvailable:
+            pass

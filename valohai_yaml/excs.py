@@ -29,3 +29,7 @@ class ValidationErrors(ValidationError):
     def __iter__(self) -> Iterator[ErrorType]:
         """Iterate over the errors contained within."""
         return iter(self.errors)
+
+
+class LevalNotAvailable(ImportError):
+    """Raised when the Leval library is not available."""

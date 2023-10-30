@@ -29,6 +29,10 @@ classifiers = [
 dependencies = [
     "jsonschema>=4.0",
     "PyYAML",
+]
+
+[project.optional-dependencies]
+expression-validation = [
     "leval>=1.1.1",
 ]
 
