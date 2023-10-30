@@ -33,6 +33,23 @@ class TaskType(Enum):
         return TaskType(value)
 
 
+class TaskOnChildError(Enum):
+    """Represents the possible actions that can be taken when a task's child fails."""
+
+    CONTINUE_AND_COMPLETE = "continue-and-complete"
+    CONTINUE_AND_ERROR = "continue-and-error"
+    STOP_ALL_AND_ERROR = "stop-all-and-error"
+
+    @classmethod
+    def cast(cls, value: TaskOnChildError | str | None) -> TaskOnChildError | None:
+        if not value:
+            return None
+        if isinstance(value, TaskOnChildError):
+            return value
+        value = str(value).lower().replace("_", "-")
+        return TaskOnChildError(value)
+
+
 class Task(Item):
     """Represents a task definition."""
 
@@ -42,9 +59,11 @@ class Task(Item):
     name: str
     execution_count: int | None
     execution_batch_size: int | None
+    maximum_queued_executions: int | None
     optimization_target_metric: str | None
     optimization_target_value: float | None
     engine: str | None
+    on_child_error: TaskOnChildError | None
 
     def __init__(
         self,
@@ -55,9 +74,11 @@ class Task(Item):
         parameters: list[VariantParameter] | None = None,
         execution_count: int | None = None,
         execution_batch_size: int | None = None,
+        maximum_queued_executions: int | None = None,
         optimization_target_metric: str | None = None,
         optimization_target_value: float | None = None,
         engine: str | None = None,
+        on_child_error: TaskOnChildError | None = None,
         stop_condition: str | None = None,
     ) -> None:
         self.name = name
@@ -66,9 +87,11 @@ class Task(Item):
         self.parameters = check_type_and_listify(parameters, VariantParameter)
         self.execution_count = execution_count
         self.execution_batch_size = execution_batch_size
+        self.maximum_queued_executions = maximum_queued_executions
         self.optimization_target_metric = optimization_target_metric
         self.optimization_target_value = optimization_target_value
         self.engine = engine
+        self.on_child_error = TaskOnChildError.cast(on_child_error)
         self.stop_condition = stop_condition
 
     @classmethod
