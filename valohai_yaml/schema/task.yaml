@@ -12,6 +12,8 @@ properties:
     type: integer
   execution-batch-size:
     type: integer
+  maximum-queued-executions:
+    type: integer
   optimization-target-metric:
     type: string
   optimization-target-value:
@@ -19,6 +21,8 @@ properties:
   engine:
     type: string
   type:
+    type: string
+  on-child-error:
     type: string
   name:
     type: string
