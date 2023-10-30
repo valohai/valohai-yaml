@@ -75,8 +75,7 @@ class Task(Item):
     def parse(cls, data: Any) -> Task:
         kwargs = data.copy()
         kwargs["parameters"] = consume_array_of(kwargs, "parameters", VariantParameter)
-        kwargs["stop_condition"] = kwargs.pop("stop-condition", None)
-        inst = cls(**kwargs)
+        inst = cls(**{key.replace("-", "_"): value for key, value in kwargs.items()})
         inst._original_data = data
         return inst
 

@@ -8,14 +8,14 @@ properties:
   step:
     type: string
     description: The step to run with.
-  execution_count:
+  execution-count:
     type: integer
-  execution_batch_size:
+  execution-batch-size:
     type: integer
-  optimization_target_metric:
+  optimization-target-metric:
     type: string
-  optimization_target_value:
-    type: float
+  optimization-target-value:
+    type: number
   engine:
     type: string
   type:

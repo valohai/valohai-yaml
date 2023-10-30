@@ -47,6 +47,10 @@
     step: run training
     name: task 4 logspace
     type: random_search
+    execution-batch-size: 42
+    execution-count: 420
+    optimization-target-metric: goodness
+    optimization-target-value: 7.2
     parameters:
       - name: A
         style: logspace
