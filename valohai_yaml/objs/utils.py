@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, Type, TypeVar
 from typing import OrderedDict as OrderedDictType
 
@@ -85,4 +86,7 @@ def serialize_into(
 
 
 def _serialize_if_able(v: Any) -> Any:
+    if isinstance(v, Enum):
+        return v.value
+
     return v.serialize() if hasattr(v, "serialize") else v

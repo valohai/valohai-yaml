@@ -86,6 +86,7 @@ class Config(Item):
         return list(
             chain(
                 ({"step": step.serialize()} for (key, step) in self.steps.items()),
+                ({"task": task.serialize()} for (key, task) in self.tasks.items()),
                 (
                     {"endpoint": endpoint.serialize()}
                     for (key, endpoint) in sorted(self.endpoints.items())
