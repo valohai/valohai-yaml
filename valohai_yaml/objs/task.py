@@ -29,7 +29,7 @@ class TaskType(Enum):
             return TaskType.GRID_SEARCH
         if isinstance(value, TaskType):
             return value
-        value = str(value).lower()
+        value = str(value).lower().replace("-", "_")
         return TaskType(value)
 
 

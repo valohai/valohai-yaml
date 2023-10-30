@@ -20,12 +20,6 @@ properties:
     type: string
   type:
     type: string
-    enum:
-      - bayesian_tpe
-      - distributed
-      - grid_search
-      - manual_search
-      - random_search
   name:
     type: string
     description: The unique name for this task.
