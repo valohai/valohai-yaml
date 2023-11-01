@@ -1,0 +1,20 @@
+---
+- step:
+    name: train
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    parameters:
+      - name: A
+        type: integer
+        default: 1
+- task:
+    step: run training
+    name: task
+    type: grid-search
+    parameters:
+      - name: A
+        style: single
+        rules:
+          value: 25
+    optimization-target-metric: goodness
+    optimization-target-value: 7.2

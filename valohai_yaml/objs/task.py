@@ -13,6 +13,13 @@ from valohai_yaml.objs.variant_parameter import VariantParameter
 from valohai_yaml.types import LintContext
 from valohai_yaml.utils.lint import lint_expression
 
+# Properties that only make sense for Bayesian tasks.
+BAYESIAN_ONLY_PROPS = {
+    "optimization_target_value",
+    "optimization_target_metric",
+    "engine",
+}
+
 
 class TaskType(Enum):
     """Represents a task type."""
@@ -112,3 +119,9 @@ class Task(Item):
         lint_expression(lint_result, context, "stop-condition", self.stop_condition)
         if self.parameter_sets and self.type != TaskType.MANUAL_SEARCH:
             lint_result.add_warning("Parameter sets only make sense with manual search")
+        if self.type != TaskType.BAYESIAN_TPE:
+            for key in BAYESIAN_ONLY_PROPS:
+                if getattr(self, key) is not None:
+                    lint_result.add_warning(
+                        f"{key} only makes sense for Bayesian TPE tasks",
+                    )
