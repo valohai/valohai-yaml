@@ -3,7 +3,7 @@
 #     :copyright: (c) 2014 by Armin Ronacher.
 #     :license: BSD, see LICENSE for more details.
 
-from typing import Optional
+from typing import Any, Optional
 
 _ansi_colors = (
     "black",
@@ -22,6 +22,7 @@ _ansi_reset_all = "\033[0m"
 
 def style(  # noqa: C901
     text: str,
+    *,
     fg: Optional[str] = None,
     bg: Optional[str] = None,
     bold: Optional[bool] = None,
@@ -57,3 +58,8 @@ def style(  # noqa: C901
     if reset:
         bits.append(_ansi_reset_all)
     return "".join(bits)
+
+
+def noop_style(text: str, **kwargs: Any) -> str:
+    """Return the original text, unstyled."""
+    return text
