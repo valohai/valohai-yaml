@@ -96,6 +96,10 @@ class Step(Item):
                 ("command", self.command),
             ],
         )
+
+        # Some keys need their value structure preserved
+        keys_not_to_flatten = ["resources"]
+
         for key, source in [
             ("parameters", self.parameters),
             ("inputs", self.inputs),
@@ -125,7 +129,7 @@ class Step(Item):
                 val,
                 key,
                 source,
-                flatten_dicts=True,
+                flatten_dicts=(key not in keys_not_to_flatten),
                 elide_empty_iterables=True,
             )
         return val
