@@ -77,3 +77,21 @@
           base: 10
           distribution: uniform
           integerify: False
+- task:
+    step: run training
+    name: parameter sets
+    type: manual_search
+    parameters:
+      - name: A
+        style: multiple
+        rules: {}
+      - name: B
+        style: multiple
+        rules: {}
+    parameter-sets:
+      - A: 5
+        B: 6
+      - A: 8
+        B: 9
+      - A: 72
+        B: 42
