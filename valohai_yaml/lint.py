@@ -1,4 +1,4 @@
-from typing import Any, Iterator, List, Optional
+from typing import Any, Callable, Iterator, List, Optional
 
 import yaml as pyyaml
 from jsonschema.exceptions import relevance
@@ -6,7 +6,7 @@ from jsonschema.exceptions import relevance
 from valohai_yaml.excs import ValidationError
 from valohai_yaml.types import LintResultMessage, YamlReadable
 from valohai_yaml.utils import read_yaml
-from valohai_yaml.utils.terminal import style
+from valohai_yaml.utils.terminal import noop_style, style
 from valohai_yaml.validation import get_validator
 
 
@@ -103,7 +103,11 @@ def lint_file(file_path: str, *, validate_schema: bool = True) -> LintResult:
             return lr
 
 
-def _validate_json_schema(lr: LintResult, data: Any) -> int:
+def _validate_json_schema(
+    lr: LintResult,
+    data: Any,
+    styler: Callable[..., str] = style,
+) -> int:
     """Validate against the JSON schema; add errors to `lr` and return the number of errors."""
     errors = sorted(
         get_validator().iter_errors(data),
@@ -116,16 +120,16 @@ def _validate_json_schema(lr: LintResult, data: Any) -> int:
             if el not in ("properties", "items")
         ]
         obj_path = [str(el) for el in error.path]
-        styled_validator = style(error.validator.title(), bold=True)
-        styled_schema_path = style(".".join(simplified_schema_path), bold=True)
-        styled_message = style(error.message, fg="red")
-        styled_path = style(".".join(obj_path), bold=True)
+        styled_validator = styler(error.validator.title(), bold=True)
+        styled_schema_path = styler(".".join(simplified_schema_path), bold=True)
+        styled_message = styler(error.message, fg="red")
+        styled_path = styler(".".join(obj_path), bold=True)
         lr.add_error(
             f"  {styled_validator} validation on {styled_schema_path}: {styled_message} ({styled_path})",
         )
         # when path has only 2 nodes. it means it has problem in main steps/pipelines/endpoints objects
         if len(error.path) == 2 and not error.instance:
-            styled_hint = style(
+            styled_hint = styler(
                 "File contains valid YAML but there might be an indentation "
                 f"error in following configuration: {styled_path}",
                 fg="blue",
@@ -138,6 +142,7 @@ def lint(
     yaml: YamlReadable,
     *,
     validate_schema: bool = True,
+    ansi_colors: bool = True,
 ) -> LintResult:
     """
     Validate & lint `yaml` and return a `LintResult`.
@@ -145,6 +150,7 @@ def lint(
     :param yaml: YAML string or file-like object
     :param validate_schema: Whether to validate against the JSON schema before attempting to parse and lint.
                             This should generally always be true, but can be disabled for testing purposes.
+    :param ansi_colors: Whether to use ANSI colors in the output.
     """
     lr = LintResult()
     try:
@@ -160,7 +166,11 @@ def lint(
             lr.add_error(str(err))
         return lr
 
-    if validate_schema and _validate_json_schema(lr, data):
+    if validate_schema and _validate_json_schema(
+        lr,
+        data,
+        styler=style if ansi_colors else noop_style,  # type: ignore[arg-type]
+    ):
         # If validation found errors, don't try to parse the data
         return lr
 
