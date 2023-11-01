@@ -22,7 +22,8 @@
         style: single
         rules:
           value: 25
-
+    optimization-target-metric: goodness
+    optimization-target-value: 7.2
 - task:
     step: run training
     name: task 2 linear
@@ -51,8 +52,6 @@
     execution-count: 420
     maximum-queued-executions: 17
     on-child-error: stop_all-AND_error # will be normalized
-    optimization-target-metric: goodness
-    optimization-target-value: 7.2
     parameters:
       - name: A
         style: logspace
