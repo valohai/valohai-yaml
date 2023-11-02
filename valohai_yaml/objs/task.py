@@ -56,6 +56,7 @@ class Task(Item):
     step: str
     type: TaskType
     parameters: list[VariantParameter]
+    parameter_sets: list[dict[str, Any]]
     name: str
     execution_count: int | None
     execution_batch_size: int | None
@@ -72,6 +73,7 @@ class Task(Item):
         step: str,
         type: TaskType | str | None = None,
         parameters: list[VariantParameter] | None = None,
+        parameter_sets: list[dict[str, Any]] | None = None,
         execution_count: int | None = None,
         execution_batch_size: int | None = None,
         maximum_queued_executions: int | None = None,
@@ -85,6 +87,9 @@ class Task(Item):
         self.step = step
         self.type = TaskType.cast(type)
         self.parameters = check_type_and_listify(parameters, VariantParameter)
+        self.parameter_sets = [
+            ps for ps in check_type_and_listify(parameter_sets, dict) if ps
+        ]
         self.execution_count = execution_count
         self.execution_batch_size = execution_batch_size
         self.maximum_queued_executions = maximum_queued_executions
@@ -105,3 +110,5 @@ class Task(Item):
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, task=self, object_type="task")
         lint_expression(lint_result, context, "stop-condition", self.stop_condition)
+        if self.parameter_sets and self.type != TaskType.MANUAL_SEARCH:
+            lint_result.add_warning("Parameter sets only make sense with manual search")

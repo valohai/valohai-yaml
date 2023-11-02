@@ -37,3 +37,8 @@ properties:
       "$ref": "./variant-param.json"
   stop-condition:
     type: string
+  parameter-sets:
+    type: array
+    description: Parameter sets for manual search mode.
+    items:
+      type: object

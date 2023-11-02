@@ -23,3 +23,12 @@ def test_task_additional_fields(task_config: Config):
     assert task.optimization_target_metric == "goodness"
     assert task.optimization_target_value == 7.2
     assert task.type == TaskType.RANDOM_SEARCH
+
+
+def test_task_parameter_sets(task_config: Config):
+    task = task_config.tasks["parameter sets"]
+    assert task.parameter_sets == [
+        {"A": 5, "B": 6},
+        {"A": 8, "B": 9},
+        {"A": 72, "B": 42},
+    ]
