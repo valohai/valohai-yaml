@@ -182,6 +182,17 @@
   
   '''
 # ---
+# name: test_warning_examples_cli[nonsensical-task-bits.yaml]
+  '''
+  >>> nonsensical-task-bits.yaml
+  warning: optimization_target_value only makes sense for Bayesian TPE tasks
+  ------------------------------------------------------------
+  warning: optimization_target_metric only makes sense for Bayesian TPE tasks
+  ------------------------------------------------------------
+  *** 0 errors, 2 warnings
+  
+  '''
+# ---
 # name: test_warning_examples_cli[override-with-extra-fields-warning.yaml]
   '''
   >>> override-with-extra-fields-warning.yaml
