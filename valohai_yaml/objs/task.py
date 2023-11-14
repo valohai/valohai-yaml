@@ -14,11 +14,11 @@ from valohai_yaml.types import LintContext
 from valohai_yaml.utils.lint import lint_expression
 
 # Properties that only make sense for Bayesian tasks.
-BAYESIAN_ONLY_PROPS = {
-    "optimization_target_value",
-    "optimization_target_metric",
+BAYESIAN_ONLY_PROPS = (
     "engine",
-}
+    "optimization_target_metric",
+    "optimization_target_value",
+)
 
 
 class TaskType(Enum):
