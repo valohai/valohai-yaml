@@ -74,6 +74,13 @@ def test_action_pipeline(pipeline_config: Config):
         "then": ["noop"],
         "when": ["node-complete", "node-starting"],
     }
+    error_node = pl.get_node_by(name="accuracy-error")
+    assert error_node
+    assert error_node.actions[0].get_data() == {
+        "if": ["metadata.accuracy <= .8"],
+        "then": ["error-pipeline"],
+        "when": ["node-complete"],
+    }
 
 
 def test_empty_actions_not_serialized(pipeline_config: Config):

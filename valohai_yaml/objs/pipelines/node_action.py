@@ -14,6 +14,7 @@ WELL_KNOWN_WHENS = {
 WELL_KNOWN_THENS = {
     "noop",  # For testing
     "stop-pipeline",
+    "error-pipeline",
 }
 
 

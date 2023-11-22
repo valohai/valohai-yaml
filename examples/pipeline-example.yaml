@@ -130,6 +130,13 @@
               - node-complete
             if: [a, b, c]
             then: noop
+      - name: accuracy-error
+        type: execution
+        step: Test model
+        actions:
+          - when: node-complete
+            if: "metadata.accuracy <= .8"
+            then: error-pipeline
     edges:
       - [train.output.model, validate.input.model]
 
