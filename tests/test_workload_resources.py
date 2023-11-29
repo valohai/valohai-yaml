@@ -43,9 +43,20 @@ def test_missing_resources():
     """None of the workload properties are required."""
     resources = WorkloadResources.parse(OrderedDict([]))
 
-    assert resources.cpu is None
-    assert resources.memory is None
-    assert resources.devices is None
+    # Subresources are created with None/empty leaf values
+    assert resources.cpu is not None
+    assert resources.cpu.min is None
+    assert resources.cpu.max is None
+
+    assert resources.memory is not None
+    assert resources.memory.min is None
+    assert resources.memory.max is None
+
+    assert resources.devices is not None
+    assert resources.devices.devices == {}
+
+    # the empty dict-initialized resources also serialize back into an empty dict
+    assert resources.serialize() == {}
 
 
 @pytest.mark.parametrize(
@@ -62,7 +73,7 @@ def test_missing_sub_resources(resource_name, missing_key):
     resources = create_resources(resource_name, missing_key)
 
     for this_resource_name, sub_resources in resources.get_data().items():
-        for name, value in sub_resources.get_data().items():
+        for name, value in sub_resources.items():
             if this_resource_name == resource_name and name == missing_key:
                 assert value is None
             else:

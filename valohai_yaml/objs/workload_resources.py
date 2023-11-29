@@ -19,6 +19,11 @@ class ResourceCPU(Item):
         """CPU data."""
         return f'ResourceCPU("max": {self.max}, "min": {self.min})'
 
+    def get_data(self) -> SerializedDict:
+        return {
+            key: value for key, value in super().get_data().items() if value is not None
+        }
+
 
 class ResourceMemory(Item):
     """Memory configuration."""
@@ -34,6 +39,11 @@ class ResourceMemory(Item):
     def __repr__(self) -> str:
         """Memory data."""
         return f'ResourceMemory("max": {self.max}, "min": {self.min})'
+
+    def get_data(self) -> SerializedDict:
+        return {
+            key: value for key, value in super().get_data().items() if value is not None
+        }
 
 
 class ResourceDevices(Item):
@@ -77,9 +87,9 @@ class WorkloadResources(Item):
     def __init__(
         self,
         *,
-        cpu: Optional[ResourceCPU],
-        memory: Optional[ResourceMemory],
-        devices: Optional[ResourceDevices],
+        cpu: ResourceCPU,
+        memory: ResourceMemory,
+        devices: ResourceDevices,
     ) -> None:
         self.cpu = cpu
         self.memory = memory
@@ -87,16 +97,24 @@ class WorkloadResources(Item):
 
     @classmethod
     def parse(cls, data: SerializedDict) -> "WorkloadResources":
-        cpu_data = data.get("cpu")
-        memory_data = data.get("memory")
-        device_data = data.get("devices")
+        cpu_data = data.get("cpu", {})
+        memory_data = data.get("memory", {})
+        device_data = data.get("devices", {})
         data_with_resources = dict(
             data,
-            cpu=ResourceCPU.parse(cpu_data) if cpu_data else None,
-            memory=ResourceMemory.parse(memory_data) if memory_data else None,
-            devices=ResourceDevices.parse(device_data) if device_data else None,
+            cpu=ResourceCPU.parse(cpu_data),
+            memory=ResourceMemory.parse(memory_data),
+            devices=ResourceDevices.parse(device_data),
         )
         return super().parse(data_with_resources)
+
+    def get_data(self) -> SerializedDict:
+        data = {}
+        for key, value in super().get_data().items():
+            item_data = value.get_data()
+            if item_data:
+                data[key] = item_data
+        return data
 
     def __repr__(self) -> str:
         """Resources contents."""
