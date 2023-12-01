@@ -1,16 +1,28 @@
-from typing import Dict, Optional
+from __future__ import annotations
 
 from valohai_yaml.objs.base import Item
 from valohai_yaml.types import SerializedDict
 
 
-class ResourceCPU(Item):
+class WorkloadResourceItem(Item):
+    """
+    Adds get_data_or_none method supporting distinction between an empty SerializedDict and None.
+
+    The method allows defining an empty devices dictionary for ResourceDevices that will override default values,
+    if any are defined. Other subclasses will get default behaviour.
+    """
+
+    def get_data_or_none(self) -> SerializedDict | None:
+        return self.get_data() or None
+
+
+class ResourceCPU(WorkloadResourceItem):
     """CPU configuration."""
 
     def __init__(
         self,
-        max: Optional[int] = None,
-        min: Optional[int] = None,
+        max: int | None = None,
+        min: int | None = None,
     ) -> None:
         self.max = max
         self.min = min
@@ -25,13 +37,13 @@ class ResourceCPU(Item):
         }
 
 
-class ResourceMemory(Item):
+class ResourceMemory(WorkloadResourceItem):
     """Memory configuration."""
 
     def __init__(
         self,
-        max: Optional[int] = None,
-        min: Optional[int] = None,
+        max: int | None = None,
+        min: int | None = None,
     ) -> None:
         self.max = max
         self.min = min
@@ -46,20 +58,20 @@ class ResourceMemory(Item):
         }
 
 
-class ResourceDevices(Item):
+class ResourceDevices(WorkloadResourceItem):
     """Devices configuration."""
 
-    def __init__(self, devices: SerializedDict) -> None:
+    def __init__(self, devices: SerializedDict | None) -> None:
         """
         Devices list device name: nr of devices.
 
         Keys (and number of items) unknown, e.g.:
         'nvidia.com/cpu': 2, 'nvidia.com/gpu': 1.
         """
-        self.devices: Dict[str, int] = devices
+        self.devices: dict[str, int] | None = devices
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> "ResourceDevices":
+    def parse(cls, data: SerializedDict | None) -> ResourceDevices:
         """
         Initialize a devices resource.
 
@@ -72,7 +84,7 @@ class ResourceDevices(Item):
         """List the devices."""
         return f"ResourceDevices({self.devices})"
 
-    def get_data(self) -> SerializedDict:
+    def get_data_or_none(self) -> SerializedDict | None:
         return self.devices
 
 
@@ -96,10 +108,10 @@ class WorkloadResources(Item):
         self.devices = devices
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> "WorkloadResources":
+    def parse(cls, data: SerializedDict) -> WorkloadResources:
         cpu_data = data.get("cpu", {})
         memory_data = data.get("memory", {})
-        device_data = data.get("devices", {})
+        device_data = data.get("devices")
         data_with_resources = dict(
             data,
             cpu=ResourceCPU.parse(cpu_data),
@@ -111,8 +123,8 @@ class WorkloadResources(Item):
     def get_data(self) -> SerializedDict:
         data = {}
         for key, value in super().get_data().items():
-            item_data = value.get_data()
-            if item_data:
+            item_data = value.get_data_or_none()
+            if item_data is not None:
                 data[key] = item_data
         return data
 
