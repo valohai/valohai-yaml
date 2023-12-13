@@ -71,7 +71,7 @@ class Step(Item):
 
         self.time_limit = time_limit
         self.no_output_timeout = no_output_timeout
-        self.resources = resources
+        self.resources = resources if resources else WorkloadResources.parse({})
         self.stop_condition = stop_condition
 
     @classmethod
@@ -84,6 +84,7 @@ class Step(Item):
         kwargs["source_path"] = kwargs.pop("source-path", None)
         kwargs["stop_condition"] = kwargs.pop("stop-condition", None)
         kwargs["upload_store"] = kwargs.pop("upload-store", None)
+        kwargs["resources"] = WorkloadResources.parse(kwargs.pop("resources", {}))
         inst = cls(**kwargs)
         inst._original_data = data
         return inst
@@ -121,7 +122,7 @@ class Step(Item):
             ("icon", self.icon),
             ("category", self.category),
             ("source-path", self.source_path),
-            ("resources", self.resources),
+            ("resources", self.resources.get_data() or None),
             ("stop-condition", self.stop_condition),
             ("upload-store", self.upload_store),
         ]:
