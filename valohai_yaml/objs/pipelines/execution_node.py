@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional, Union
 
 from valohai_yaml.lint import LintResult
+from valohai_yaml.objs.pipelines.edge_merge_mode import EdgeMergeMode
 from valohai_yaml.objs.pipelines.node import ErrorAction, Node
 from valohai_yaml.objs.pipelines.node_action import NodeAction
 from valohai_yaml.objs.pipelines.override import Override
@@ -21,6 +22,7 @@ class ExecutionNode(Node):
         actions: Optional[List[NodeAction]] = None,
         override: Optional[Union[Override, NodeOverrideDict]] = None,
         on_error: Union[str, ErrorAction] = ErrorAction.STOP_ALL,
+        edge_merge_mode: EdgeMergeMode = EdgeMergeMode.REPLACE,
     ) -> None:
         super().__init__(name=name, actions=actions, on_error=on_error)
         self.step = step
@@ -28,6 +30,7 @@ class ExecutionNode(Node):
             self.override = override
         else:
             self.override = Override.parse(override)
+        self.edge_merge_mode = EdgeMergeMode.cast(edge_merge_mode)
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         super().lint(lint_result, context)

@@ -1,0 +1,16 @@
+- step:
+    name: buzz
+    command: echo "i will buzz"
+    image: alpine/alpine
+    inputs:
+      - name: dataset
+        default: /data
+
+- pipeline:
+    name: good
+    nodes:
+      - name: good_node
+        step: buzz
+        type: execution
+        edge-merge-mode: replace
+    edges: []

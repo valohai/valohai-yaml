@@ -1,0 +1,6 @@
+type: string
+enum:
+  - "replace"
+  - "append"
+default: "replace"
+description: Whether to replace the values set for this input, or to append to them when overridden by e.g. a pipeline edge.
