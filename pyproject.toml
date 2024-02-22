@@ -47,6 +47,8 @@ norecursedirs = [".git", ".tox", "dist"]
 [tool.ruff]
 target-version = "py38"
 line-length = 120
+
+[tool.ruff.lint]
 mccabe.max-complexity = 10
 flake8-tidy-imports.ban-relative-imports = "all"
 select = [
@@ -80,7 +82,7 @@ ignore = [
     "SIM105", # Use `contextlib.suppress(TypeError)` instead of try-except-pass
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "valohai_yaml/__main__.py" = ["T2"] # the print()s are fine in here
 "**/tests/**" = [
     "ANN001", # Missing type annotation for function argument
