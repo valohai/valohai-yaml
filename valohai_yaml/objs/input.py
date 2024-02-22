@@ -5,6 +5,22 @@ from valohai_yaml.objs.base import Item
 from valohai_yaml.types import SerializedDict
 
 KeepDirectoriesValue = Union[bool, str, "KeepDirectories"]
+EdgeMergeModeValue = Union[str, "EdgeMergeMode"]
+
+
+class EdgeMergeMode(Enum):
+    """Input override mode."""
+
+    REPLACE = "replace"
+    APPEND = "append"
+
+    @classmethod
+    def cast(cls, value: EdgeMergeModeValue) -> "EdgeMergeMode":
+        if isinstance(value, EdgeMergeMode):
+            return value
+        if not value:
+            return EdgeMergeMode.APPEND
+        return EdgeMergeMode(str(value).lower())
 
 
 class KeepDirectories(Enum):
@@ -37,6 +53,7 @@ class Input(Item):
         description: Optional[str] = None,
         keep_directories: KeepDirectoriesValue = False,
         filename: Optional[str] = None,
+        edge_merge_mode: EdgeMergeMode = EdgeMergeMode.APPEND,
     ) -> None:
         self.name = name
         self.default = default  # may be None, a string or a list of strings
@@ -44,6 +61,7 @@ class Input(Item):
         self.description = description
         self.keep_directories = KeepDirectories.cast(keep_directories)
         self.filename = filename
+        self.edge_merge_mode = EdgeMergeMode.cast(edge_merge_mode)
 
     def get_data(self) -> SerializedDict:
         data = super().get_data()

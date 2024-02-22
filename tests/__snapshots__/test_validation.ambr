@@ -155,6 +155,15 @@
   
   '''
 # ---
+# name: test_bad_examples_cli[wrong-input-edge-merge-mode.yaml]
+  '''
+  >>> wrong-input-edge-merge-mode.yaml
+  error:   Enum validation on step.inputs.edge-merge-mode.enum: 'boo-boo' is not one of ['replace', 'append'] (0.step.inputs.0.edge-merge-mode)
+  ------------------------------------------------------------
+  *** 1 errors, 0 warnings
+
+  '''
+# ---
 # name: test_warning_examples_cli[invalid-numeric-parameter-default.yaml]
   '''
   >>> invalid-numeric-parameter-default.yaml
