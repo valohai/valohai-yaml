@@ -202,3 +202,12 @@
   
   '''
 # ---
+# name: test_warning_examples_cli[targetless-pipeline-params.yaml]
+  '''
+  >>> targetless-pipeline-params.yaml
+  warning: Pipeline "Example Pipeline with Parameter with no Target" parameter "id": no targets.
+  ------------------------------------------------------------
+  *** 0 errors, 1 warnings
+  
+  '''
+# ---
