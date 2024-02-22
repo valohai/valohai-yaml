@@ -84,9 +84,7 @@ def test_parameter_value_interpolation(example1_config):
         ],
     )
     command = " && ".join(command)
-    assert (
-        command == "asdf hello {parameter-value:hello} hello && dsfargeg 840 && hello"
-    )
+    assert command == "asdf hello {parameter-value:hello} hello && dsfargeg 840 && hello"
 
 
 def test_parameter_value_with_falsy_values(example1_config):

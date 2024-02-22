@@ -37,9 +37,7 @@ class Mount(Item):
     def get_data(self) -> SerializedDict:
         data = super().get_data()
         if self.options:
-            data["options"] = {
-                str(k): v for (k, v) in self.options.items() if v is not None
-            }
+            data["options"] = {str(k): v for (k, v) in self.options.items() if v is not None}
         else:
             data.pop("options", None)
         return data

@@ -32,9 +32,7 @@ class ResourceCPU(WorkloadResourceItem):
         return f'ResourceCPU("max": {self.max}, "min": {self.min})'
 
     def get_data(self) -> SerializedDict:
-        return {
-            key: value for key, value in super().get_data().items() if value is not None
-        }
+        return {key: value for key, value in super().get_data().items() if value is not None}
 
 
 class ResourceMemory(WorkloadResourceItem):
@@ -53,9 +51,7 @@ class ResourceMemory(WorkloadResourceItem):
         return f'ResourceMemory("max": {self.max}, "min": {self.min})'
 
     def get_data(self) -> SerializedDict:
-        return {
-            key: value for key, value in super().get_data().items() if value is not None
-        }
+        return {key: value for key, value in super().get_data().items() if value is not None}
 
 
 class ResourceDevices(WorkloadResourceItem):

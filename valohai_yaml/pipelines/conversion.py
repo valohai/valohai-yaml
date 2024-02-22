@@ -38,10 +38,7 @@ class PipelineConverter:
         return {
             "edges": [edge.get_expanded() for edge in pipeline.edges],
             "nodes": [self.convert_node(node) for node in pipeline.nodes],
-            "parameters": {
-                parameter.name: self.convert_parameter(parameter)
-                for parameter in pipeline.parameters
-            },
+            "parameters": {parameter.name: self.convert_parameter(parameter) for parameter in pipeline.parameters},
         }
 
     def convert_parameter(self, parameter: PipelineParameter) -> ConvertedObject:

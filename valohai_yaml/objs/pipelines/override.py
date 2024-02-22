@@ -87,12 +87,8 @@ class Override(Item):
     def serialize_to_template(cls, override: Override) -> OrderedDict:
         """Serialize an override object to a template for a node."""
         template = override.serialize()
-        template["inputs"] = {
-            name: listify(input.default) for name, input in override.inputs.items()
-        }
-        template["parameters"] = {
-            name: param.default for name, param in override.parameters.items()
-        }
+        template["inputs"] = {name: listify(input.default) for name, input in override.inputs.items()}
+        template["parameters"] = {name: param.default for name, param in override.parameters.items()}
         return template
 
     @classmethod
@@ -118,8 +114,7 @@ class Override(Item):
             for key in original_data:
                 if key not in OVERRIDABLE_FIELDS:
                     lint_result.add_warning(
-                        f"Unknown field {key!r} in override; "
-                        "should it be nested under `parameters` or `inputs`?",
+                        f"Unknown field {key!r} in override; " "should it be nested under `parameters` or `inputs`?",
                     )
 
     def serialize(self) -> OrderedDict:  # type: ignore[type-arg]

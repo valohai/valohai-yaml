@@ -29,10 +29,7 @@ def test_pipeline_conversion_no_output_timeout(pipeline_config: Config):
         commit_identifier="latest",
     ).convert_pipeline(pipeline_config.pipelines["My medium pipeline"])
     train_node = next(node for node in result["nodes"] if node["name"] == "train")
-    assert (
-        train_node["template"]["runtime_config"]["no_output_timeout"]
-        == parse_duration_string("6h").total_seconds()
-    )
+    assert train_node["template"]["runtime_config"]["no_output_timeout"] == parse_duration_string("6h").total_seconds()
 
 
 def test_pipeline_conversion_override_inputs(pipeline_overridden_config: Config):
@@ -48,18 +45,12 @@ def test_pipeline_conversion_override_inputs(pipeline_overridden_config: Config)
     assert merged["template"]["image"] == "merge node image"
     assert isinstance(merged["template"]["inputs"], dict)
     assert len(merged["template"]["inputs"].get("training-images", [])) == 2
-    assert (
-        merged["template"]["inputs"].get("training-images", [])[0]
-        == "merged node image 1"
-    )
+    assert merged["template"]["inputs"].get("training-images", [])[0] == "merged node image 1"
     assert len(merged["template"]["parameters"].items()) == 3
 
     overridden = next(node for node in result["nodes"] if node["name"] == "overridden")
     assert isinstance(overridden["template"]["inputs"], dict)
-    assert (
-        overridden["template"]["inputs"].get("training-images", [])[0]
-        == "overridden node image"
-    )
+    assert overridden["template"]["inputs"].get("training-images", [])[0] == "overridden node image"
     assert len(overridden["template"]["inputs"].get("training-images", [])) == 1
     assert len(overridden["template"]["parameters"].items()) == 3
 
@@ -80,11 +71,7 @@ def test_pipeline_parameter_conversion(pipeline_with_parameters_config):
             assert isinstance(parameter["config"]["targets"], list)
 
             # When pipeline parameter has no default value, the expression should be empty
-            parameter_config = next(
-                param for param in pipe.parameters if param.name == parameter_name
-            )
-            expression_value = (
-                parameter_config.default if parameter_config.default is not None else ""
-            )
+            parameter_config = next(param for param in pipe.parameters if param.name == parameter_name)
+            expression_value = parameter_config.default if parameter_config.default is not None else ""
             assert parameter["expression"] == expression_value
             assert type(parameter["expression"]) == type(expression_value)

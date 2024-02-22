@@ -115,9 +115,7 @@ class Step(Item):
             ),
             (
                 "no-output-timeout",
-                int(self.no_output_timeout.total_seconds())
-                if self.no_output_timeout
-                else None,
+                int(self.no_output_timeout.total_seconds()) if self.no_output_timeout else None,
             ),
             ("icon", self.icon),
             ("category", self.category),
@@ -140,8 +138,7 @@ class Step(Item):
         return {
             name: parameter.default
             for (name, parameter) in self.parameters.items()
-            if parameter.default is not None
-            and (include_flags or parameter.type != "flag")
+            if parameter.default is not None and (include_flags or parameter.type != "flag")
         }
 
     def build_command(

@@ -14,9 +14,7 @@ from valohai_yaml.lint import lint_file
 def test_optional_flag():
     items = lint_file("./examples/flag-optional-example.yaml")
     warning = "Step test, parameter case-insensitive: `optional` has no effect on flag-type parameters"
-    assert any(
-        (warning in item["message"]) for item in items.warnings
-    )  # pragma: no branch
+    assert any((warning in item["message"]) for item in items.warnings)  # pragma: no branch
 
 
 @pytest.mark.parametrize(
@@ -33,9 +31,7 @@ def test_optional_flag():
 def test_invalid_parameter_default(file, expected_message):
     items = lint_file(get_warning_example_path(file))
     messages = [item["message"] for item in chain(items.warnings, items.errors)]
-    assert any(
-        expected_message in message for message in messages
-    ), messages  # pragma: no branch
+    assert any(expected_message in message for message in messages), messages  # pragma: no branch
 
 
 @pytest.mark.parametrize(
@@ -53,9 +49,7 @@ def test_invalid_parameter_default(file, expected_message):
 def test_invalid_indentation(file, expected_message):
     items = lint_file(get_error_example_path(file))
     messages = [item["message"] for item in chain(items.hints, items.errors)]
-    assert any(
-        expected_message in message for message in messages
-    ), messages  # pragma: no branch
+    assert any(expected_message in message for message in messages), messages  # pragma: no branch
 
 
 @pytest.mark.parametrize(
@@ -67,9 +61,7 @@ def test_invalid_indentation(file, expected_message):
 )
 def test_expression_lint_ok(file_path):
     items = lint_file(get_valid_example_path(file_path))
-    assert items.is_valid(), [
-        item["message"] for item in chain(items.hints, items.errors)
-    ]
+    assert items.is_valid(), [item["message"] for item in chain(items.hints, items.errors)]
 
 
 @pytest.mark.parametrize(

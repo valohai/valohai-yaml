@@ -35,9 +35,7 @@ class Pipeline(Item):
         data = data.copy()
         data["edges"] = [Edge.parse(e) for e in data.pop("edges", ())]
         data["nodes"] = [Node.parse_qualifying(n) for n in data.pop("nodes", ())]
-        data["parameters"] = [
-            PipelineParameter.parse(e) for e in data.pop("parameters", ())
-        ]
+        data["parameters"] = [PipelineParameter.parse(e) for e in data.pop("parameters", ())]
         return super().parse(data)
 
     def get_data(self) -> SerializedDict:

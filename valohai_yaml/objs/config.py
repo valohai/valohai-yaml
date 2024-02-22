@@ -87,14 +87,8 @@ class Config(Item):
             chain(
                 ({"step": step.serialize()} for (key, step) in self.steps.items()),
                 ({"task": task.serialize()} for (key, task) in self.tasks.items()),
-                (
-                    {"endpoint": endpoint.serialize()}
-                    for (key, endpoint) in sorted(self.endpoints.items())
-                ),
-                (
-                    {"pipeline": pipeline.serialize()}
-                    for (key, pipeline) in sorted(self.pipelines.items())
-                ),
+                ({"endpoint": endpoint.serialize()} for (key, endpoint) in sorted(self.endpoints.items())),
+                ({"pipeline": pipeline.serialize()} for (key, pipeline) in sorted(self.pipelines.items())),
             ),
         )
 
@@ -179,14 +173,11 @@ class Config(Item):
         return result
 
     def __repr__(self) -> str:  # pragma: no cover  # noqa: D105
-        return (
-            "<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>"
-            % (
-                len(self.steps),
-                self.steps,
-                len(self.endpoints),
-                sorted(self.endpoints),
-                len(self.pipelines),
-                sorted(self.pipelines),
-            )
+        return "<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>" % (
+            len(self.steps),
+            self.steps,
+            len(self.endpoints),
+            sorted(self.endpoints),
+            len(self.pipelines),
+            sorted(self.pipelines),
         )
