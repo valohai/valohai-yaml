@@ -114,11 +114,7 @@ def _validate_json_schema(
         key=lambda error: (relevance(error), repr(error.path)),
     )
     for error in errors:
-        simplified_schema_path = [
-            el
-            for el in list(error.relative_schema_path)
-            if el not in ("properties", "items")
-        ]
+        simplified_schema_path = [el for el in list(error.relative_schema_path) if el not in ("properties", "items")]
         obj_path = [str(el) for el in error.path]
         styled_validator = styler(error.validator.title(), bold=True)
         styled_schema_path = styler(".".join(simplified_schema_path), bold=True)
@@ -158,9 +154,7 @@ def lint(
     except pyyaml.YAMLError as err:
         if hasattr(err, "problem_mark"):
             mark = err.problem_mark
-            indent_error = (
-                f"Indentation Error at line {mark.line + 1}, column {mark.column + 1}"
-            )
+            indent_error = f"Indentation Error at line {mark.line + 1}, column {mark.column + 1}"
             lr.add_error(indent_error)
         else:
             lr.add_error(str(err))

@@ -60,9 +60,7 @@ class Node(Item):
 
     @classmethod
     def parse_qualifying(cls, data: SerializedDict) -> "Node":
-        node_type_map = {
-            sc.type: sc for sc in cls.__subclasses__() if getattr(sc, "type", None)
-        }
+        node_type_map = {sc.type: sc for sc in cls.__subclasses__() if getattr(sc, "type", None)}
         data = data.copy()
         subcls = node_type_map[data.pop("type")]
         data["actions"] = consume_array_of(data, "actions", NodeAction)

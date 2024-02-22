@@ -42,11 +42,7 @@ class Item:
     @classmethod
     def parse(cls: Type[T], data: SerializedDict) -> T:
         inst = cls(
-            **{
-                key.replace("-", "_"): value
-                for (key, value) in data.items()
-                if not key.startswith("_")
-            },
+            **{key.replace("-", "_"): value for (key, value) in data.items() if not key.startswith("_")},
         )
         inst._original_data = data
         return inst

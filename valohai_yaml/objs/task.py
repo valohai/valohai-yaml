@@ -94,9 +94,7 @@ class Task(Item):
         self.step = step
         self.type = TaskType.cast(type)
         self.parameters = check_type_and_listify(parameters, VariantParameter)
-        self.parameter_sets = [
-            ps for ps in check_type_and_listify(parameter_sets, dict) if ps
-        ]
+        self.parameter_sets = [ps for ps in check_type_and_listify(parameter_sets, dict) if ps]
         self.execution_count = execution_count
         self.execution_batch_size = execution_batch_size
         self.maximum_queued_executions = maximum_queued_executions

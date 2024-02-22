@@ -14,9 +14,7 @@ def test_get_step_by_name_doesnt_exist():
 
 def test_get_step_by_command():
     config = Config.parse([echo_step, list_step])
-    assert (
-        echo_step["step"] == config.get_step_by(command="echo HELLO WORLD").serialize()
-    )
+    assert echo_step["step"] == config.get_step_by(command="echo HELLO WORLD").serialize()
     assert list_step["step"] == config.get_step_by(command="ls").serialize()
 
 
@@ -34,10 +32,7 @@ def test_get_step_by_name_and_command():
     config = Config.parse([echo_step, list_step])
     assert not config.get_step_by(name="greeting", command="echo HELLO MORDOR")
     assert not config.get_step_by(name="farewell", command="echo HELLO WORLD")
-    assert (
-        echo_step["step"]
-        == config.get_step_by(name="greeting", command="echo HELLO WORLD").serialize()
-    )
+    assert echo_step["step"] == config.get_step_by(name="greeting", command="echo HELLO WORLD").serialize()
 
 
 def test_get_step_by_non_existing_attribute():

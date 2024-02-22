@@ -8,9 +8,7 @@ def test_parse_inputs(example2_config):
     config = example2_config
     step = config.steps["run training"]
     assert len(step.inputs) == 5
-    assert (
-        len([inp.description for inp in step.inputs.values() if inp.description]) == 4
-    )
+    assert len([inp.description for inp in step.inputs.values() if inp.description]) == 4
 
 
 def test_parse_input_defaults(example3_config):
@@ -18,10 +16,7 @@ def test_parse_input_defaults(example3_config):
     step = config.steps["batch inference"]
     assert len(step.inputs) == 2
     assert step.inputs["model"].default == "s3://foo/model.pb"
-    assert (
-        isinstance(step.inputs["images"].default, list)
-        and len(step.inputs["images"].default) == 2
-    )
+    assert isinstance(step.inputs["images"].default, list) and len(step.inputs["images"].default) == 2
 
 
 def test_parse(example1_config):
@@ -167,35 +162,19 @@ def test_timeouts(timeouts_config):
     assert timeouts_config.steps["short-time-limit"].time_limit.total_seconds() == 300
     assert timeouts_config.steps["short-time-limit"].no_output_timeout is None
     assert timeouts_config.steps["big-no-output-timeout"].time_limit is None
-    assert (
-        timeouts_config.steps["big-no-output-timeout"].no_output_timeout.total_seconds()
-        == 86400
-    )
-    assert (
-        timeouts_config.steps["human-readable-time-limit"].time_limit.total_seconds()
-        == 5405
-    )
-    assert (
-        timeouts_config.steps[
-            "human-readable-time-limit"
-        ].no_output_timeout.total_seconds()
-        == 86400 * 2
-    )  # 48h
+    assert timeouts_config.steps["big-no-output-timeout"].no_output_timeout.total_seconds() == 86400
+    assert timeouts_config.steps["human-readable-time-limit"].time_limit.total_seconds() == 5405
+    assert timeouts_config.steps["human-readable-time-limit"].no_output_timeout.total_seconds() == 86400 * 2  # 48h
 
 
 def test_bling(example1_config: Config) -> None:
     assert example1_config.steps["run training"].category == "Training"
-    assert (
-        example1_config.steps["run training"].icon
-        == "https://valohai.com/assets/img/valohai-logo.svg"
-    )
+    assert example1_config.steps["run training"].icon == "https://valohai.com/assets/img/valohai-logo.svg"
 
 
 def test_widget(example1_config: Config) -> None:
     parameters = example1_config.steps["run training"].parameters
-    assert (
-        parameters["sql-query"].widget and parameters["sql-query"].widget.type == "sql"
-    )
+    assert parameters["sql-query"].widget and parameters["sql-query"].widget.type == "sql"
     widget = parameters["output-alias"].widget
     assert widget and widget.type == "datumalias"
     assert widget and widget.settings and widget.settings["width"] == 123
