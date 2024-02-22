@@ -1,0 +1,42 @@
+- step:
+    name: step1
+    command: echo "i will buzz"
+    image: alpine/alpine
+    inputs:
+      - name: dataset
+        default: /step1
+
+- step:
+    name: step2
+    command: echo "i will buzz"
+    image: alpine/alpine
+    inputs:
+      - name: dataset
+        default: /step2
+        edge-merge-mode: replace
+
+- step:
+    name: step3
+    command: echo "i will buzz"
+    image: alpine/alpine
+    inputs:
+      - name: dataset
+        default: /step3
+        edge-merge-mode: append
+
+- pipeline:
+    name: check-edge-merge-mode
+    nodes:
+      - name: step1
+        type: execution
+        step: step1
+      - name: step2
+        type: execution
+        step: step2
+      - name: step3
+        type: execution
+        step: step3
+
+    edges:
+      - [step1.output.*, step2.input.dataset]
+      - [step1.output.*, step3.input.dataset]

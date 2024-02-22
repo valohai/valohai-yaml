@@ -75,6 +75,10 @@ def test_expression_lint_ok(file_path):
             "task-stop-condition.yaml",
             "Task no-stop, `stop-condition` is not a valid expression:",
         ),
+        (
+            "wrong-input-edge-merge-mode.yaml",
+            "'boo-boo' is not one of ['replace', 'append']",
+        ),
     ],
 )
 def test_expression_lint_fail(file_path, expected_message):

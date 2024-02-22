@@ -20,3 +20,4 @@ pipeline_with_parameters_config = config_fixture(
 multiple_param_config = config_fixture("multiple-param.yaml")
 input_extras_config = config_fixture("input-extras.yaml")
 timeouts_config = config_fixture("timeouts-example.yaml")
+input_edge_merge_mode_config = config_fixture("input-edge-merge-mode.yaml")

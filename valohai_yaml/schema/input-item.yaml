@@ -38,3 +38,10 @@ properties:
           - "suffix"
     default: false
     description: Whether to retain directories when using wildcards for this input.
+  edge-merge-mode:
+    type: string
+    enum:
+      - replace
+      - append
+    default: append
+    description: Whether to replace the values set for this input, or to append to them when overridden by e.g. a pipeline edge.
