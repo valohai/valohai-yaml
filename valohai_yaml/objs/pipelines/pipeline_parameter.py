@@ -17,13 +17,15 @@ class PipelineParameter(Item):
         self,
         *,
         name: str,
-        targets: Union[List[str], str],
+        targets: Optional[Union[List[str], str]] = None,
         value: Optional[str] = None,
         default: Optional[str] = None,
     ) -> None:
         self.name = name
         self.default = default if value is None else value
-        if isinstance(targets, str):
+        if not targets:
+            self.targets = []
+        elif isinstance(targets, str):
             self.targets = [targets]
         else:
             self.targets = check_type_and_listify(targets, str)
@@ -45,6 +47,10 @@ class PipelineParameter(Item):
         config: Config = context["config"]
         steps = config.steps
         node_map = pipeline.node_map
+        if not self.targets:
+            lint_result.add_warning(
+                f'Pipeline "{pipeline.name}" parameter "{self.name}": no targets.',
+            )
         for target in self.targets:
             target_node_name, socket_type, target_parameter_name = split_socket_str(
                 target,

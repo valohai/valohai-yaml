@@ -1,0 +1,20 @@
+- step:
+    name: train_step
+    image: python:3.10
+    command:
+      - pip install valohai-utils
+      - python ./train.py {parameters}
+    parameters:
+      - name: id
+        type: string
+
+- pipeline:
+    name: Example Pipeline with Parameter with no Target
+    parameters:
+      - name: id
+        default: 123
+    nodes:
+      - name: train
+        step: train_step
+        type: execution
+    edges: []
