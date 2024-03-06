@@ -12,6 +12,7 @@ from valohai_yaml.objs import (
 from valohai_yaml.objs.pipelines.override import Override
 
 ConvertedObject = Dict[str, Any]
+ExpressionValue = Union[str, int, bool, float, list]
 
 
 class ConvertedPipeline(TypedDict):
@@ -45,7 +46,7 @@ class PipelineConverter:
         """Convert a pipeline parameter to a config-expression payload."""
         return {
             "config": {**parameter.serialize()},
-            "expression": parameter.default if parameter.default is not None else "",
+            "expression": self.convert_expression(parameter.default) if parameter.default is not None else "",
         }
 
     def convert_node(self, node: Node) -> ConvertedObject:
@@ -102,3 +103,8 @@ class PipelineConverter:
         }
 
         return node_data
+
+    def convert_expression(self, expression: ExpressionValue) -> ExpressionValue:
+        if isinstance(expression, list):
+            return ",".join(expression)
+        return expression
