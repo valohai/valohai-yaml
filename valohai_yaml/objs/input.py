@@ -53,7 +53,7 @@ class Input(Item):
         description: Optional[str] = None,
         keep_directories: KeepDirectoriesValue = False,
         filename: Optional[str] = None,
-        edge_merge_mode: EdgeMergeMode = EdgeMergeMode.APPEND,
+        edge_merge_mode: EdgeMergeMode = EdgeMergeMode.REPLACE,
     ) -> None:
         self.name = name
         self.default = default  # may be None, a string or a list of strings
@@ -70,3 +70,7 @@ class Input(Item):
         else:
             data.pop("keep_directories", None)
         return data
+
+    def apply_edge_merge_mode(self) -> None:
+        if self.edge_merge_mode == EdgeMergeMode.REPLACE:
+            self.default = []

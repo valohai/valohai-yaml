@@ -111,6 +111,9 @@ class PipelineConverter:
                 step_data.pop("no-output-timeout"),
             )
 
+        for input in step.inputs.values():
+            input.apply_edge_merge_mode()
+
         override = Override.merge_with_step(node.override, step)
         overridden_to_template = Override.serialize_to_template(override)
         step_data.update(overridden_to_template)
