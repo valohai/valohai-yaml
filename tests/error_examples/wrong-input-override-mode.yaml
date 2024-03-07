@@ -1,8 +1,0 @@
-- step:
-    name: buzz
-    command: echo "i will buzz"
-    image: alpine/alpine
-    inputs:
-      - name: dataset
-        default: /data
-        override-mode: boo-boo

@@ -11,7 +11,7 @@ def test_input_override_mode(input_edge_merge_mode_config):
     step3 = converted_pipeline["nodes"][2]
 
     # override-mode not defined
-    assert step1["template"]["inputs"]["dataset"] == ["/step1"]
+    assert step1["template"]["inputs"]["dataset"] == []
 
     # override-mode = replace
     assert step2["template"]["inputs"]["dataset"] == []

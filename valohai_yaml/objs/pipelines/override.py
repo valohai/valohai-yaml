@@ -8,7 +8,7 @@ from valohai_yaml.lint import LintResult
 from valohai_yaml.objs import Mount, Parameter
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.environment_variable import EnvironmentVariable
-from valohai_yaml.objs.input import EdgeMergeMode, Input
+from valohai_yaml.objs.input import Input
 from valohai_yaml.objs.step import Step, parse_common_step_properties
 from valohai_yaml.objs.utils import (
     check_type_and_dictify,
@@ -87,10 +87,7 @@ class Override(Item):
     def serialize_to_template(cls, override: Override) -> OrderedDict:
         """Serialize an override object to a template for a node."""
         template = override.serialize()
-        template["inputs"] = {
-            name: [] if input.edge_merge_mode == EdgeMergeMode.REPLACE else listify(input.default)
-            for name, input in override.inputs.items()
-        }
+        template["inputs"] = {name: listify(input.default) for name, input in override.inputs.items()}
         template["parameters"] = {name: param.default for name, param in override.parameters.items()}
         return template
 
