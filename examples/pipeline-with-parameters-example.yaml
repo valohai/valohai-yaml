@@ -15,6 +15,12 @@
         type: string
       - name: param0-flag
         type: flag
+      - name: listings
+        default: [all_harbors, all_uploads, all_uploads2]
+        type: string
+        multiple: separate
+        multiple-separator: ","
+        optional: false
 
 - pipeline:
     name: Example Pipeline with Parameters
@@ -45,6 +51,11 @@
         targets:
           - train.parameter.param0-flag
         default: false
+      - name: listings
+        targets:
+          - train.parameter.listings
+          - train_parallel.parameter.listings
+        default: [abc, def, ghi]
     nodes:
       - name: train
         step: train_step
