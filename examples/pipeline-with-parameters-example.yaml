@@ -25,6 +25,7 @@
           - train_parallel.parameter.id
         default: 123
         category: Apples
+        description: The ID of the thing to train
       - name: param0-float
         targets:
           - train.parameter.param0-float

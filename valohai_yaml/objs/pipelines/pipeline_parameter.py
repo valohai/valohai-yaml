@@ -21,10 +21,12 @@ class PipelineParameter(Item):
         value: Optional[str] = None,
         default: Optional[str] = None,
         category: Optional[str] = None,
+        description: Optional[str] = None,
     ) -> None:
         self.name = name
         self.default = default if value is None else value
         self.category = str(category) if category else None
+        self.description = str(description) if description else None
         if not targets:
             self.targets = []
         elif isinstance(targets, str):

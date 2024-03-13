@@ -17,3 +17,6 @@ properties:
   category:
     type: string
     description: Free-form category for the parameter. Shown in the user interface.
+  description:
+    type: string
+    description: Describes the parameter. This is shown as a help text in the user interface.
