@@ -24,18 +24,23 @@
           - train.parameter.id
           - train_parallel.parameter.id
         default: 123
+        category: Apples
+        description: The ID of the thing to train
       - name: param0-float
         targets:
           - train.parameter.param0-float
         default: 0.0
+        category: Apples
       - name: param0-int
         targets:
           - train.parameter.param0-int
         default: 0
+        category: Oranges
       - name: param0-string
         targets:
           - train.parameter.param0-string
         default: ""
+        category: Oranges
       - name: param0-flag
         targets:
           - train.parameter.param0-flag

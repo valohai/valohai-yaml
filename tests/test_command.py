@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from valohai_yaml.commands import build_command
 from valohai_yaml.objs.parameter_map import ParameterMap
 
@@ -110,3 +112,21 @@ def test_parameter_omit_with_none_value(example1_config):
         ],
     )
     assert "num-epochs" not in command[0]
+
+
+def test_parameter_categories(example1_config):
+    pbc = defaultdict(set)
+    for param in example1_config.steps["run training"].parameters.values():
+        pbc[param.category].add(param.name)
+    assert pbc == {
+        None: {
+            "decoder-spec",
+            "denoising-cost-x",
+            "encoder-layers",
+            "num-epochs",
+            "seed",
+        },
+        "Database": {"sql-query"},
+        "Output": {"output-alias"},
+        "Samples": {"unlabeled-samples", "labeled-samples"},
+    }
