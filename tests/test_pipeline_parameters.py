@@ -20,6 +20,7 @@ def test_pipeline_parameters(pipeline_with_parameters_config):
         "train.parameter.id",
         "train_parallel.parameter.id",
     ]
+    assert param.category == "Apples"
 
 
 @pytest.mark.parametrize(

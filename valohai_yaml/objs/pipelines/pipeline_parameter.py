@@ -20,9 +20,11 @@ class PipelineParameter(Item):
         targets: Optional[Union[List[str], str]] = None,
         value: Optional[str] = None,
         default: Optional[str] = None,
+        category: Optional[str] = None,
     ) -> None:
         self.name = name
         self.default = default if value is None else value
+        self.category = str(category) if category else None
         if not targets:
             self.targets = []
         elif isinstance(targets, str):

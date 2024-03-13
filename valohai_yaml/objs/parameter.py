@@ -54,6 +54,7 @@ class Parameter(Item):
         multiple: Optional[Union[str, MultipleMode]] = None,
         multiple_separator: str = ",",
         widget: Optional[ParameterWidget] = None,
+        category: Optional[str] = None,
     ) -> None:
         self.name = name
         self.type = type
@@ -68,6 +69,7 @@ class Parameter(Item):
         self.multiple = MultipleMode.cast(multiple)
         self.multiple_separator = str(multiple_separator or ",")
         self.widget = widget
+        self.category = str(category) if category else None
 
         self.default = listify(default) if self.multiple else default
         if self.type == "flag":

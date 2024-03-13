@@ -35,11 +35,13 @@
         description: How many supervised samples are used
         type: integer
         default: 60000
+        category: Samples
 
       - name: unlabeled-samples
         description: How many unsupervised samples are used
         type: integer
         default: 60000
+        category: Samples
 
       - name: encoder-layers
         description: List of layers for f
@@ -61,10 +63,12 @@
         type: string
         default: SELECT * FROM mytable
         widget: sql
+        category: Database
 
       - name: output-alias
         type: string
         default: my-alias
+        category: Output
         widget:
           type: DatumAlias
           settings:

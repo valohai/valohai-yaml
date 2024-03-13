@@ -14,3 +14,6 @@ properties:
     type: string
   default:
     description: The default value for the pipeline parameter.
+  category:
+    type: string
+    description: Free-form category for the parameter. Shown in the user interface.
