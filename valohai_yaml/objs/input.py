@@ -1,3 +1,4 @@
+from copy import copy
 from enum import Enum
 from typing import List, Optional, Union
 
@@ -71,6 +72,8 @@ class Input(Item):
             data.pop("keep_directories", None)
         return data
 
-    def apply_edge_merge_mode(self) -> None:
-        if self.edge_merge_mode == EdgeMergeMode.REPLACE:
-            self.default = []
+    def with_edge_merge_mode_applied(self) -> "Input":
+        new_input = copy(self)
+        if new_input.edge_merge_mode == EdgeMergeMode.REPLACE:
+            new_input.default = []
+        return new_input

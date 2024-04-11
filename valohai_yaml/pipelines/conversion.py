@@ -1,3 +1,5 @@
+import copy
+from collections import OrderedDict
 from typing import Any, Dict, List, Optional, TypedDict, Union
 
 from valohai_yaml.objs import (
@@ -111,8 +113,10 @@ class PipelineConverter:
                 step_data.pop("no-output-timeout"),
             )
 
-        for input in step.inputs.values():
-            input.apply_edge_merge_mode()
+        # Shallow-copy the step before we mutate it,
+        # so the changes don't reflect into `self.config`
+        step = copy.copy(step)
+        step.inputs = OrderedDict((key, input.with_edge_merge_mode_applied()) for key, input in step.inputs.items())
 
         override = Override.merge_with_step(node.override, step)
         overridden_to_template = Override.serialize_to_template(override)
