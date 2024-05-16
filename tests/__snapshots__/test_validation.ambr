@@ -104,9 +104,9 @@
 # name: test_bad_examples_cli[step-missing-required-properties.yaml]
   '''
   >>> step-missing-required-properties.yaml
-  error:   Oneof validation on step.command.oneOf: 8 is not valid under any of the given schemas (1.step.command)
-  ------------------------------------------------------------
   error:   Type validation on step.image.type: True is not of type 'string' (0.step.image)
+  ------------------------------------------------------------
+  error:   Oneof validation on step.command.oneOf: 8 is not valid under any of the given schemas (1.step.command)
   ------------------------------------------------------------
   error:   Required validation on step.required: 'command' is a required property (0.step)
   ------------------------------------------------------------
