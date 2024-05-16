@@ -73,9 +73,12 @@ def test_pipeline_parameter_conversion(pipeline_with_parameters_config):
             # When pipeline parameter has no default value, the expression should be empty
             parameter_config = next(param for param in pipe.parameters if param.name == parameter_name)
             expression_value = parameter_config.default if parameter_config.default is not None else ""
-            # When pipeline parameter is list it should be converted to a comma separated string
+            # When pipeline parameter is list it should be converted to a variant parameter
             if isinstance(expression_value, list):
-                assert parameter["expression"] == ",".join(expression_value)
+                assert parameter["expression"] == {
+                    "style": "single",
+                    "rules": {"value": expression_value},
+                }
             else:
                 assert parameter["expression"] == expression_value
                 assert type(parameter["expression"]) == type(expression_value)

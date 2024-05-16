@@ -12,7 +12,16 @@ from valohai_yaml.objs import (
 from valohai_yaml.objs.pipelines.override import Override
 
 ConvertedObject = Dict[str, Any]
-ExpressionValue = Union[str, int, bool, float, list]
+
+
+class VariantExpression(TypedDict):
+    """Variant expression template."""
+
+    style: str
+    rules: Dict[str, Any]
+
+
+ExpressionValue = Union[str, int, bool, float, VariantExpression]
 
 
 class ConvertedPipeline(TypedDict):
@@ -104,7 +113,10 @@ class PipelineConverter:
 
         return node_data
 
-    def convert_expression(self, expression: ExpressionValue) -> ExpressionValue:
+    def convert_expression(self, expression: Union[ExpressionValue, list]) -> ExpressionValue:
         if isinstance(expression, list):
-            return ",".join(expression)
+            return VariantExpression(
+                style="single",
+                rules={"value": expression},
+            )
         return expression
