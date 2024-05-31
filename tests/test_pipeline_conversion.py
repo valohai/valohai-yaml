@@ -73,5 +73,38 @@ def test_pipeline_parameter_conversion(pipeline_with_parameters_config):
             # When pipeline parameter has no default value, the expression should be empty
             parameter_config = next(param for param in pipe.parameters if param.name == parameter_name)
             expression_value = parameter_config.default if parameter_config.default is not None else ""
-            assert parameter["expression"] == expression_value
-            assert type(parameter["expression"]) == type(expression_value)
+            # When pipeline parameter is list it should be converted to a variant parameter
+            if isinstance(expression_value, list):
+                assert parameter["expression"] == {
+                    "style": "single",
+                    "rules": {"value": expression_value},
+                }
+            else:
+                assert parameter["expression"] == expression_value
+                assert type(parameter["expression"]) is type(expression_value)
+
+
+def test_pipeline_parameter_conversion_with_args(pipeline_with_parameters_config):
+    pipeline = pipeline_with_parameters_config.pipelines["Example Pipeline with Parameters"]
+    args = {
+        "param0-float": 1.5,
+        "param0-int": 3,
+        "param0-string": "iceberg",
+        "param0-flag": True,
+        "listings": ["msg", "pfa"],
+    }
+    result = PipelineConverter(
+        config=pipeline_with_parameters_config,
+        commit_identifier="latest",
+        parameter_arguments=args,
+    ).convert_pipeline(pipeline)
+    params = result["parameters"]
+
+    assert params["param0-float"]["expression"] == 1.5
+    assert params["param0-int"]["expression"] == 3
+    assert params["param0-string"]["expression"] == "iceberg"
+    assert params["param0-flag"]["expression"]
+    assert params["listings"]["expression"] == {
+        "style": "single",
+        "rules": {"value": ["msg", "pfa"]},
+    }

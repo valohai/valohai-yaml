@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, TypedDict, Union
+from typing import Any, Dict, List, Optional, TypedDict, Union
 
 from valohai_yaml.objs import (
     Config,
@@ -12,6 +12,16 @@ from valohai_yaml.objs import (
 from valohai_yaml.objs.pipelines.override import Override
 
 ConvertedObject = Dict[str, Any]
+
+
+class VariantExpression(TypedDict):
+    """Variant expression template."""
+
+    style: str
+    rules: Dict[str, Any]
+
+
+ExpressionValue = Union[str, int, bool, float, VariantExpression]
 
 
 class ConvertedPipeline(TypedDict):
@@ -30,9 +40,11 @@ class PipelineConverter:
         *,
         config: Config,
         commit_identifier: str,
+        parameter_arguments: Optional[Dict[str, Union[str, list]]] = None,
     ) -> None:
         self.config = config
         self.commit_identifier = commit_identifier
+        self.parameter_arguments = parameter_arguments or {}
 
     def convert_pipeline(self, pipeline: Pipeline) -> ConvertedPipeline:
         return {
@@ -43,9 +55,17 @@ class PipelineConverter:
 
     def convert_parameter(self, parameter: PipelineParameter) -> ConvertedObject:
         """Convert a pipeline parameter to a config-expression payload."""
+        param_value: Union[ExpressionValue, List[str]]
+        if parameter.name in self.parameter_arguments:
+            param_value = self.parameter_arguments[parameter.name]
+        elif parameter.default is not None:
+            param_value = parameter.default
+        else:
+            param_value = ""
+
         return {
             "config": {**parameter.serialize()},
-            "expression": parameter.default if parameter.default is not None else "",
+            "expression": self.convert_expression(param_value),
         }
 
     def convert_node(self, node: Node) -> ConvertedObject:
@@ -102,3 +122,11 @@ class PipelineConverter:
         }
 
         return node_data
+
+    def convert_expression(self, expression: Union[ExpressionValue, list]) -> ExpressionValue:
+        if isinstance(expression, list):
+            return VariantExpression(
+                style="single",
+                rules={"value": expression},
+            )
+        return expression

@@ -19,7 +19,7 @@ class PipelineParameter(Item):
         name: str,
         targets: Optional[Union[List[str], str]] = None,
         value: Optional[str] = None,
-        default: Optional[str] = None,
+        default: Optional[Union[List[str], str]] = None,
         category: Optional[str] = None,
         description: Optional[str] = None,
     ) -> None:
