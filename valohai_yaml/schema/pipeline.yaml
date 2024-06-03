@@ -38,6 +38,14 @@ properties:
           required:
             - source
             - target
+  reuse-executions:
+    type: boolean
+    default: false
+    description: |
+      Set to true to allow Valohai to automatically detect if the executions in
+      steps' nodes could be skipped and reuse the result from a previously successfully
+      run node. Node's execution is considered unchanged when the step's data doesn't
+      change (inputs, command, commit hash, parameters, step's configuration).
 required:
   - edges
   - name

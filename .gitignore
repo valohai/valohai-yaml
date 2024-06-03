@@ -24,3 +24,6 @@ pip-delete-this-directory.txt
 pip-log.txt
 sdist/
 venv*
+.python-version
+.tmp/
+.vscode

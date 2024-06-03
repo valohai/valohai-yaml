@@ -105,3 +105,10 @@ def test_invalid_override_is_parsed_but_warns():
     items = lint_file(path, validate_schema=False)
     assert items.warning_count == 1
     assert next(items.warnings)["message"].startswith("Unknown field")
+
+
+def test_pipeline_allow_reuse(pipeline_config: Config):
+    pl = pipeline_config.pipelines["My little pipeline"]
+    pl2 = pipeline_config.pipelines["My medium pipeline"]
+    assert pl.reuse_executions is True
+    assert pl2.reuse_executions is False

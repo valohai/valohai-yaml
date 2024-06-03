@@ -20,11 +20,13 @@ class Pipeline(Item):
         nodes: List[Node],
         edges: List[Edge],
         parameters: Optional[List[PipelineParameter]] = None,
+        reuse_executions: bool = False,
     ) -> None:
         self.name = name
         self.nodes = nodes
         self.edges = edges
         self.parameters = parameters or []
+        self.reuse_executions = reuse_executions
 
     @property
     def node_map(self) -> OrderedDict:  # type: ignore[type-arg]

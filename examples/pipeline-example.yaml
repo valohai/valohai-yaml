@@ -44,6 +44,7 @@
       - [batch2.input.training-labels*, train.input.training-labels]
       - [batch2.metadata.optimal_learning_rate, train.parameter.learning_rate]
       - [batch2.output.processed-images*, train.input.training-images]
+    reuse-executions: true
 - pipeline:
     name: My deployment pipeline
     nodes:
