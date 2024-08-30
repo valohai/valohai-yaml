@@ -155,6 +155,15 @@
   
   '''
 # ---
+# name: test_bad_examples_cli[wrong-edge-merge-mode.yaml]
+  '''
+  >>> wrong-edge-merge-mode.yaml
+  error:   Anyof validation on pipeline.nodes.anyOf: {'name': 'bad-pn', 'type': 'execution', 'step': 'buzz', 'edge-merge-mode': 'boo-boo'} is not valid under any of the given schemas (1.pipeline.nodes.0)
+  ------------------------------------------------------------
+  *** 1 errors, 0 warnings
+  
+  '''
+# ---
 # name: test_warning_examples_cli[invalid-numeric-parameter-default.yaml]
   '''
   >>> invalid-numeric-parameter-default.yaml

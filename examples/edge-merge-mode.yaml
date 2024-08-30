@@ -1,0 +1,24 @@
+- step:
+    name: step1
+    command: echo "i will buzz"
+    image: alpine/alpine
+    inputs:
+      - name: dataset
+        default: /step1
+
+- pipeline:
+    name: check-edge-merge-mode
+    nodes:
+      - name: node-with-default-edge-merge
+        type: execution
+        step: step1
+      - name: node-with-edge-merge-replace
+        type: execution
+        step: step1
+        edge-merge-mode: replace
+      - name: node-with-edge-merge-append
+        type: execution
+        step: step1
+        edge-merge-mode: append
+
+    edges: []

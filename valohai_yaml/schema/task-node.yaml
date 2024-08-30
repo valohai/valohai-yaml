@@ -17,6 +17,8 @@ properties:
       "$ref": "./node-action.json"
   override:
     "$ref": "./overridden-properties.json"
+  edge-merge-mode:
+    "$ref": "./node-edge-merge-mode.json"
 required:
   - name
   - step
