@@ -1,0 +1,17 @@
+- step:
+    name: sing a melody
+    image: python:3.12
+    command: echo {parameter:do} {parameter:re} {parameter:mi} {parameter:fa} {parameter:so} {parameter:la} {parameter:ti}
+    parameters:
+      - name: do
+      - name: re
+      - name: mi
+      - name: fa
+      - name: so
+      - name: la
+      - name: ti
+    inputs:
+      - name: drums
+      - name: bass
+      - name: guitar
+      - name: vocals
