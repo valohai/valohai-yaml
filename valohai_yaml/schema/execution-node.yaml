@@ -10,7 +10,7 @@ properties:
     type: string
   on-error:
     type: string
-    enum: ["stop-all", "stop-next", "continue"]
+    enum: ["stop-all", "stop-next", "continue", "retry"]
   actions:
     type: array
     items:
