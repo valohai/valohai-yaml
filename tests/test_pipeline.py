@@ -1,6 +1,7 @@
 from tests.utils import get_warning_example_path
 from valohai_yaml.lint import lint_file
 from valohai_yaml.objs import Config, DeploymentNode, ExecutionNode
+from valohai_yaml.objs.pipelines.node import ErrorAction
 
 
 def test_pipeline_valid(pipeline_config: Config):
@@ -112,3 +113,8 @@ def test_pipeline_allow_reuse(pipeline_config: Config):
     pl2 = pipeline_config.pipelines["My medium pipeline"]
     assert pl.reuse_executions is True
     assert pl2.reuse_executions is False
+
+
+def test_pipeline_execution_retry(pipeline_with_retried_execution_config: Config):
+    assert pipeline_with_retried_execution_config.lint().is_valid()
+    assert pipeline_with_retried_execution_config.pipelines["pipe"].nodes[0].on_error == ErrorAction.RETRY

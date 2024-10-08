@@ -1,0 +1,13 @@
+- step:
+    name: process
+    image: python:3.12
+    command:
+      - python ./preprocess.py
+- pipeline:
+    name: pipe
+    nodes:
+      - name: process
+        step: process
+        type: execution
+        on-error: retry
+    edges: []
