@@ -1,7 +1,7 @@
 import pytest
 
 from valohai_yaml.objs import Config
-from valohai_yaml.objs.input import Input, KeepDirectories
+from valohai_yaml.objs.input import DownloadIntent, Input, KeepDirectories
 
 
 def test_parse_inputs(example2_config):
@@ -140,8 +140,10 @@ def test_input_extras(input_extras_config):
     step = config.steps["example"]
     assert step.inputs["model"].keep_directories == KeepDirectories.NONE
     assert step.inputs["model"].filename == "model.pb"
+    assert step.inputs["model"].download == DownloadIntent.ALWAYS
     assert step.inputs["foos"].keep_directories == KeepDirectories.FULL
     assert step.inputs["bars"].keep_directories == KeepDirectories.SUFFIX
+    assert step.inputs["larges"].download == DownloadIntent.ON_DEMAND
 
 
 @pytest.mark.parametrize(
@@ -179,3 +181,16 @@ def test_widget(example1_config: Config) -> None:
     assert widget and widget.type == "datumalias"
     assert widget and widget.settings and widget.settings["width"] == 123
     assert parameters["decoder-spec"].widget is None
+
+
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        *[(dp, dp) for dp in DownloadIntent],
+        ("always", DownloadIntent.ALWAYS),
+        ("on-demand", DownloadIntent.ON_DEMAND),
+        (None, DownloadIntent.ALWAYS),
+    ],
+)
+def test_download_policy(value, expected):
+    assert Input(name="foo", download=value).download == expected

@@ -25,6 +25,21 @@ class KeepDirectories(Enum):
         return KeepDirectories(str(value).lower())
 
 
+class DownloadIntent(Enum):
+    """Specify input download intention."""
+
+    ALWAYS = "always"
+    ON_DEMAND = "on-demand"
+
+    @classmethod
+    def cast(cls, value: Union[None, str, "DownloadIntent"]) -> "DownloadIntent":
+        if isinstance(value, DownloadIntent):
+            return value
+        if value is None:
+            return DownloadIntent.ALWAYS
+        return DownloadIntent(str(value).lower())
+
+
 class Input(Item):
     """Represents an input definition within a step definition."""
 
@@ -37,6 +52,7 @@ class Input(Item):
         description: Optional[str] = None,
         keep_directories: KeepDirectoriesValue = False,
         filename: Optional[str] = None,
+        download: Optional[str] = None,
     ) -> None:
         self.name = name
         self.default = default  # may be None, a string or a list of strings
@@ -44,6 +60,7 @@ class Input(Item):
         self.description = description
         self.keep_directories = KeepDirectories.cast(keep_directories)
         self.filename = filename
+        self.download = DownloadIntent.cast(download)
 
     def get_data(self) -> SerializedDict:
         data = super().get_data()
@@ -51,4 +68,8 @@ class Input(Item):
             data["keep_directories"] = data["keep_directories"].value
         else:
             data.pop("keep_directories", None)
+        if self.download is not DownloadIntent.ALWAYS:
+            data["download"] = data["download"].value
+        else:
+            data.pop("download", None)
         return data
