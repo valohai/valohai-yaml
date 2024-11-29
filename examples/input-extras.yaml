@@ -14,3 +14,7 @@
         keep-directories: suffix
         default:
           - s3://secret-bucket/bars/**.quux
+      - name: larges
+        download: on-demand
+        default:
+          - s3://foo/bigdata.tar
