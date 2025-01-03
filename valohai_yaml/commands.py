@@ -58,7 +58,8 @@ def build_command(
 
     Even if passed a single `command`, this function will return a list
     of shell commands.  It is the caller's responsibility to concatenate them,
-    likely using the semicolon or double ampersands.
+    likely using the semicolon or double ampersands. The `join_command` function
+    can be used for this purpose.
 
     :param command: The command to interpolate params into.
     :param parameter_map: A ParameterMap object containing parameter knowledge.
@@ -94,3 +95,30 @@ def build_command(
                 )
         out_commands.append(command.strip())
     return out_commands
+
+
+def join_command(commands: List[str], joiner: str) -> str:
+    """
+    Join a list of commands into a single "script" that could be run using e.g. `sh -c`.
+
+    The commands (if not empty or purely whitespace)
+    are joined using the given joiner, but care is taken
+    to ensure that a shebang line, if any present at the start of the
+    first command, is preserved as a line of its own, as expected for
+    a script. (Note that `sh -c` wouldn't interpret it as a shebang line.)
+
+    :param commands: List of command pieces, e.g. from `build_command`.
+    :return: Single script string
+    """
+    shebang_line = None
+    bits = []
+    for i, cmd in enumerate(commands):
+        if i == 0 and cmd.startswith("#!"):
+            shebang_line, _, cmd = cmd.partition("\n")
+        if not cmd.strip():
+            continue
+        bits.append(cmd)
+    joined_bits = joiner.join(bits)
+    if shebang_line:
+        return f"{shebang_line}\n{joined_bits}"
+    return joined_bits

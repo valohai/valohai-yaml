@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from valohai_yaml.commands import build_command
+from valohai_yaml.commands import build_command, join_command
 from valohai_yaml.objs.parameter_map import ParameterMap
 
 
@@ -130,3 +130,20 @@ def test_parameter_categories(example1_config):
         "Output": {"output-alias"},
         "Samples": {"unlabeled-samples", "labeled-samples"},
     }
+
+
+def test_shebang(shebang_example_config):
+    for step in shebang_example_config.steps.values():
+        command = step.build_command(parameter_values={"wibble": 42})
+        command = join_command(command, " && ")
+        assert command.startswith("#!/bin/bash\n")
+        assert "--wibble=42" in command
+
+
+def test_join_command():
+    assert join_command(["foo"], " && ") == "foo"
+    assert join_command(["foo", " ", "bar"], " && ") == "foo && bar"
+    assert join_command(["foo", " ", "bar"], "\n") == "foo\nbar"
+    assert join_command(["#!/bin/sh", "foo", " ", "bar"], " && ") == "#!/bin/sh\nfoo && bar"
+    assert join_command(["#!/bin/sh\nfoo", " ", "bar"], " && ") == "#!/bin/sh\nfoo && bar"
+    assert join_command(["#!/bin/bash\nfoo", "#!woop"], " && ") == "#!/bin/bash\nfoo && #!woop"
