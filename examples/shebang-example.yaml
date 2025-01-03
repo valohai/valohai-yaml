@@ -1,0 +1,22 @@
+# An example of steps that use bashisms, and declare that by way of a shebang line.
+# It would be better to put such a command in a script and call the script from the command field.
+- step:
+    name: Do a thing
+    image: python:3.12
+    command: |
+      #!/bin/bash
+      echo "The wibble is {parameter:wibble} today."
+      if [[ -z "$1" ]]; then echo "No arguments provided"; fi
+    parameters:
+      - name: wibble
+        type: integer
+- step:
+    name: Do the same thing in another way
+    image: python:3.12
+    command:
+      - "#!/bin/bash"
+      - echo "The wibble is {parameter:wibble} today."
+      - if [[ -z "$1" ]]; then echo "No arguments provided"; fi
+    parameters:
+      - name: wibble
+        type: integer
