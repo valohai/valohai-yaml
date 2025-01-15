@@ -44,6 +44,8 @@ class Pipeline(Item):
         data = super().get_data()
         if not data.get("parameters"):
             del data["parameters"]
+        if not data.get("reuse_executions"):  # elide default "False"
+            del data["reuse_executions"]
         return data
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:

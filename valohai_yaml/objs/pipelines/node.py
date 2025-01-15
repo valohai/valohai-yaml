@@ -3,6 +3,7 @@ from typing import List, Optional, Union
 
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.pipelines.edge_merge_mode import DEFAULT_EDGE_MERGE_MODE
 from valohai_yaml.objs.pipelines.node_action import NodeAction
 from valohai_yaml.objs.utils import check_type_and_listify, consume_array_of
 from valohai_yaml.types import LintContext, SerializedDict
@@ -82,6 +83,8 @@ class Node(Item):
     def get_data(self) -> SerializedDict:
         data = super().get_data()
         data["on_error"] = data["on_error"].value
+        if data.get("edge_merge_mode") == DEFAULT_EDGE_MERGE_MODE:  # Elide default
+            del data["edge_merge_mode"]
         return data
 
     def __repr__(self) -> str:  # noqa: D105
