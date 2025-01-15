@@ -15,5 +15,8 @@ class EdgeMergeMode(Enum):
         if isinstance(value, EdgeMergeMode):
             return value
         if not value:
-            return EdgeMergeMode.REPLACE
+            return DEFAULT_EDGE_MERGE_MODE
         return EdgeMergeMode(str(value).lower())
+
+
+DEFAULT_EDGE_MERGE_MODE = EdgeMergeMode.REPLACE

@@ -7,15 +7,13 @@ def test_edge_override_mode(edge_merge_mode_config):
     pipeline = config.pipelines["check-edge-merge-mode"]
     assert len(pipeline.nodes) == 3
     converted_pipeline = PipelineConverter(config=config, commit_identifier="latest").convert_pipeline(pipeline)
-    node0 = converted_pipeline["nodes"][0]
-    node1 = converted_pipeline["nodes"][1]
-    node2 = converted_pipeline["nodes"][2]
+    nodes = converted_pipeline["nodes"]
 
-    # override-mode not defined
-    assert node0["edge-merge-mode"] == EdgeMergeMode.REPLACE.value
+    # override-mode not defined, so it's elided
+    assert "edge-merge-mode" not in nodes[0]
 
-    # override-mode = replace
-    assert node1["edge-merge-mode"] == EdgeMergeMode.REPLACE.value
+    # override-mode = replace, but that's the default so not included
+    assert "edge-merge-mode" not in nodes[1]
 
     # override-mode = append
-    assert node2["edge-merge-mode"] == EdgeMergeMode.APPEND.value
+    assert nodes[2]["edge-merge-mode"] == EdgeMergeMode.APPEND.value
