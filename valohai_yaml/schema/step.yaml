@@ -54,6 +54,11 @@ properties:
     items:
       "$ref": "./environment-variable-item.json"
     description: Environment variables and their default values for the step.
+  environment-variable-groups:
+    type: array
+    items:
+      type: string
+    description: Groups of environment variables to include in the step execution.
   environment:
     type: string
     description: Default execution environment (ID or substring of environment name)
