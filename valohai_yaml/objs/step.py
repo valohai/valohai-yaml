@@ -87,7 +87,7 @@ class Step(Item):
         kwargs["stop_condition"] = kwargs.pop("stop-condition", None)
         kwargs["upload_store"] = kwargs.pop("upload-store", None)
         kwargs["resources"] = WorkloadResources.parse(kwargs.pop("resources", {}))
-        kwargs["environment_variable_groups"] = kwargs.pop("environment-variable-groups", None)
+        kwargs["environment_variable_groups"] = kwargs.pop("environment-variable-groups", ())
         inst = cls(**kwargs)
         inst._original_data = data
         return inst
