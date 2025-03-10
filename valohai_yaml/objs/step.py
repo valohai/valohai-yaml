@@ -38,7 +38,7 @@ class Step(Item):
         outputs: Iterable[Any] = (),
         mounts: Iterable[Mount] = (),
         environment_variables: Iterable[EnvironmentVariable] = (),
-        environment_variable_groups: List[str] = [],
+        environment_variable_groups: Iterable[str] = (),
         environment: Optional[str] = None,
         description: Optional[str] = None,
         upload_store: Optional[str] = None,
