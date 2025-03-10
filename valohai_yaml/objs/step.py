@@ -69,7 +69,7 @@ class Step(Item):
             EnvironmentVariable,
             "name",
         )
-        self.environment_variable_groups = environment_variable_groups
+        self.environment_variable_groups = [str(evg) for evg in environment_variable_groups if evg]
 
         self.time_limit = time_limit
         self.no_output_timeout = no_output_timeout
