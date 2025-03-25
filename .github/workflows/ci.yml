@@ -32,7 +32,7 @@ jobs:
             requirements*txt
       - run: "pip install -e . -r requirements-test.txt"
       - run: py.test -vvv --cov .
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
 
   Lint:
     runs-on: ubuntu-22.04
@@ -45,7 +45,7 @@ jobs:
           cache-dependency-path: |
             pyproject.toml
             requirements*txt
-      - uses: pre-commit/action@v3.0.0
+      - uses: pre-commit/action@v3.0.1
 
   Build:
     runs-on: ubuntu-22.04
