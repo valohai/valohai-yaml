@@ -14,9 +14,7 @@ step_with_resources = config_fixture("step-with-resources.yaml")
 step_with_partial_resources = config_fixture("step-with-partial-resources.yaml")
 pipeline_overridden_config = config_fixture("pipeline-with-override-example.yaml")
 pipeline_with_tasks_config = config_fixture("pipeline-with-tasks-example.yaml")
-pipeline_with_parameters_config = config_fixture(
-    "pipeline-with-parameters-example.yaml",
-)
+pipeline_with_parameters_config = config_fixture("pipeline-with-parameters-example.yaml")
 multiple_param_config = config_fixture("multiple-param.yaml")
 input_extras_config = config_fixture("input-extras.yaml")
 timeouts_config = config_fixture("timeouts-example.yaml")

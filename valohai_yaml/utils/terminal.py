@@ -36,24 +36,24 @@ def style(  # noqa: C901
     bits = []
     if fg:
         try:
-            bits.append("\033[%dm" % (_ansi_colors.index(fg) + 30))
+            bits.append(f"\033[{_ansi_colors.index(fg) + 30:d}m")
         except ValueError as err:
             raise TypeError(f"Unknown color {fg!r}") from err
     if bg:
         try:
-            bits.append("\033[%dm" % (_ansi_colors.index(bg) + 40))
+            bits.append(f"\033[{_ansi_colors.index(bg) + 40:d}m")
         except ValueError as err:
             raise TypeError(f"Unknown color {bg!r}") from err
     if bold is not None:
-        bits.append("\033[%dm" % (1 if bold else 22))
+        bits.append(f"\033[{1 if bold else 22:d}m")
     if dim is not None:
-        bits.append("\033[%dm" % (2 if dim else 22))
+        bits.append(f"\033[{2 if dim else 22:d}m")
     if underline is not None:
-        bits.append("\033[%dm" % (4 if underline else 24))
+        bits.append(f"\033[{4 if underline else 24:d}m")
     if blink is not None:
-        bits.append("\033[%dm" % (5 if blink else 25))
+        bits.append(f"\033[{5 if blink else 25:d}m")
     if reverse is not None:
-        bits.append("\033[%dm" % (7 if reverse else 27))
+        bits.append(f"\033[{7 if reverse else 27:d}m")
     bits.append(text)
     if reset:
         bits.append(_ansi_reset_all)
