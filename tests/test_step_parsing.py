@@ -1,6 +1,6 @@
 import pytest
 
-from valohai_yaml.objs import Config
+from valohai_yaml.objs import Config, Step
 from valohai_yaml.objs.input import DownloadIntent, Input, KeepDirectories
 
 
@@ -194,3 +194,18 @@ def test_widget(example1_config: Config) -> None:
 )
 def test_download_policy(value, expected):
     assert Input(name="foo", download=value).download == expected
+
+
+def test_environment_variable_group(environment_variable_group_example_config: Config) -> None:
+    step = environment_variable_group_example_config.steps["Print the environment"]
+    assert step.environment_variable_groups == ["aaa"]
+    step2 = Step(
+        name="yes",
+        image="hello",
+        command="",
+        environment_variable_groups=["356845b3-f298-4386-b6ae-1f45ab72f637"],
+    )
+    assert step.merge_with(step2).environment_variable_groups == [
+        "aaa",
+        "356845b3-f298-4386-b6ae-1f45ab72f637",
+    ]

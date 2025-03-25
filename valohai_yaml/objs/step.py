@@ -38,6 +38,7 @@ class Step(Item):
         outputs: Iterable[Any] = (),
         mounts: Iterable[Mount] = (),
         environment_variables: Iterable[EnvironmentVariable] = (),
+        environment_variable_groups: Iterable[str] = (),
         environment: Optional[str] = None,
         description: Optional[str] = None,
         upload_store: Optional[str] = None,
@@ -68,6 +69,7 @@ class Step(Item):
             EnvironmentVariable,
             "name",
         )
+        self.environment_variable_groups = [str(evg) for evg in environment_variable_groups if evg]
 
         self.time_limit = time_limit
         self.no_output_timeout = no_output_timeout
@@ -85,6 +87,7 @@ class Step(Item):
         kwargs["stop_condition"] = kwargs.pop("stop-condition", None)
         kwargs["upload_store"] = kwargs.pop("upload-store", None)
         kwargs["resources"] = WorkloadResources.parse(kwargs.pop("resources", {}))
+        kwargs["environment_variable_groups"] = kwargs.pop("environment-variable-groups", ())
         inst = cls(**kwargs)
         inst._original_data = data
         return inst
@@ -108,6 +111,7 @@ class Step(Item):
             ("outputs", self.outputs),
             ("environment", self.environment),
             ("environment-variables", self.environment_variables),
+            ("environment-variable-groups", self.environment_variable_groups),
             ("description", self.description),
             (
                 "time-limit",
@@ -214,6 +218,7 @@ class Step(Item):
             merger=merge_simple,
             copier=copy.deepcopy,
         )
+        result.environment_variable_groups = a.environment_variable_groups + b.environment_variable_groups
         return result
 
 

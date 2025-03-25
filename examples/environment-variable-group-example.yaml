@@ -1,0 +1,6 @@
+- step:
+    name: Print the environment # (save paper)
+    image: python:3.12
+    environment-variable-groups:
+      - aaa
+    command: printenv
