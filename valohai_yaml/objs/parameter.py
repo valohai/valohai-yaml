@@ -238,7 +238,7 @@ class Parameter(Item):
         has_pass_as = bool(original_data.get("pass-as"))
         has_pass_true_as = bool(original_data.get("pass-true-as"))
         has_pass_false_as = bool(original_data.get("pass-false-as"))
-        prefix = f'Step {context["step"].name}, parameter {self.name}'
+        prefix = f"Step {context['step'].name}, parameter {self.name}"
         if self.type == "flag":
             if original_data.get("optional"):
                 lint_result.add_warning(

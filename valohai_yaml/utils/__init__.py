@@ -17,18 +17,15 @@ T = TypeVar("T")
 
 
 @overload
-def listify(value: None) -> List[Any]:
-    ...
+def listify(value: None) -> List[Any]: ...
 
 
 @overload
-def listify(value: Union[List[T], Tuple[T]]) -> List[T]:
-    ...
+def listify(value: Union[List[T], Tuple[T]]) -> List[T]: ...
 
 
 @overload
-def listify(value: T) -> List[T]:
-    ...
+def listify(value: T) -> List[T]: ...
 
 
 def listify(value: Optional[Union[List[T], Tuple[T], T]]) -> List[T]:

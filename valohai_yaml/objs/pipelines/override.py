@@ -114,7 +114,7 @@ class Override(Item):
             for key in original_data:
                 if key not in OVERRIDABLE_FIELDS:
                     lint_result.add_warning(
-                        f"Unknown field {key!r} in override; " "should it be nested under `parameters` or `inputs`?",
+                        f"Unknown field {key!r} in override; should it be nested under `parameters` or `inputs`?",
                     )
 
     def serialize(self) -> OrderedDict:  # type: ignore[type-arg]

@@ -68,8 +68,6 @@ select = [
     "W", # pycodestyle
 ]
 ignore = [
-    "ANN101", # Missing type annotation for `self` in method
-    "ANN102", # Missing type annotation for `cls` in classmethod
     "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
     "D100", # Missing docstring in public module
     "D102", # Missing docstring in public method
