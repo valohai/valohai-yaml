@@ -173,11 +173,8 @@ class Config(Item):
         return result
 
     def __repr__(self) -> str:  # pragma: no cover  # noqa: D105
-        return "<Config with %d steps (%r), %d endpoints (%r), and %d pipelines (%r)>" % (
-            len(self.steps),
-            self.steps,
-            len(self.endpoints),
-            sorted(self.endpoints),
-            len(self.pipelines),
-            sorted(self.pipelines),
+        return (
+            f"<Config with {len(self.steps)} steps ({self.steps!r}), "
+            f"{len(self.endpoints)} endpoints ({sorted(self.endpoints)!r}), "
+            f"and {len(self.pipelines)} pipelines ({sorted(self.pipelines)!r})>"
         )
