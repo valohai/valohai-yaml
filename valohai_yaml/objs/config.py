@@ -37,18 +37,18 @@ class Config(Item):
         self.pipelines = check_type_and_dictify(pipelines, Pipeline, "name")
 
     @classmethod
-    def parse(cls, data: Any) -> "Config":
+    def parse(cls, data: Iterable) -> "Config":
         """
-        Parse a Config structure out of a Python dict (that's likely deserialized from YAML).
+        Parse a Config structure out of a list of Python dicts (that's likely deserialized from YAML).
 
-        :param data: Config-y dict
+        :param data: Config-y iterable container of dicts
         :return: Config object
         """
         parsers = cls.get_top_level_parsers()
         parse_warnings = []
         for datum in data:
             if not isinstance(datum, dict):
-                raise InvalidType(f"Top-level YAML {datum} is not a dictionary")
+                raise InvalidType(f"Top-level YAML item {datum} is not a dictionary")
             for type, (items, parse) in parsers.items():
                 if type in datum:
                     items.append(parse(datum[type]))
