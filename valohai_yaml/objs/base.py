@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Any, Callable, Optional, Type, TypeVar
+from typing import Any, Callable, Iterable, Optional, Type, TypeVar
 
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.utils import serialize_into
@@ -16,7 +16,7 @@ class Item:
     Provides basic parsing and serialization.
     """
 
-    _original_data = None  # Possible original data dict this object was parsed from
+    _original_data: Optional[Iterable] = None  # Possible original data dict or list this object was parsed from
 
     def get_data(self) -> SerializedDict:
         """Get the object's data for serialization."""

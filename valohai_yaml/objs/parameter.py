@@ -234,7 +234,7 @@ class Parameter(Item):
         lint_result: LintResult,
         context: LintContext,
     ) -> None:
-        original_data = self._original_data or {}
+        original_data = self._original_data if isinstance(self._original_data, dict) else {}
         has_pass_as = bool(original_data.get("pass-as"))
         has_pass_true_as = bool(original_data.get("pass-true-as"))
         has_pass_false_as = bool(original_data.get("pass-false-as"))
