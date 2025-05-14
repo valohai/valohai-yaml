@@ -1,167 +1,152 @@
 # serializer version: 1
 # name: test_bad_examples_cli[endpoint-names-invalid.yaml]
   '''
-  >>> endpoint-names-invalid.yaml
-  error:   Pattern validation on endpoint.name.pattern: 'Server-endpoint' does not match '^[a-z][a-z0-9-]+$' (0.endpoint.name)
-  ------------------------------------------------------------
-  error:   Pattern validation on endpoint.name.pattern: '3-server-endpoint' does not match '^[a-z][a-z0-9-]+$' (1.endpoint.name)
-  ------------------------------------------------------------
-  error:   Pattern validation on endpoint.name.pattern: 'server@endpoint' does not match '^[a-z][a-z0-9-]+$' (2.endpoint.name)
-  ------------------------------------------------------------
-  error:   Pattern validation on endpoint.name.pattern: 'wsgi_endpoint' does not match '^[a-z][a-z0-9-]+$' (3.endpoint.name)
-  ------------------------------------------------------------
   *** 4 errors, 0 warnings
-  
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  >>> endpoint-names-invalid.yaml
+  error:   Pattern validation on endpoint.name.pattern: '3-server-endpoint' does not match '^[a-z][a-z0-9-]+$' (1.endpoint.name)
+  error:   Pattern validation on endpoint.name.pattern: 'Server-endpoint' does not match '^[a-z][a-z0-9-]+$' (0.endpoint.name)
+  error:   Pattern validation on endpoint.name.pattern: 'server@endpoint' does not match '^[a-z][a-z0-9-]+$' (2.endpoint.name)
+  error:   Pattern validation on endpoint.name.pattern: 'wsgi_endpoint' does not match '^[a-z][a-z0-9-]+$' (3.endpoint.name)
   '''
 # ---
 # name: test_bad_examples_cli[input-name-too-long.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> input-name-too-long.yaml
   error:   Maxlength validation on step.inputs.name.maxLength: 'this-input-name-is-way-too-long-and-will-cause-the-validation-to-fail' is too long (0.step.inputs.0.name)
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[invalid-YAML-indentation.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> invalid-YAML-indentation.yaml
   error: Indentation Error at line 3, column 10
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[invalid-edge-parts.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> invalid-edge-parts.yaml
   error: Target specifier 'batch2.input' must have 3 parts (it has 2)
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[invalid-indentation-with-valid-YAML.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
+  ------------------------------------------------------------
   >>> invalid-indentation-with-valid-YAML.yaml
   error:   Type validation on step.type: None is not of type 'object' (0.step)
-  ------------------------------------------------------------
   hint: File contains valid YAML but there might be an indentation error in following configuration: 0.step
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[invalid-on-error-value.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> invalid-on-error-value.yaml
   error:   Anyof validation on pipeline.nodes.anyOf: {'name': 'train-with-errors', 'step': 'train', 'type': 'task', 'on-error': 'report-to-sentry'} is not valid under any of the given schemas (2.pipeline.nodes.1)
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[invalid-pipeline-with-override-example.yaml]
   '''
+  *** 3 errors, 0 warnings
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
   >>> invalid-pipeline-with-override-example.yaml
   error: Pipeline My overriden input pipeline node merged step base step: input training-labels-error does not exist in step
-  ------------------------------------------------------------
   error: Pipeline My overriden input pipeline node merged step base step: parameter d does not exist in step
-  ------------------------------------------------------------
   error: Pipeline My overriden input pipeline node overridden step secon step does not exist
-  ------------------------------------------------------------
-  *** 3 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[invalid-shorthand-edge.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> invalid-shorthand-edge.yaml
   error: Malformed edge shorthand ['batch1.input.training-labels*']
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[invalid-upload-store-value.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> invalid-upload-store-value.yaml
   error:   Maxlength validation on step.upload-store.maxLength: 'This is a test string exactly with  65 characters long in length.' is too long (0.step.upload-store)
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[step-invalid-resources.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> step-invalid-resources.yaml
   error:   Type validation on step.resources.cpu.min.type: 'Not a number' is not of type 'number' (0.step.resources.cpu.min)
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[step-missing-required-properties.yaml]
   '''
-  >>> step-missing-required-properties.yaml
-  error:   Type validation on step.image.type: True is not of type 'string' (0.step.image)
-  ------------------------------------------------------------
-  error:   Oneof validation on step.command.oneOf: 8 is not valid under any of the given schemas (1.step.command)
-  ------------------------------------------------------------
-  error:   Required validation on step.required: 'command' is a required property (0.step)
-  ------------------------------------------------------------
-  error:   Required validation on step.required: 'name' is a required property (0.step)
-  ------------------------------------------------------------
   *** 4 errors, 0 warnings
-  
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  >>> step-missing-required-properties.yaml
+  error:   Oneof validation on step.command.oneOf: 8 is not valid under any of the given schemas (1.step.command)
+  error:   Required validation on step.required: 'command' is a required property (0.step)
+  error:   Required validation on step.required: 'name' is a required property (0.step)
+  error:   Type validation on step.image.type: True is not of type 'string' (0.step.image)
   '''
 # ---
 # name: test_bad_examples_cli[step-stop-condition.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> step-stop-condition.yaml
   error: Step no-stop, `stop-condition` is not a valid expression: invalid syntax (<expression>, line 1)
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[step-with-error-tasks.yaml]
   '''
-  >>> step-with-error-tasks.yaml
-  error:   Type validation on task.parameters.rules.type: None is not of type 'object' (1.task.parameters.0.rules)
-  ------------------------------------------------------------
-  error:   Type validation on task.parameters.name.type: None is not of type 'string' (2.task.parameters.0.name)
-  ------------------------------------------------------------
-  error:   Required validation on task.parameters.required: 'style' is a required property (2.task.parameters.0)
-  ------------------------------------------------------------
-  error:   Required validation on task.parameters.required: 'name' is a required property (5.task.parameters.0)
-  ------------------------------------------------------------
-  error:   Required validation on task.parameters.required: 'style' is a required property (5.task.parameters.0)
-  ------------------------------------------------------------
-  error:   Required validation on task.required: 'name' is a required property (1.task)
-  ------------------------------------------------------------
-  error:   Required validation on task.required: 'step' is a required property (4.task)
-  ------------------------------------------------------------
   *** 7 errors, 0 warnings
-  
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  >>> step-with-error-tasks.yaml
+  error:   Required validation on task.parameters.required: 'name' is a required property (5.task.parameters.0)
+  error:   Required validation on task.parameters.required: 'style' is a required property (2.task.parameters.0)
+  error:   Required validation on task.parameters.required: 'style' is a required property (5.task.parameters.0)
+  error:   Required validation on task.required: 'name' is a required property (1.task)
+  error:   Required validation on task.required: 'step' is a required property (4.task)
+  error:   Type validation on task.parameters.name.type: None is not of type 'string' (2.task.parameters.0.name)
+  error:   Type validation on task.parameters.rules.type: None is not of type 'object' (1.task.parameters.0.rules)
   '''
 # ---
 # name: test_bad_examples_cli[task-stop-condition.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> task-stop-condition.yaml
   error: Task no-stop, `stop-condition` is not a valid expression: EOL while scanning string literal (<expression>, line 1)
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_bad_examples_cli[wrong-edge-merge-mode.yaml]
   '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
   >>> wrong-edge-merge-mode.yaml
   error:   Anyof validation on pipeline.nodes.anyOf: {'name': 'bad-pn', 'type': 'execution', 'step': 'buzz', 'edge-merge-mode': 'boo-boo'} is not valid under any of the given schemas (1.pipeline.nodes.0)
-  ------------------------------------------------------------
-  *** 1 errors, 0 warnings
-  
   '''
 # ---
 # name: test_warning_examples_cli[invalid-numeric-parameter-default.yaml]

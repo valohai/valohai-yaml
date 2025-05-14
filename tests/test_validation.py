@@ -17,7 +17,7 @@ from valohai_yaml import ValidationErrors, validate
 from valohai_yaml.__main__ import main
 
 
-def assert_validation_output(capsys, snapshot, yaml_path: str) -> bool:
+def assert_validation_output(capsys, snapshot, yaml_path: str, sort_output: bool = False) -> bool:
     out, err = capsys.readouterr()
     # Replace the path with just the filename,
     # so this is agnostic to where the tests are run from.
@@ -28,6 +28,9 @@ def assert_validation_output(capsys, snapshot, yaml_path: str) -> bool:
         "EOL while scanning string literal",
         out,
     )
+    # Optionally sort the lines to make the output deterministic.
+    if sort_output:
+        out = "\n".join(sorted(out.splitlines()))
     assert out == snapshot
     return True
 
@@ -50,7 +53,7 @@ def test_good_examples_cli(good_example_path):
 def test_bad_examples_cli(capsys, yaml_path, snapshot):
     """Test that bad examples don't validate via the CLI."""
     assert main([yaml_path]) == 1
-    assert assert_validation_output(capsys, snapshot, yaml_path)
+    assert assert_validation_output(capsys, snapshot, yaml_path, sort_output=True)
 
 
 @pytest.mark.parametrize(
