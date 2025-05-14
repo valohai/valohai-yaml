@@ -155,7 +155,7 @@
   warning: Step test, parameter case-insensitive: `optional` has no effect on flag-type parameters
   ------------------------------------------------------------
   *** 0 errors, 1 warnings
-  
+
   '''
 # ---
 # name: test_warning_examples_cli[invalid-numeric-parameter-default.yaml]
