@@ -46,12 +46,16 @@ class Config(Item):
         """
         parsers = cls.get_top_level_parsers()
         parse_warnings = []
+        warn_about_duplicate_name = _get_duplicate_name_checker()
+
         for datum in data:
             if not isinstance(datum, dict):
                 raise InvalidType(f"Top-level YAML item {datum} is not a dictionary")
             for type, (items, parse) in parsers.items():
                 if type in datum:
-                    items.append(parse(datum[type]))
+                    items.append(parsed_item := parse(datum[type]))
+                    if duplicate_warning := warn_about_duplicate_name(type, parsed_item):
+                        parse_warnings.append(duplicate_warning)
                     break
             else:
                 parse_warnings.append(f"No parser for {datum}")
@@ -178,3 +182,27 @@ class Config(Item):
             f"{len(self.endpoints)} endpoints ({sorted(self.endpoints)!r}), "
             f"and {len(self.pipelines)} pipelines ({sorted(self.pipelines)!r})>"
         )
+
+
+def _get_duplicate_name_checker() -> Callable:
+    used_item_names = set()
+
+    def checker(item_type: str, item: Any) -> Optional[str]:
+        """
+        Warn if the name is already used in the config.
+
+        Checks within the item type, i.e.,
+        Warns about two steps with the same name, but not about a step and a task with the same name.
+        Returns a warning string if the name is already used, otherwise None.
+        """
+        try:
+            if (item_type, item.name) in used_item_names:
+                return f"Duplicate {item_type} name: {item.name}. Only the latter one will be used."
+            used_item_names.add((item_type, item.name))
+        except AttributeError:
+            # all current items have a name, but that is not guaranteed for the future
+            # so make sure things don't break if we get a top-level item without a name
+            pass
+        return None
+
+    return checker
