@@ -2,7 +2,7 @@ import copy
 from itertools import chain
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
-from valohai_yaml.excs import InvalidType
+from valohai_yaml.excs import InvalidType, ValidationError
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.endpoint import Endpoint
@@ -46,7 +46,7 @@ class Config(Item):
         """
         parsers = cls.get_top_level_parsers()
         parse_warnings = []
-        warn_about_duplicate_name = _get_duplicate_name_checker()
+        require_unique_name = _get_unique_name_checker()
 
         for datum in data:
             if not isinstance(datum, dict):
@@ -54,8 +54,7 @@ class Config(Item):
             for type, (items, parse) in parsers.items():
                 if type in datum:
                     items.append(parsed_item := parse(datum[type]))
-                    if duplicate_warning := warn_about_duplicate_name(type, parsed_item):
-                        parse_warnings.append(duplicate_warning)
+                    require_unique_name(type, parsed_item)
                     break
             else:
                 parse_warnings.append(f"No parser for {datum}")
@@ -184,25 +183,24 @@ class Config(Item):
         )
 
 
-def _get_duplicate_name_checker() -> Callable:
+def _get_unique_name_checker() -> Callable:
     used_item_names = set()
 
-    def checker(item_type: str, item: Any) -> Optional[str]:
+    def checker(item_type: str, item: Any) -> None:
         """
-        Warn if the name is already used in the config.
+        Check that the name is not already used in the config.
 
         Checks within the item type, i.e.,
-        Warns about two steps with the same name, but not about a step and a task with the same name.
-        Returns a warning string if the name is already used, otherwise None.
+        two steps with the same name is an error, but not a step and a task with the same name.
+        Raises a validation error if the name is already used.
         """
         try:
             if (item_type, item.name) in used_item_names:
-                return f"Duplicate {item_type} name: {item.name}. Only the latter one will be used."
+                raise ValidationError(f"Duplicate {item_type} name: {item.name}.")
             used_item_names.add((item_type, item.name))
         except AttributeError:
             # all current items have a name, but that is not guaranteed for the future
             # so make sure things don't break if we get a top-level item without a name
             pass
-        return None
 
     return checker

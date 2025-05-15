@@ -1,4 +1,12 @@
 # serializer version: 1
+# name: test_bad_examples_cli[duplicate_step_names.yaml]
+  '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
+  >>> duplicate_step_names.yaml
+  error: Duplicate step name: my step.
+  '''
+# ---
 # name: test_bad_examples_cli[endpoint-names-invalid.yaml]
   '''
   *** 4 errors, 0 warnings
@@ -147,17 +155,6 @@
   ------------------------------------------------------------
   >>> wrong-edge-merge-mode.yaml
   error:   Anyof validation on pipeline.nodes.anyOf: {'name': 'bad-pn', 'type': 'execution', 'step': 'buzz', 'edge-merge-mode': 'boo-boo'} is not valid under any of the given schemas (1.pipeline.nodes.0)
-  '''
-# ---
-# name: test_warning_examples_cli[duplicate_step_names.yaml]
-  '''
-  >>> duplicate_step_names.yaml
-  warning: Duplicate step name: my step. Only the latter one will be used.
-  ------------------------------------------------------------
-  warning: Duplicate task name: my task. Only the latter one will be used.
-  ------------------------------------------------------------
-  *** 0 errors, 2 warnings
-  
   '''
 # ---
 # name: test_warning_examples_cli[invalid-numeric-parameter-default.yaml]
