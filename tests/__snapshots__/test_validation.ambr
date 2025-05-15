@@ -1,4 +1,12 @@
 # serializer version: 1
+# name: test_bad_examples_cli[duplicate_step_names.yaml]
+  '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
+  >>> duplicate_step_names.yaml
+  error: Duplicate step name: my step.
+  '''
+# ---
 # name: test_bad_examples_cli[endpoint-names-invalid.yaml]
   '''
   *** 4 errors, 0 warnings
