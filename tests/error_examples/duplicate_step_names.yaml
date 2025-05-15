@@ -1,0 +1,8 @@
+- step:
+    name: my step
+    image: alpine
+    command: echo "Hello, World! I am not the unique snowflake I thought I was!"
+- step:
+    name: my step
+    image: alpine
+    command: echo "I have the same step name! This won't do!"
