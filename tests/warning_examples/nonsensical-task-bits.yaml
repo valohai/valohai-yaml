@@ -16,5 +16,6 @@
         style: single
         rules:
           value: 25
+    # bad: bayesian task configuration on a grid search task
     optimization-target-metric: goodness
     optimization-target-value: 7.2

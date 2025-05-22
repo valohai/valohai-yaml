@@ -3,6 +3,7 @@
     image: tensorflow/tensorflow
     command: python -u /tmp/code/my_mnist.py
     parameters:
+      # bad: integer parameter with a list-like default
       - default:
           - zoom
         min: 0
