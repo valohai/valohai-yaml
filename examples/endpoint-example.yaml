@@ -35,3 +35,13 @@
     resources:
       devices:
         nvidia.com/gpu: 1
+
+- endpoint:
+    name: tolerant-endpoint
+    image: python:3.6
+    server-command: python run_server.py
+    tolerations:
+      - key: key1
+        operator: Equal
+        value: value1
+        effect: NoSchedule
