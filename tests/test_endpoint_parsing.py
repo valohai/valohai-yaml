@@ -29,3 +29,13 @@ def test_accelerated_endpoint_parse(endpoint_config):
     endpoint = endpoint_config.endpoints["accelerated-endpoint"]
     assert endpoint.node_selector == "accelerator=tesla-v100"
     assert endpoint.resources["devices"]["nvidia.com/gpu"] == 1
+
+
+def test_tolerant_endpoint_parse(endpoint_config):
+    endpoint = endpoint_config.endpoints["tolerant-endpoint"]
+    assert len(endpoint.tolerations) == 1
+    toleration = endpoint.tolerations[0]
+    assert toleration["key"] == "key1"
+    assert toleration["operator"] == "Equal"
+    assert toleration["value"] == "value1"
+    assert toleration["effect"] == "NoSchedule"

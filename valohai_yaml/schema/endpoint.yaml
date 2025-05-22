@@ -54,6 +54,11 @@ properties:
         "$ref": "./workflow-resource-memory.json"
       devices:
         "$ref": "./workflow-resource-devices.json"
+  tolerations:
+    type: array
+    description: List of Kubernetes tolerations specifying which node taints the endpoint should tolerate.
+    items:
+      "$ref": "./toleration.json"
 oneOf:
   - required:
       - server-command

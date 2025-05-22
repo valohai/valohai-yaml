@@ -1,9 +1,9 @@
-from typing import Iterable, Optional, Union
+from typing import Iterable, List, Optional, Union
 
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.file import File
 from valohai_yaml.objs.utils import check_type_and_listify
-from valohai_yaml.types import EndpointResourcesDict, SerializedDict
+from valohai_yaml.types import EndpointResourcesDict, EndpointTolerationDict, SerializedDict
 
 
 class Endpoint(Item):
@@ -21,6 +21,7 @@ class Endpoint(Item):
         wsgi: Optional[str] = None,
         node_selector: Optional[str] = None,
         resources: Optional[EndpointResourcesDict] = None,
+        tolerations: Optional[List[EndpointTolerationDict]] = None,
     ) -> None:
         self.name = name
         self.description = description
@@ -31,6 +32,7 @@ class Endpoint(Item):
         self.files = check_type_and_listify(files, File)
         self.node_selector = node_selector
         self.resources = resources
+        self.tolerations = tolerations
 
     @classmethod
     def parse(cls, data: SerializedDict) -> "Endpoint":
