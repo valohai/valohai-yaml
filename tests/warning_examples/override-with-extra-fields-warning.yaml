@@ -14,6 +14,6 @@
         type: execution
         step: base step
         override:
-          # this should be in override.inputs:
+          # bad: this should be deeper under override.inputs:
           training-images: s3://hello/hello.jpg
     edges: []

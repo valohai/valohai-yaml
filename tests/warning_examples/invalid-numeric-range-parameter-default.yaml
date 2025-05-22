@@ -3,6 +3,7 @@
     image: tensorflow/tensorflow
     command: python -u /tmp/code/my_mnist.py
     parameters:
+      # bad: the default value is out of the range
       - default:
           - 1337
         min: 0

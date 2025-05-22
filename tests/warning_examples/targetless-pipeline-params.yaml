@@ -13,6 +13,7 @@
     parameters:
       - name: id
         default: 123
+        # bad: here the pipeline parameter should target node parameters ("targets: - train.parameter.id")
     nodes:
       - name: train
         step: train_step

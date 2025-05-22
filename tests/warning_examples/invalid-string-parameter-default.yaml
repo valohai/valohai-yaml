@@ -3,6 +3,7 @@
     image: tensorflow/tensorflow
     command: python -u /tmp/code/my_mnist.py
     parameters:
+      # bad: the date string gets converted to a date time object and is no string anymore, wrap with quotes
       - default: 2020-09-02T00:00:00.000000Z
         description: Start date
         name: ctime

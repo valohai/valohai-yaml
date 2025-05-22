@@ -149,6 +149,15 @@
   error:   Anyof validation on pipeline.nodes.anyOf: {'name': 'bad-pn', 'type': 'execution', 'step': 'buzz', 'edge-merge-mode': 'boo-boo'} is not valid under any of the given schemas (1.pipeline.nodes.0)
   '''
 # ---
+# name: test_warning_examples_cli[ineffective-optional-on-flag.yaml]
+  '''
+  >>> ineffective-optional-on-flag.yaml
+  warning: Step test, parameter case-insensitive: `optional` has no effect on flag-type parameters
+  ------------------------------------------------------------
+  *** 0 errors, 1 warnings
+  
+  '''
+# ---
 # name: test_warning_examples_cli[invalid-numeric-parameter-default.yaml]
   '''
   >>> invalid-numeric-parameter-default.yaml
