@@ -2,7 +2,7 @@ import copy
 from itertools import chain
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
-from valohai_yaml.excs import InvalidType
+from valohai_yaml.excs import InvalidType, ValidationError
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.endpoint import Endpoint
@@ -46,12 +46,15 @@ class Config(Item):
         """
         parsers = cls.get_top_level_parsers()
         parse_warnings = []
+        require_unique_name = _get_unique_name_checker()
+
         for datum in data:
             if not isinstance(datum, dict):
                 raise InvalidType(f"Top-level YAML item {datum} is not a dictionary")
             for type, (items, parse) in parsers.items():
                 if type in datum:
-                    items.append(parse(datum[type]))
+                    items.append(parsed_item := parse(datum[type]))
+                    require_unique_name(type, parsed_item)
                     break
             else:
                 parse_warnings.append(f"No parser for {datum}")
@@ -178,3 +181,26 @@ class Config(Item):
             f"{len(self.endpoints)} endpoints ({sorted(self.endpoints)!r}), "
             f"and {len(self.pipelines)} pipelines ({sorted(self.pipelines)!r})>"
         )
+
+
+def _get_unique_name_checker() -> Callable:
+    used_item_names = set()
+
+    def checker(item_type: str, item: Any) -> None:
+        """
+        Check that the name is not already used in the config.
+
+        Checks within the item type, i.e.,
+        two steps with the same name is an error, but not a step and a task with the same name.
+        Raises a validation error if the name is already used.
+        """
+        try:
+            if (item_type, item.name) in used_item_names:
+                raise ValidationError(f"Duplicate {item_type} name: {item.name}.")
+            used_item_names.add((item_type, item.name))
+        except AttributeError:
+            # all current items have a name, but that is not guaranteed for the future
+            # so make sure things don't break if we get a top-level item without a name
+            pass
+
+    return checker
