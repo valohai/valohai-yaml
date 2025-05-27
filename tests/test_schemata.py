@@ -1,14 +1,19 @@
-from pathlib import Path
+import pytest
 
-from valohai_yaml.validation import SCHEMATA_DIRECTORY
+from valohai_yaml.schema_data import SCHEMATA
 
 
-def test_schemata_has_no_underscores():
-    for yaml_path in Path(SCHEMATA_DIRECTORY).rglob("*.yaml"):
-        with yaml_path.open("r", encoding="utf-8") as f:
-            for lineno, line in enumerate(f, 1):
-                clean_line = line.partition("#")[0].strip()
-                if clean_line.endswith(":") and "_" in clean_line:
-                    raise AssertionError(
-                        f"Underscore in YAML key in {yaml_path!r}:{lineno}: {line!r}",
-                    )
+def assert_no_underscores(schema: dict) -> None:
+    for key, value in schema.items():
+        if isinstance(value, dict):
+            assert_no_underscores(value)
+        elif isinstance(value, list):
+            for item in value:
+                if isinstance(item, dict):
+                    assert_no_underscores(item)
+        assert "_" not in key, f"Schema key '{key}' contains an underscore."
+
+
+@pytest.mark.parametrize("schema_name", SCHEMATA.keys())
+def test_schemata_has_no_underscores(schema_name):
+    assert_no_underscores(SCHEMATA[schema_name])
