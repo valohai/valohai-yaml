@@ -118,9 +118,8 @@ register(
                 "description": "Whether this environment variable is optional.\n"
                 "All environment variables are optional by default.\n"
                 "Executions may not be created unless all required environment variables "
-                "have a value,\n"
-                "configured either explicitly in the step or trickled down from "
-                "project-level settings.\n",
+                "have a value, configured either explicitly in the step or trickled down from "
+                "project-level settings.",
                 "type": "boolean",
             },
         },
@@ -179,16 +178,14 @@ register(
             "download": {
                 "default": "always",
                 "description": "Select downloading intention for this input. On-demand inputs are not "
-                "downloaded before\n"
-                "the step can run, instead are available to download using an "
-                "authenticated download URL.\n",
+                "downloaded before the step can run, instead are available to download using an "
+                "authenticated download URL.",
                 "enum": ["always", "on-demand"],
                 "type": "string",
             },
             "filename": {
                 "description": "Force a filename for this input. Will not have an effect if there are "
-                "multiple files\n"
-                "for this input.\n",
+                "multiple files for this input.",
                 "type": "string",
             },
             "keep-directories": {
@@ -204,7 +201,7 @@ register(
             "optional": {
                 "default": False,
                 "description": "Whether this input is optional.\n"
-                "Optional inputs may be disabled in the user interface.\n",
+                "Optional inputs may be disabled in the user interface.",
                 "type": "boolean",
             },
         },
@@ -330,9 +327,8 @@ register(
                 "type": "string",
             },
             "choices": {
-                "description": "If choices are set, the user may only choose from these choices for the "
-                "parameter.\n"
-                "Not applicable to flag parameters.\n",
+                "description": "If choices are set, the user may only choose from these choices for the parameter.\n"
+                "Not applicable to flag parameters.",
                 "type": "array",
             },
             "default": {"description": "The default value for the parameter."},
@@ -342,32 +338,28 @@ register(
             },
             "max": {
                 "description": "The maximum accepted value for the parameter.\n"
-                "Only applicable to integer/float parameters.\n",
+                "Only applicable to integer/float parameters.",
                 "type": "number",
             },
             "min": {
                 "description": "The minimum accepted value for the parameter.\n"
-                "Only applicable to integer/float parameters.\n",
+                "Only applicable to integer/float parameters.",
                 "type": "number",
             },
             "multiple": {
                 "default": "none",
-                "description": "Whether to allow multiple values for this parameter, and how to pass them "
-                "on the\n"
-                "command line. Parameters set to `repeat` will be repeated using the "
-                "`--pass-as`\n"
-                "pattern, while `separate` will interpolate all values into a single "
-                "`--pass-as` value\n"
+                "description": "Whether to allow multiple values for this parameter, and how to pass them on the "
+                "command line. Parameters set to `repeat` will be repeated using the `--pass-as` "
+                "pattern, while `separate` will interpolate all values into a single `--pass-as` value "
                 "placeholder using the `multiple-separator`.\n"
-                "`multiple` is not available for flag parameters.\n",
+                "`multiple` is not available for flag parameters.",
                 "enum": ["none", "repeat", "separate"],
                 "type": "string",
             },
             "multiple-separator": {
                 "default": ",",
-                "description": "The separator to use when interpolating multiple values into a "
-                "command parameter.\n"
-                "Defaults to a comma.\n",
+                "description": "The separator to use when interpolating multiple values into a command parameter.\n"
+                "Defaults to a comma.",
                 "type": "string",
             },
             "name": {
@@ -378,25 +370,23 @@ register(
                 "default": False,
                 "description": "Whether this parameter is optional.\n"
                 "Optional parameters may be disabled in the user interface.\n"
-                "Not applicable to flag parameters; they're always optional in a sense.\n",
+                "Not applicable to flag parameters; they're always optional in a sense.",
                 "type": "boolean",
             },
             "pass-as": {
                 "default": "--{name}={value}",
-                "description": "How to pass the parameter to the command.\n"
-                "Defaults to `--{name}={value}` (or `--{name}` for flags).\n",
+                "description": "How to pass the parameter to the command."
+                "Defaults to `--{name}={value}` (or `--{name}` for flags).",
                 "type": "string",
             },
             "pass-false-as": {
-                "description": "How to pass flag (boolean) parameters when the flag is false.\n"
-                "If either pass-true-as or pass-false-as are set, pass-as is not "
-                "used.\n",
+                "description": "How to pass flag (boolean) parameters when the flag is false."
+                "If either pass-true-as or pass-false-as are set, pass-as is not used.\n",
                 "type": "string",
             },
             "pass-true-as": {
-                "description": "How to pass flag (boolean) parameters when the flag is true.\n"
-                "If either pass-true-as or pass-false-as are set, pass-as is not "
-                "used.\n",
+                "description": "How to pass flag (boolean) parameters when the flag is true."
+                "If either pass-true-as or pass-false-as are set, pass-as is not used.",
                 "type": "string",
             },
             "type": {
@@ -406,7 +396,7 @@ register(
                 "type": "string",
             },
             "widget": {
-                "description": "UI widget used for editing parameter values\n",
+                "description": "UI widget used for editing parameter values",
                 "oneOf": [
                     {
                         "properties": {"settings": {"type": "object"}, "type": {"type": "string"}},
@@ -464,14 +454,10 @@ register(
             "parameters": {"items": {"$ref": "/schemas/pipeline-param"}, "type": "array"},
             "reuse-executions": {
                 "default": False,
-                "description": "Set to true to allow Valohai to automatically detect if the "
-                "executions in\n"
-                "steps' nodes could be skipped and reuse the result from a "
-                "previously successfully\n"
-                "run node. Node's execution is considered unchanged when the "
-                "step's data doesn't\n"
-                "change (inputs, command, commit hash, parameters, step's "
-                "configuration).\n",
+                "description": "Set to true to allow Valohai to automatically detect if the executions in"
+                "steps' nodes could be skipped and reuse the result from a previously successfully run node.\n"
+                "Node's execution is considered unchanged when the step's data doesn't change "
+                "(inputs, command, commit hash, parameters, step's configuration).",
                 "type": "boolean",
             },
         },
@@ -545,8 +531,8 @@ register(
             "name": {"description": "The unique name for this step.", "type": "string"},
             "no-output-timeout": {
                 "description": "The time after which the step is considered to have died if no "
-                'output has been generated (in seconds or as a string (e.g. "1h '
-                '30m 5s")). An unspecified value means "platform default".\n',
+                'output has been generated (in seconds or as a string (e.g. "1h 30m 5s")). '
+                'An unspecified value means "platform default".',
                 "oneOf": [{"type": "integer"}, {"type": "string"}],
             },
             "outputs": {
@@ -570,13 +556,13 @@ register(
                 "type": "object",
             },
             "source-path": {
-                "description": "The original source file that this step comes from, relative to this config file.\n",
+                "description": "The original source file that this step comes from, relative to this config file.",
                 "type": "string",
             },
             "stop-condition": {"type": "string"},
             "time-limit": {
-                "description": 'The time limit for the step (in seconds or as a string, e.g. "1h 30m '
-                '5s"). An unspecified value means "no timeout".\n',
+                "description": 'The time limit for the step (in seconds or as a string, e.g. "1h 30m 5s"). '
+                'An unspecified value means "no timeout".',
                 "oneOf": [{"type": "integer"}, {"type": "string"}],
             },
             "upload-store": {"description": "The output data store name or UUID.", "maxLength": 64, "type": "string"},
