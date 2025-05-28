@@ -1,12 +1,19 @@
 import argparse
+import json
 import sys
 from typing import List, Optional
 
 from valohai_yaml.lint import LintResult, lint
+from valohai_yaml.validation import get_json_schema
 
 
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument(
+        "--output-json-schema",
+        action="store_true",
+        help="output the JSON schema for the Valohai YAML format, then exit",
+    )
     ap.add_argument(
         "--strict-warnings",
         action="store_true",
@@ -26,8 +33,15 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="disable ANSI colors",
         default=None,
     )
-    ap.add_argument("file", nargs="+", help="file(s) to validate")
+    ap.add_argument("file", nargs="*", help="file(s) to validate")
     args = ap.parse_args(argv)
+
+    if args.output_json_schema:
+        print(json.dumps(get_json_schema(), indent=2))
+        return 0
+
+    if not args.file:
+        ap.error("No input files specified.")
 
     if args.ansi_colors is None:
         try:

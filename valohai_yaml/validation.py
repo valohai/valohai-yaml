@@ -1,54 +1,31 @@
-import json
-import os
-import re
-from functools import lru_cache
-from typing import Any, Dict, List
+from functools import cache
+from typing import List
 
-import yaml
-from jsonschema import Draft202012Validator, RefResolver, ValidationError
+from jsonschema import Draft202012Validator, ValidationError
 
+from valohai_yaml import schema_data
 from valohai_yaml.excs import ValidationErrors
 from valohai_yaml.types import YamlReadable
 from valohai_yaml.utils import read_yaml
 
-SCHEMATA_DIRECTORY = os.path.join(os.path.dirname(__file__), "schema")
+
+def get_json_schema() -> dict:
+    schemata = schema_data.SCHEMATA.copy()
+    base = schemata.pop("https://valohai.com/schemas/base")
+    return {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "Valohai YAML Schema",
+        "description": "Base schema for Valohai YAML files.",
+        **base,
+        "$defs": schemata,
+    }
 
 
-class LocalRefResolver(RefResolver):  # type: ignore[misc]
-    """Loads relative URLs (as it were) from the `schema` directory."""
-
-    local_scope_re = re.compile(r"^https?://valohai.com/(.+\.json)$")
-
-    def resolve_from_url(self, url: str) -> Dict[Any, Any]:
-        local_match = self.local_scope_re.match(url)
-        if local_match:
-            schema = get_schema(name=local_match.group(1))
-            self.store[url] = schema
-            return schema
-        raise NotImplementedError(
-            "remote URL resolution is not supported for security reasons",
-        )  # pragma: no cover
-
-
-@lru_cache
-def get_schema(name: str) -> Dict[Any, Any]:
-    json_filename = os.path.join(SCHEMATA_DIRECTORY, name)
-    yaml_filename = os.path.splitext(json_filename)[0] + ".yaml"
-    for filename, loader in [
-        (json_filename, json.load),
-        (yaml_filename, yaml.safe_load),
-    ]:
-        if os.path.isfile(filename):
-            with open(filename, encoding="utf-8") as infp:
-                return loader(infp)  # type: ignore
-    raise ValueError(f"unable to read schema {name}")  # pragma: no cover
-
-
+@cache
 def get_validator() -> Draft202012Validator:
-    schema = get_schema("base.json")
-    cls = Draft202012Validator
-    cls.check_schema(schema)
-    return cls(schema, resolver=LocalRefResolver.from_schema(schema))
+    schema = get_json_schema()
+    Draft202012Validator.check_schema(schema)
+    return Draft202012Validator(schema)
 
 
 def validate(yaml: YamlReadable, raise_exc: bool = True) -> List[ValidationError]:
