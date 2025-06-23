@@ -2,7 +2,7 @@ import copy
 from itertools import chain
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
-from valohai_yaml.excs import InvalidType, ValidationError
+from valohai_yaml.excs import InvalidType
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.endpoint import Endpoint
@@ -45,19 +45,20 @@ class Config(Item):
         :return: Config object
         """
         parsers = cls.get_top_level_parsers()
-        parse_warnings = []
-        require_unique_name = _get_unique_name_checker()
+        parse_warnings: List[str] = []
+        append_warning_if_not_unique = _get_unique_name_checker(parse_warnings)
 
         for datum in data:
             if not isinstance(datum, dict):
                 raise InvalidType(f"Top-level YAML item {datum} is not a dictionary")
-            for type, (items, parse) in parsers.items():
-                if type in datum:
-                    items.append(parsed_item := parse(datum[type]))
-                    require_unique_name(type, parsed_item)
+            for item_type, (items, parse) in parsers.items():
+                if item_type in datum:
+                    items.append(parsed_item := parse(datum[item_type]))
+                    append_warning_if_not_unique(item_type, parsed_item)
                     break
             else:
                 parse_warnings.append(f"No parser for {datum}")
+
         inst = cls(
             steps=parsers["step"][0],
             endpoints=parsers["endpoint"][0],
@@ -183,20 +184,19 @@ class Config(Item):
         )
 
 
-def _get_unique_name_checker() -> Callable:
+def _get_unique_name_checker(parse_warnings: List[str]) -> Callable:
+    """
+    Return a unique name checker function that records if there is a name clash in the config.
+
+    Checks within the item type, i.e., two steps with the same name is a warning,
+    but not a step and a task with the same name. Adds the warnings to parse_warnings.
+    """
     used_item_names = set()
 
     def checker(item_type: str, item: Any) -> None:
-        """
-        Check that the name is not already used in the config.
-
-        Checks within the item type, i.e.,
-        two steps with the same name is an error, but not a step and a task with the same name.
-        Raises a validation error if the name is already used.
-        """
         try:
             if (item_type, item.name) in used_item_names:
-                raise ValidationError(f"Duplicate {item_type} name: {item.name}.")
+                parse_warnings.append(f"Duplicate {item_type} name: {item.name}.")
             used_item_names.add((item_type, item.name))
         except AttributeError:
             # all current items have a name, but that is not guaranteed for the future
