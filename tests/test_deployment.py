@@ -24,6 +24,11 @@ def test_minimal_valid_but_ineffective():
     assert deployment.name == "my-deployment"
     assert deployment.defaults is None
 
+    # it is acceptable, but we warn that it doesn't auto-create deployments
+    lint_result = config.lint()
+    assert lint_result.warning_count == 1
+    assert 'Deployment "my-deployment" has no defaults.target' in next(lint_result.warnings)["message"]
+
 
 def test_minimal_that_will_create_a_deployment():
     config = Config.parse(
