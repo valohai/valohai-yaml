@@ -22,6 +22,30 @@ register(
 )
 register(
     {
+        "$id": "https://valohai.com/schemas/deployment",
+        "additionalProperties": False,
+        "description": "Optional deployment definitions with defaults for initializing deployments automatically "
+        "when a related pipeline is run and no matching deployment is found in the project.",
+        "properties": {
+            "name": {"type": "string", "description": "The unique, URL-friendly name of the deployment."},
+            "defaults": {
+                "additionalProperties": True,
+                "description": "Values to use if the deployment does not yet exist in the project context.",
+                "properties": {
+                    "target": {"type": "string", "description": "Deployment target identifier or UUID."},
+                },
+                "required": ["target"],
+                "title": "DeploymentDefaults",
+                "type": "object",
+            },
+        },
+        "required": ["name"],
+        "title": "Deployment",
+        "type": "object",
+    },
+)
+register(
+    {
         "$id": "https://valohai.com/schemas/deployment-node",
         "additionalProperties": False,
         "properties": {

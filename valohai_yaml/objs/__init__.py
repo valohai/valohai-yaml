@@ -1,4 +1,5 @@
 from valohai_yaml.objs.config import Config
+from valohai_yaml.objs.deployment import Deployment
 from valohai_yaml.objs.endpoint import Endpoint
 from valohai_yaml.objs.file import File
 from valohai_yaml.objs.mount import Mount
@@ -15,6 +16,7 @@ from valohai_yaml.objs.task import Task
 
 __all__ = [
     "Config",
+    "Deployment",
     "DeploymentNode",
     "Edge",
     "Endpoint",

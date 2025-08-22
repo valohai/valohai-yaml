@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 from valohai_yaml.excs import InvalidType
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
+from valohai_yaml.objs.deployment import Deployment
 from valohai_yaml.objs.endpoint import Endpoint
 from valohai_yaml.objs.pipelines.pipeline import Pipeline
 from valohai_yaml.objs.step import Step
@@ -30,11 +31,13 @@ class Config(Item):
         tasks: Iterable[Task] = (),
         endpoints: Iterable[Endpoint] = (),
         pipelines: Iterable[Pipeline] = (),
+        deployments: Iterable[Deployment] = (),
     ) -> None:
         self.steps = check_type_and_dictify(steps, Step, "name")
         self.tasks = check_type_and_dictify(tasks, Task, "name")
         self.endpoints = check_type_and_dictify(endpoints, Endpoint, "name")
         self.pipelines = check_type_and_dictify(pipelines, Pipeline, "name")
+        self.deployments = check_type_and_dictify(deployments, Deployment, "name")
 
     @classmethod
     def parse(cls, data: Iterable) -> "Config":
@@ -64,6 +67,7 @@ class Config(Item):
             endpoints=parsers["endpoint"][0],
             pipelines=parsers["pipeline"][0],
             tasks=parsers["task"][0],
+            deployments=parsers["deployment"][0],
         )
         inst._original_data = data
         inst._parse_warnings = parse_warnings
@@ -84,6 +88,7 @@ class Config(Item):
             "endpoint": ([], Endpoint.parse),
             "pipeline": (pipelines, Pipeline.parse),
             "blueprint": (pipelines, Pipeline.parse),  # Alias allowed for now
+            "deployment": ([], Deployment.parse),
         }
 
     def serialize(self) -> List[SerializedDict]:
@@ -93,6 +98,7 @@ class Config(Item):
                 ({"task": task.serialize()} for (key, task) in self.tasks.items()),
                 ({"endpoint": endpoint.serialize()} for (key, endpoint) in sorted(self.endpoints.items())),
                 ({"pipeline": pipeline.serialize()} for (key, pipeline) in sorted(self.pipelines.items())),
+                ({"deployment": deployment.serialize()} for (key, deployment) in sorted(self.deployments.items())),
             ),
         )
 
@@ -122,9 +128,10 @@ class Config(Item):
             lint_result,
             context,
             (
-                self.steps,
+                self.deployments,
                 self.endpoints,
                 self.pipelines,
+                self.steps,
                 self.tasks,
             ),
         )
@@ -174,13 +181,20 @@ class Config(Item):
             merger=merge_simple,
             copier=copy.deepcopy,
         )
+        result.deployments = merge_dicts(
+            a.deployments,
+            b.deployments,
+            merger=merge_simple,
+            copier=copy.deepcopy,
+        )
         return result
 
     def __repr__(self) -> str:  # pragma: no cover  # noqa: D105
         return (
             f"<Config with {len(self.steps)} steps ({self.steps!r}), "
             f"{len(self.endpoints)} endpoints ({sorted(self.endpoints)!r}), "
-            f"and {len(self.pipelines)} pipelines ({sorted(self.pipelines)!r})>"
+            f"{len(self.pipelines)} pipelines ({sorted(self.pipelines)!r}), "
+            f"and {len(self.deployments)} deployments ({sorted(self.deployments)!r})>"
         )
 
 

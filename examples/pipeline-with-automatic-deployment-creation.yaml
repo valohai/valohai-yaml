@@ -1,0 +1,69 @@
+# Defining deployments in the YAML is optional but allows Valohai platform to
+# initialize deployments automatically when a related pipeline is run.
+#
+# You may reference this deployment definition in the pipeline deployment
+# nodes like further down below.
+- deployment:
+    name: us-west-qa
+    # The default values to use if the deployment does not exist in the project context.
+    defaults:
+      # Organization deployment target UUID or dash-text-identifier
+      # which tells which cluster to deploy to.
+      target: acme-corp-us-west-cluster
+
+- step:
+    name: preprocess-dataset
+    image: python:3.13.7-slim
+    command:
+      - pip install valohai-utils
+      - python ./preprocess_dataset.py
+    inputs:
+      - name: dataset
+
+- step:
+    name: train-model
+    image: tensorflow/tensorflow:2.20.0
+    command:
+      - pip install valohai-utils
+      - python ./train_model.py {parameters}
+    parameters:
+      - name: epochs
+        default: 5
+        type: integer
+      - name: learning_rate
+        default: 0.001
+        type: float
+    inputs:
+      - name: dataset
+
+- pipeline:
+    name: oracle-training-pipeline
+    nodes:
+      - name: preprocess
+        type: execution
+        step: preprocess-dataset
+
+      - name: train
+        type: execution
+        step: train-model
+        override:
+          inputs:
+            - name: dataset
+
+      # We are referencing the top-level deployment definition here via the "deployment: us-west-qa"
+      - name: release
+        type: deployment
+        deployment: us-west-qa
+        endpoints: [foretell-my-future]
+
+    edges:
+      - [preprocess.output.preprocessed_mnist.npz, train.input.dataset]
+      - [train.output.model*, release.file.foretell-my-future.model]
+
+- endpoint:
+    name: foretell-my-future
+    image: tensorflow/tensorflow:2.20.0
+    wsgi: crystal_ball_wsgi:crystal_ball_wsgi
+    files:
+      - name: model
+        path: model.pb
