@@ -89,6 +89,7 @@ class Task(Item):
         engine: str | None = None,
         on_child_error: TaskOnChildError | None = None,
         stop_condition: str | None = None,
+        reuse_children: bool = False,
     ) -> None:
         self.name = name
         self.step = step
@@ -103,6 +104,7 @@ class Task(Item):
         self.engine = engine
         self.on_child_error = TaskOnChildError.cast(on_child_error)
         self.stop_condition = stop_condition
+        self.reuse_children = reuse_children
 
     @classmethod
     def parse(cls, data: Any) -> Task:

@@ -623,6 +623,11 @@ register(
                 "items": {"$ref": "/schemas/variant-param"},
                 "type": "array",
             },
+            "reuse-children": {
+                "default": False,
+                "description": "Whether to allow automatic reuse of previous successful executions.",
+                "type": "boolean",
+            },
             "step": {"description": "The step to run with.", "type": "string"},
             "stop-condition": {"type": "string"},
             "type": {"type": "string"},

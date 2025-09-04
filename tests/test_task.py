@@ -38,3 +38,10 @@ def test_task_parameter_sets(task_config: Config):
         {"A": 72, "B": 42},
     ]
     assert task.type == TaskType.MANUAL_SEARCH
+
+
+def test_task_reuse_children(task_config: Config):
+    task = task_config.tasks["task 4 logspace"]
+    assert task.reuse_children is True
+    task2 = task_config.tasks["task 1 single"]
+    assert task2.reuse_children is False

@@ -61,6 +61,7 @@
           count: 4
           base: 10
           integerify: False
+    reuse-children: true
 
 - task:
     step: run training
