@@ -625,10 +625,7 @@ register(
             },
             "reuse-children": {
                 "default": False,
-                "description": "Set to true to allow Valohai to automatically detect if the executions in"
-                "the task's executions could be reused from a previously successfully run executions.\n"
-                "Task's execution is considered unchanged when the data doesn't change "
-                "(inputs, command, commit hash, parameters, step's configuration).",
+                "description": "Whether to allow automatic reuse of previous successful executions.",
                 "type": "boolean",
             },
             "step": {"description": "The step to run with.", "type": "string"},
