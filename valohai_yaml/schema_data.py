@@ -1,8 +1,28 @@
+from __future__ import annotations
+
+from typing import Any
+
 SCHEMATA = {}
 
 
 def register(schema: dict) -> None:
     SCHEMATA[schema["$id"]] = schema
+
+
+def _get_execution_and_task_node_props(type: str) -> dict[str, Any]:
+    return {
+        "additionalProperties": False,
+        "properties": {
+            "actions": {"items": {"$ref": "/schemas/node-action"}, "type": "array"},
+            "edge-merge-mode": {"$ref": "/schemas/node-edge-merge-mode"},
+            "name": {"type": "string"},
+            "on-error": {"enum": ["stop-all", "stop-next", "continue", "retry"], "type": "string"},
+            "override": {"$ref": "/schemas/overridden-properties"},
+            "step": {"type": "string"},
+            "type": {"const": type, "type": "string"},
+        },
+        "required": ["name", "step", "type"],
+    }
 
 
 register(
@@ -154,19 +174,9 @@ register(
 register(
     {
         "$id": "https://valohai.com/schemas/execution-node",
-        "additionalProperties": False,
-        "properties": {
-            "actions": {"items": {"$ref": "/schemas/node-action"}, "type": "array"},
-            "edge-merge-mode": {"$ref": "/schemas/node-edge-merge-mode"},
-            "name": {"type": "string"},
-            "on-error": {"enum": ["stop-all", "stop-next", "continue", "retry"], "type": "string"},
-            "override": {"$ref": "/schemas/overridden-properties"},
-            "step": {"type": "string"},
-            "type": {"const": "execution", "type": "string"},
-        },
-        "required": ["name", "step", "type"],
         "title": "ExecutionNode",
         "type": "object",
+        **_get_execution_and_task_node_props("execution"),
     },
 )
 register(
@@ -639,19 +649,9 @@ register(
 register(
     {
         "$id": "https://valohai.com/schemas/task-node",
-        "additionalProperties": False,
-        "properties": {
-            "actions": {"items": {"$ref": "/schemas/node-action"}, "type": "array"},
-            "edge-merge-mode": {"$ref": "/schemas/node-edge-merge-mode"},
-            "name": {"type": "string"},
-            "on-error": {"enum": ["stop-all", "stop-next", "continue"], "type": "string"},
-            "override": {"$ref": "/schemas/overridden-properties"},
-            "step": {"type": "string"},
-            "type": {"const": "task", "type": "string"},
-        },
-        "required": ["name", "step", "type"],
         "title": "TaskNode",
         "type": "object",
+        **_get_execution_and_task_node_props("task"),
     },
 )
 register(
