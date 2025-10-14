@@ -38,8 +38,8 @@ class ExecutionNode(Node):
         super().lint(lint_result, context)
         config = context["config"]
         pipeline = context["pipeline"]
+        error_prefix = f'Pipeline "{pipeline.name}" node "{self.name}" step "{self.step}"'
         step = config.steps.get(self.step)
-        error_prefix = f"Pipeline {pipeline.name} node {self.name} step {self.step}"
         if not step:
             lint_result.add_error(f"{error_prefix} does not exist")
             return

@@ -62,9 +62,9 @@
   ------------------------------------------------------------
   ------------------------------------------------------------
   >>> invalid-pipeline-with-override-example.yaml
-  error: Pipeline My overriden input pipeline node merged step base step: input training-labels-error does not exist in step
-  error: Pipeline My overriden input pipeline node merged step base step: parameter d does not exist in step
-  error: Pipeline My overriden input pipeline node overridden step secon step does not exist
+  error: Pipeline "My overriden input pipeline" node "merged" step "base step": input training-labels-error does not exist in step
+  error: Pipeline "My overriden input pipeline" node "merged" step "base step": parameter d does not exist in step
+  error: Pipeline "My overriden input pipeline" node "overridden" step "secon step" does not exist
   '''
 # ---
 # name: test_bad_examples_cli[invalid-shorthand-edge.yaml]
