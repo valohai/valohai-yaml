@@ -19,6 +19,7 @@ class ExecutionNode(Node):
         *,
         name: str,
         step: str,
+        commit: Optional[str] = None,
         actions: Optional[List[NodeAction]] = None,
         override: Optional[Union[Override, NodeOverrideDict]] = None,
         on_error: Union[str, ErrorAction] = ErrorAction.STOP_ALL,
@@ -26,6 +27,7 @@ class ExecutionNode(Node):
     ) -> None:
         super().__init__(name=name, actions=actions, on_error=on_error)
         self.step = step
+        self.commit = str(commit) if commit else None
         if override is None or isinstance(override, Override):
             self.override = override
         else:

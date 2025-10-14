@@ -14,6 +14,7 @@ def _get_execution_and_task_node_props(type: str) -> dict[str, Any]:
         "additionalProperties": False,
         "properties": {
             "actions": {"items": {"$ref": "/schemas/node-action"}, "type": "array"},
+            "commit": {"type": "string"},
             "edge-merge-mode": {"$ref": "/schemas/node-edge-merge-mode"},
             "name": {"type": "string"},
             "on-error": {"enum": ["stop-all", "stop-next", "continue", "retry"], "type": "string"},
