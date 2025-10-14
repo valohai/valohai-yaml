@@ -36,6 +36,13 @@ class ExecutionNode(Node):
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         super().lint(lint_result, context)
+
+        if not self.commit:
+            # We can only lint step-related things if the step is defined in this configuration.
+            # If a commit is specified, we can't know that.
+            self._lint_step(lint_result, context)
+
+    def _lint_step(self, lint_result: LintResult, context: LintContext) -> None:
         config = context["config"]
         pipeline = context["pipeline"]
         error_prefix = f'Pipeline "{pipeline.name}" node "{self.name}" step "{self.step}"'
