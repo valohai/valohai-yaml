@@ -118,3 +118,12 @@ def test_pipeline_allow_reuse(pipeline_config: Config):
 def test_pipeline_execution_retry(pipeline_with_retried_execution_config: Config):
     assert pipeline_with_retried_execution_config.lint().is_valid()
     assert pipeline_with_retried_execution_config.pipelines["pipe"].nodes[0].on_error == ErrorAction.RETRY
+
+
+def test_pipeline_commit(pipeline_with_different_commit_config: Config):
+    assert pipeline_with_different_commit_config.lint().is_valid()
+    assert all(
+        n.commit
+        for n in pipeline_with_different_commit_config.pipelines["Commits Specified"].nodes
+        if isinstance(n, ExecutionNode)
+    )
