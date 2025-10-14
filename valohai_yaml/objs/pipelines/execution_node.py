@@ -19,6 +19,7 @@ class ExecutionNode(Node):
         *,
         name: str,
         step: str,
+        commit: Optional[str] = None,
         actions: Optional[List[NodeAction]] = None,
         override: Optional[Union[Override, NodeOverrideDict]] = None,
         on_error: Union[str, ErrorAction] = ErrorAction.STOP_ALL,
@@ -26,6 +27,7 @@ class ExecutionNode(Node):
     ) -> None:
         super().__init__(name=name, actions=actions, on_error=on_error)
         self.step = step
+        self.commit = str(commit) if commit else None
         if override is None or isinstance(override, Override):
             self.override = override
         else:
@@ -34,10 +36,17 @@ class ExecutionNode(Node):
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         super().lint(lint_result, context)
+
+        if not self.commit:
+            # We can only lint step-related things if the step is defined in this configuration.
+            # If a commit is specified, we can't know that.
+            self._lint_step(lint_result, context)
+
+    def _lint_step(self, lint_result: LintResult, context: LintContext) -> None:
         config = context["config"]
         pipeline = context["pipeline"]
+        error_prefix = f'Pipeline "{pipeline.name}" node "{self.name}" step "{self.step}"'
         step = config.steps.get(self.step)
-        error_prefix = f"Pipeline {pipeline.name} node {self.name} step {self.step}"
         if not step:
             lint_result.add_error(f"{error_prefix} does not exist")
             return
