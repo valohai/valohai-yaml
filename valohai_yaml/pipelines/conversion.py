@@ -1,4 +1,6 @@
-from typing import Any, Dict, List, Optional, TypedDict, Union
+from __future__ import annotations
+
+from typing import Any, Dict, MutableMapping, TypedDict, Union
 
 from valohai_yaml.objs import (
     Config,
@@ -18,7 +20,7 @@ class VariantExpression(TypedDict):
     """Variant expression template."""
 
     style: str
-    rules: Dict[str, Any]
+    rules: dict[str, Any]
 
 
 ExpressionValue = Union[str, int, bool, float, VariantExpression]
@@ -27,9 +29,9 @@ ExpressionValue = Union[str, int, bool, float, VariantExpression]
 class ConvertedPipeline(TypedDict):
     """TypedDict for converted Pipeline object."""
 
-    edges: List[ConvertedObject]
-    nodes: List[ConvertedObject]
-    parameters: Dict[str, ConvertedObject]
+    edges: list[ConvertedObject]
+    nodes: list[ConvertedObject]
+    parameters: dict[str, ConvertedObject]
 
 
 class PipelineConverter:
@@ -39,8 +41,8 @@ class PipelineConverter:
         self,
         *,
         config: Config,
-        commit_identifier: str,
-        parameter_arguments: Optional[Dict[str, Union[str, list]]] = None,
+        commit_identifier: str | None,
+        parameter_arguments: dict[str, str | list] | None = None,
     ) -> None:
         self.config = config
         self.commit_identifier = commit_identifier
@@ -55,7 +57,7 @@ class PipelineConverter:
 
     def convert_parameter(self, parameter: PipelineParameter) -> ConvertedObject:
         """Convert a pipeline parameter to a config-expression payload."""
-        param_value: Union[ExpressionValue, List[str]]
+        param_value: ExpressionValue | list[str]
         if parameter.name in self.parameter_arguments:
             param_value = self.parameter_arguments[parameter.name]
         elif parameter.default is not None:
@@ -91,39 +93,47 @@ class PipelineConverter:
 
     def convert_executionlike_node(
         self,
-        node: Union[ExecutionNode, TaskNode],
+        node: ExecutionNode | TaskNode,
     ) -> ConvertedObject:
         node_data = node.serialize()
-        node_data.pop(
-            "override",
-            {},
-        )  # we'll use the actual object, not the serialization
+        node_data.pop("override", None)  # we'll use the actual object, not the serialization
+        node_commit = node_data.pop("commit", None)
         step_name = node_data.pop("step")
-        step = self.config.get_step_by(name=step_name)
-        if not step:  # pragma: no cover
-            raise ValueError(f"Step {step_name} not found in {self.config}")
-        step_data = step.serialize()
+        step_data: MutableMapping[str, Any]
+        if not node_commit or node_commit == self.commit_identifier:
+            # Local step, let's do validation and merging properly
+            step = self.config.get_step_by(name=step_name)
+            if not step:  # pragma: no cover
+                raise ValueError(f"Step {step_name} not found in {self.config}")
+            step_data = step.serialize()
+            runtime_config = step_data.setdefault("runtime_config", {})
+            if "no-output-timeout" in step_data:
+                runtime_config.setdefault(
+                    "no_output_timeout",
+                    step_data.pop("no-output-timeout"),
+                )
+            override = Override.merge_with_step(node.override, step)
+            overridden_to_template = Override.serialize_to_template(override)
+            step_data.update(overridden_to_template)
+        else:
+            # This is a remote step reference.
+            # Just add in overrides and hope for the best...
+            step_data = node.override.serialize() if node.override else {}
 
-        runtime_config = step_data.setdefault("runtime_config", {})
-        if "no-output-timeout" in step_data:
-            runtime_config.setdefault(
-                "no_output_timeout",
-                step_data.pop("no-output-timeout"),
-            )
+        commit = node_commit or self.commit_identifier
 
-        override = Override.merge_with_step(node.override, step)
-        overridden_to_template = Override.serialize_to_template(override)
-        step_data.update(overridden_to_template)
-        step_data.pop("mounts", None)
+        if not commit:  # pragma: no cover
+            raise ValueError("Cannot determine commit for node")
+
         node_data["template"] = {
-            "commit": self.commit_identifier,
+            "commit": commit,
             "step": step_name,
             **step_data,
         }
 
         return node_data
 
-    def convert_expression(self, expression: Union[ExpressionValue, list]) -> ExpressionValue:
+    def convert_expression(self, expression: ExpressionValue | list) -> ExpressionValue:
         if isinstance(expression, list):
             return VariantExpression(
                 style="single",
