@@ -108,3 +108,34 @@ def test_pipeline_parameter_conversion_with_args(pipeline_with_parameters_config
         "style": "single",
         "rules": {"value": ["msg", "pfa"]},
     }
+
+
+def test_pipeline_commit_conversion(pipeline_with_different_commit_config: Config):
+    pipeline = pipeline_with_different_commit_config.pipelines["One Library Step, One Local Step"]
+    result = PipelineConverter(
+        config=pipeline_with_different_commit_config,
+        commit_identifier="102dsgkmr4",
+    ).convert_pipeline(pipeline)
+    assert result["nodes"] == [
+        {
+            "name": "preprocess",
+            "on-error": "stop-all",
+            "type": "execution",
+            "template": {"commit": "library:generic-preprocessors/csv-into-parquet", "step": "parquetify"},
+        },
+        {
+            "name": "mangle",
+            "on-error": "stop-all",
+            "type": "execution",
+            "template": {
+                "commit": "102dsgkmr4",
+                "step": "mangle",
+                "name": "mangle",
+                "image": "python:3.13",
+                "command": "false",
+                "inputs": {"mangles": []},
+                "runtime_config": {},
+                "parameters": {},
+            },
+        },
+    ]
