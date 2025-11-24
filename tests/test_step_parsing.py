@@ -111,6 +111,13 @@ def test_mount_parse(mount_config):
     assert nfs_mount.options == {"hot": True, "superhot": False}
 
 
+def test_cache_volumes_parse(step_with_cache_volumes):
+    one_volume_step = step_with_cache_volumes.steps["attach-one"]
+    assert one_volume_step.cache_volumes == ["pvc-1"]
+    two_volumes_step = step_with_cache_volumes.steps["attach-two"]
+    assert two_volumes_step.cache_volumes == ["pvc-1", "pvc-2"]
+
+
 def test_parse_environment_variables(example3_config):
     config = example3_config
     step = config.steps["batch inference"]

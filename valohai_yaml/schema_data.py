@@ -563,6 +563,11 @@ register(
                 "items": {"$ref": "/schemas/mount-item"},
                 "type": "array",
             },
+            "cache-volumes": {
+                "description": "Kubernetes persistent volume claim names to used as additional input cache volumes.",
+                "items": {"type": "string"},
+                "type": "array",
+            },
             "name": {"description": "The unique name for this step.", "type": "string"},
             "no-output-timeout": {
                 "description": "The time after which the step is considered to have died if no "

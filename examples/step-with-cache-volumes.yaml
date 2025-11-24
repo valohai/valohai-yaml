@@ -1,0 +1,13 @@
+- step:
+    name: attach-one
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    cache-volumes: [pvc-1]
+
+- step:
+    name: attach-two
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    cache-volumes:
+      - pvc-1
+      - pvc-2

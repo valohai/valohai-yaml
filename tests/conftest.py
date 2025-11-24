@@ -21,6 +21,7 @@ pipeline_with_different_commit_config = config_fixture("pipeline-with-different-
 pipeline_with_retried_execution_config = config_fixture("pipeline-execution-retry-example.yaml")
 pipeline_with_tasks_config = config_fixture("pipeline-with-tasks-example.yaml")
 shebang_example_config = config_fixture("shebang-example.yaml")
+step_with_cache_volumes = config_fixture("step-with-cache-volumes.yaml")
 step_with_partial_resources = config_fixture("step-with-partial-resources.yaml")
 step_with_resources = config_fixture("step-with-resources.yaml")
 task_config = config_fixture("task-example.yaml")
