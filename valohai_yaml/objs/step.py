@@ -37,6 +37,7 @@ class Step(Item):
         inputs: Iterable[Input] = (),
         outputs: Iterable[Any] = (),
         mounts: Iterable[Mount] = (),
+        cache_volumes: Iterable[str] = (),
         environment_variables: Iterable[EnvironmentVariable] = (),
         environment_variable_groups: Iterable[str] = (),
         environment: Optional[str] = None,
@@ -62,6 +63,7 @@ class Step(Item):
 
         self.outputs = list(outputs)  # TODO: Improve handling
         self.mounts = check_type_and_listify(mounts, Mount)
+        self.cache_volumes = [str(cv) for cv in cache_volumes if cv]
         self.inputs = check_type_and_dictify(inputs, Input, "name")
         self.parameters = check_type_and_dictify(parameters, Parameter, "name")
         self.environment_variables = check_type_and_dictify(
@@ -79,6 +81,7 @@ class Step(Item):
     @classmethod
     def parse(cls, data: SerializedDict) -> "Step":
         kwargs = parse_common_step_properties(data)
+        kwargs["cache_volumes"] = kwargs.pop("cache-volumes", ())
         kwargs["time_limit"] = parse_duration(kwargs.pop("time-limit", None))
         kwargs["no_output_timeout"] = parse_duration(
             kwargs.pop("no-output-timeout", None),
@@ -108,6 +111,7 @@ class Step(Item):
             ("parameters", self.parameters),
             ("inputs", self.inputs),
             ("mounts", self.mounts),
+            ("cache-volumes", self.cache_volumes),
             ("outputs", self.outputs),
             ("environment", self.environment),
             ("environment-variables", self.environment_variables),
@@ -219,6 +223,7 @@ class Step(Item):
             copier=copy.deepcopy,
         )
         result.environment_variable_groups = a.environment_variable_groups + b.environment_variable_groups
+        result.cache_volumes = a.cache_volumes + b.cache_volumes
         return result
 
 
