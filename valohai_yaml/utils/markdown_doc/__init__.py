@@ -131,12 +131,17 @@ def _format_atomic_property(name: str, values: Any) -> str:
     """
     Format a single atomic property to Markdown, with some special rules.
 
-    - enum values (e.g. type) are italicized.
+    - values entered by the user in the actual YAML are monospaced
     - required properties are formatted as a list of monospaced values.
+    - enum values (e.g. type) are italicized.
     TODO: make this look nice
     """
     if name in ["additionalProperties", "type"]:
         return f"{name}: *{values}*"
+    if name in ["const"]:
+        return f"{name}: `{values}`"
+    if name == "enum":
+        return f"allowed values: {' | '.join(sorted(f'`{v}`' for v in values))}"
     if name == "required":
         return f"required properties: {', '.join(sorted(f'`{v}`' for v in values))}"
     return f"{name}: {values}"
