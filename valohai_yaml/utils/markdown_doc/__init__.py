@@ -59,10 +59,9 @@ def parse_definitions(definitions: dict[str, dict[str, Any]]) -> Iterator[Defini
 
 def parse_definition(definition: dict[str, Any]) -> Definition:
     """Parse a single definition from the schema."""
-    # print(definition)
     ref = _parse_ref(definition["$id"])
     return Definition(
-        title=definition.get("title", ref.ref_title),
+        title=ref.ref_title,
         ref=ref.local_ref,
         description=definition.get("description", ""),
         type=definition.get("type", "–"),  # TODO: log a warning about missing type
@@ -74,8 +73,9 @@ def parse_definition(definition: dict[str, Any]) -> Definition:
 def _parse_ref(ref_uri: str) -> RefComponents:
     """Extract the definition ID from a $ref string."""
     ref_path = urlparse(ref_uri).path
-    local_ref = Path(ref_path).name.title()
-    return RefComponents(ref_path, local_ref)
+    ref_title = Path(ref_path).name.title()
+
+    return RefComponents(ref_path, ref_title)
 
 
 # TODO move to formatters module
@@ -153,4 +153,4 @@ def format_item(item: MainItem) -> str:
 
     TODO: handle internal links properly.
     """
-    return f"- [{item.name}](#{item.ref})"
+    return f"- [{item.name}](#{item.name})"

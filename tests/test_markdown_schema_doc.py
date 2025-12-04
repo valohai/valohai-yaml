@@ -41,19 +41,10 @@ def test_parse_definition():
         "type": "object",
     }
     parsed_definition = parse_definition(step_definition)
-    assert parsed_definition.title == "Step Definition"
+    assert parsed_definition.title == "Step", "Should use title from $id to match actual value in YAML"
     assert parsed_definition.ref == "/schemas/step"
     assert parsed_definition.description == ""
     assert parsed_definition.type == "object"
     assert parsed_definition.properties.keys() == {"category"}
     assert parsed_definition.properties["category"].keys() == {"description", "type"}
     assert parsed_definition.required_properties == []
-
-
-def test_parse_definition_title_from_id():
-    """The title is derived from the $id if not explicitly provided."""
-    definition = {
-        "$id": "https://valohai.com/schemas/custom-step",
-    }
-    parsed_definition = parse_definition(definition)
-    assert parsed_definition.title == "Custom-Step"
