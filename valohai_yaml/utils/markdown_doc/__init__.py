@@ -105,14 +105,20 @@ def format_doc_content(main_items: Iterator[MainItem], definitions: Iterator[Def
 
 def format_property(prop: dict[str, Any], indentation_level: int = 1) -> Iterator[str]:
     """Format a single property to Markdown."""
-    indent = "    " * indentation_level
+    indent = _get_indentation(indentation_level)
     for prop_name, prop_values in prop.items():
         if isinstance(prop_values, dict):
             formatted_name = _format_prop_name(prop_name)
             yield f"{indent}- {formatted_name}:"
             yield from format_property(prop_values, indentation_level + 1)
+        elif isinstance(prop_values, list):
+            yield from _format_list_property(prop_name, prop_values, indentation_level)
         else:
             yield f"{indent}- {_format_atomic_property(prop_name, prop_values)}"
+
+
+def _get_indentation(indentation_level: int) -> str:
+    return "    " * indentation_level
 
 
 def _format_prop_name(name: str) -> str:
@@ -127,23 +133,43 @@ def _format_prop_name(name: str) -> str:
     return f"`{name}`"
 
 
+def _format_list_property(name: str, values: list[Any], indentation_level: int = 1) -> Iterator[str]:
+    """
+    Format a list property to Markdown, with some special rules.
+
+    - lists of values are formatted as a list of monospaced values.
+    - values entered by the user in the actual YAML are monospaced
+    - list values may be objects themselves -- continue recursively
+    - TODO: object values now have a clumsy "(option)" marker - improve this
+    """
+    indent = _get_indentation(indentation_level)
+    if name == "enum":
+        yield f"{indent}- allowed values: {' | '.join(sorted(f'`{v}`' for v in values))}"
+    elif name == "required":
+        yield f"{indent}- required properties: {', '.join(sorted(f'`{v}`' for v in values))}"
+    else:
+        yield f"{indent}- {name}"
+        sub_indent = _get_indentation(indentation_level + 1)
+        for val in values:
+            if isinstance(val, dict):
+                # we have a list of objects here -- continue recursively with its values
+                yield (f"{sub_indent}- (option)")
+                yield from format_property(val, indentation_level + 2)
+            else:
+                yield f"{sub_indent}- {val}"
+
+
 def _format_atomic_property(name: str, values: Any) -> str:
     """
     Format a single atomic property to Markdown, with some special rules.
 
     - values entered by the user in the actual YAML are monospaced
-    - required properties are formatted as a list of monospaced values.
-    - enum values (e.g. type) are italicized.
-    TODO: make this look nice
+    - enum-type values are italicized
     """
     if name in ["additionalProperties", "type"]:
         return f"{name}: *{values}*"
     if name in ["const"]:
         return f"{name}: `{values}`"
-    if name == "enum":
-        return f"allowed values: {' | '.join(sorted(f'`{v}`' for v in values))}"
-    if name == "required":
-        return f"required properties: {', '.join(sorted(f'`{v}`' for v in values))}"
     return f"{name}: {values}"
 
 
