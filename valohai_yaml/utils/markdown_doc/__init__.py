@@ -153,4 +153,4 @@ def format_item(item: MainItem) -> str:
 
     TODO: handle internal links properly.
     """
-    return f"- [{item.name}](#{item.name})"
+    return f"- [`{item.name}`](#{item.name})"
