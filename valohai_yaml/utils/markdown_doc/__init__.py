@@ -147,7 +147,7 @@ def _format_prop_name(name: str) -> str:
     - custom properties in the actual YAML are monospaced
     - properties part of the schema itself are not
     """
-    if name in ["properties"]:
+    if name in ["items", "properties"]:
         return name
     return f"`{name}`"
 
