@@ -104,17 +104,36 @@ def format_doc_content(main_items: Iterator[MainItem], definitions: Iterator[Def
 
 
 def format_property(prop: dict[str, Any], indentation_level: int = 1) -> Iterator[str]:
-    """Format a single property to Markdown."""
+    """
+    Format a single property to Markdown.
+
+    - nested properties are formatted recursively
+    - property types are added to the property name instead of listing them separately
+    """
     indent = _get_indentation(indentation_level)
     for prop_name, prop_values in prop.items():
         if isinstance(prop_values, dict):
             formatted_name = _format_prop_name(prop_name)
-            yield f"{indent}- {formatted_name}:"
+            if _has_type_definition(prop_values):
+                formatted_name += f" *({prop_values.pop('type')})*"
+            yield f"{indent}- {formatted_name}"
             yield from format_property(prop_values, indentation_level + 1)
         elif isinstance(prop_values, list):
             yield from _format_list_property(prop_name, prop_values, indentation_level)
         else:
             yield f"{indent}- {_format_atomic_property(prop_name, prop_values)}"
+
+
+def _has_type_definition(prop: Any) -> bool:
+    """
+    Check if a property has a type definition (that is not just another property called "type").
+
+    Example: {"prop_name": {"type": "string"}} -> "prop_name" is of type "string"
+    {"properties": {
+      "type": { ... }
+    }} -> "type" is a property itself, not a type definition
+    """
+    return isinstance(prop, dict) and "type" in prop and isinstance(prop["type"], str)
 
 
 def _get_indentation(indentation_level: int) -> str:
