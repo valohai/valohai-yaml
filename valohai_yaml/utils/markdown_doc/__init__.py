@@ -1,33 +1,17 @@
 from pathlib import Path
 from typing import Any, Iterator, NamedTuple
-from urllib.parse import urlparse
 
 # TODO move to types
-
-
-class MainItem(NamedTuple):
-    """Top-level YAML configuration item."""
-
-    name: str
-    ref: str
 
 
 class Definition(NamedTuple):
     """YAML configuration definition item."""
 
     title: str
-    ref: str
     description: str
     type: str
     properties: dict[str, dict[str, Any]]
     required_properties: list[str]
-
-
-class RefComponents(NamedTuple):
-    """Components extracted from a $ref string."""
-
-    local_ref: str
-    ref_title: str
 
 
 def generate_doc(schema_dict: dict[str, Any]) -> str:
@@ -36,19 +20,18 @@ def generate_doc(schema_dict: dict[str, Any]) -> str:
 
     Based on the configuration JSON schema.
     """
-    main_items = parse_items(schema_dict.get("items", {}))
+    top_level_item_refs = parse_top_level_item_refs(schema_dict.get("items", {}))
     definitions = parse_definitions(schema_dict.get("$defs", {}))
 
-    return "\n".join(format_doc_content(main_items, definitions))
+    return "\n".join(format_doc_content(top_level_item_refs, definitions))
 
 
 # TODO move to parsers module
 
 
-def parse_items(items: dict[str, Any]) -> Iterator[MainItem]:
-    """Parse schema items and generate Markdown documentation."""
-    for main_property, prop_values in items.get("properties", {}).items():
-        yield MainItem(name=main_property, ref=prop_values["$ref"])
+def parse_top_level_item_refs(items: dict[str, Any]) -> Iterator[str]:
+    for prop_values in items.get("properties", {}).values():
+        yield prop_values["$ref"]
 
 
 def parse_definitions(definitions: dict[str, dict[str, Any]]) -> Iterator[Definition]:
@@ -59,10 +42,9 @@ def parse_definitions(definitions: dict[str, dict[str, Any]]) -> Iterator[Defini
 
 def parse_definition(definition: dict[str, Any]) -> Definition:
     """Parse a single definition from the schema."""
-    ref = _parse_ref(definition["$id"])
+    title = Path(definition["$id"]).name
     return Definition(
-        title=ref.ref_title,
-        ref=ref.local_ref,
+        title=title,
         description=definition.get("description", ""),
         type=definition.get("type", "–"),  # TODO: log a warning about missing type
         properties=definition.get("properties", {}),
@@ -70,24 +52,16 @@ def parse_definition(definition: dict[str, Any]) -> Definition:
     )
 
 
-def _parse_ref(ref_uri: str) -> RefComponents:
-    """Extract the definition ID from a $ref string."""
-    ref_path = urlparse(ref_uri).path
-    ref_title = Path(ref_path).name
-
-    return RefComponents(ref_path, ref_title)
-
-
 # TODO move to formatters module
 
 
-def format_doc_content(main_items: Iterator[MainItem], definitions: Iterator[Definition]) -> Iterator[str]:
+def format_doc_content(main_item_refs: Iterator[str], definitions: Iterator[Definition]) -> Iterator[str]:
     """Format the documentation content to Markdown."""
     yield "# Valohai YAML Configuration Documentation\n"
     yield "## Top-level Properties\n"
 
-    for line in main_items:
-        yield f"- [`{line.name}`](#{line.name})"
+    for ref in main_item_refs:
+        yield f"- {_format_ref_link(ref)}"
 
     yield "\n## Property Details"
 
@@ -205,4 +179,4 @@ def _format_atomic_property(name: str, values: Any) -> str:
 def _format_ref_link(ref: str) -> str:
     """Format a $ref link to Markdown."""
     ref_name = Path(ref).name
-    return f"[{ref_name}](#{ref_name})"
+    return f"[`{ref_name}`](#{ref_name})"

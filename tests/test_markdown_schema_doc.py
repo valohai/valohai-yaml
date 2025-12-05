@@ -1,4 +1,4 @@
-from valohai_yaml.utils.markdown_doc import format_property, generate_doc, parse_definition, parse_items
+from valohai_yaml.utils.markdown_doc import format_property, generate_doc, parse_definition, parse_top_level_item_refs
 from valohai_yaml.validation import get_json_schema
 
 
@@ -8,7 +8,7 @@ def test_parse_generated_schema_doc():
     assert generate_doc(schema), "Should generate non-empty documentation"
 
 
-def test_parse_main_items():
+def test_parse_top_level_refs():
     """The main items are parsed from the schema."""
     items = {
         "properties": {
@@ -21,9 +21,9 @@ def test_parse_main_items():
         },
     }
 
-    assert list(parse_items(items)) == [
-        ("endpoint", "/schemas/endpoint"),
-        ("pipeline", "/schemas/pipeline"),
+    assert list(parse_top_level_item_refs(items)) == [
+        "/schemas/endpoint",
+        "/schemas/pipeline",
     ]
 
 
@@ -42,7 +42,6 @@ def test_parse_definition():
     }
     parsed_definition = parse_definition(step_definition)
     assert parsed_definition.title == "step", "Should use title from $id to match actual value in YAML"
-    assert parsed_definition.ref == "/schemas/step"
     assert parsed_definition.description == ""
     assert parsed_definition.type == "object"
     assert parsed_definition.properties.keys() == {"category"}
@@ -56,4 +55,4 @@ def test_parse_refs():
         "$ref": "https://example.com/schemas/prop_name",
     }
     formatted_properties = list(format_property(properties_definition, indentation_level=1))
-    assert formatted_properties == ["    - [prop_name](#prop_name)"], "Should create internal markdown link"
+    assert formatted_properties == ["    - [`prop_name`](#prop_name)"], "Should create internal markdown link"
