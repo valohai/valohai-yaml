@@ -73,7 +73,7 @@ def parse_definition(definition: dict[str, Any]) -> Definition:
 def _parse_ref(ref_uri: str) -> RefComponents:
     """Extract the definition ID from a $ref string."""
     ref_path = urlparse(ref_uri).path
-    ref_title = Path(ref_path).name.title()
+    ref_title = Path(ref_path).name
 
     return RefComponents(ref_path, ref_title)
 
@@ -87,12 +87,12 @@ def format_doc_content(main_items: Iterator[MainItem], definitions: Iterator[Def
     yield "## Top-level Properties\n"
 
     for line in main_items:
-        yield format_item(line)
+        yield f"- [`{line.name}`](#{line.name})"
 
     yield "\n## Property Details"
 
     for d in definitions:
-        yield f"\n### {d.title}\n"
+        yield f"\n### `{d.title}`\n"
         if d.description:
             yield d.description + "\n"
         yield f"- **type:** *{d.type}*"
@@ -153,7 +153,7 @@ def _format_list_property(name: str, values: list[Any], indentation_level: int =
         for val in values:
             if isinstance(val, dict):
                 # we have a list of objects here -- continue recursively with its values
-                yield (f"{sub_indent}- (option)")
+                yield f"{sub_indent}- (option)"
                 yield from format_property(val, indentation_level + 2)
             else:
                 yield f"{sub_indent}- {val}"
@@ -170,13 +170,7 @@ def _format_atomic_property(name: str, values: Any) -> str:
         return f"{name}: *{values}*"
     if name in ["const"]:
         return f"{name}: `{values}`"
+    if name == "$ref":
+        ref_name = Path(values).name
+        return f"[{ref_name}](#{ref_name})"
     return f"{name}: {values}"
-
-
-def format_item(item: MainItem) -> str:
-    """
-    Format a single top item to Markdown.
-
-    TODO: handle internal links properly.
-    """
-    return f"- [`{item.name}`](#{item.name})"
