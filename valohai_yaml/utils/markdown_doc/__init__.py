@@ -141,23 +141,28 @@ def _format_list_property(name: str, values: list[Any], indentation_level: int =
         yield f"{indent}- required properties: {', '.join(sorted(f'`{v}`' for v in values))}"
     else:
         yield f"{indent}- {name}"
-        sub_indent = _get_indentation(indentation_level + 1)
-        for val in values:
-            if isinstance(val, dict):
-                # we have a list of objects here -- continue recursively with its values
-                if _has_type_definition(val):
-                    # if the list items have a "type" definition, use that as the item name
-                    item_name = val.pop("type")
-                elif ref := val.pop("$ref", None):
-                    # use ref links as item names
-                    item_name = _format_ref_link(ref)
-                else:
-                    # just in case there are unhandled sub list types
-                    item_name = "(object)"
-                yield f"{sub_indent}- *{item_name}*"
-                yield from format_property(val, indentation_level + 2)
-            else:
-                yield f"{sub_indent}- {val}"
+        for list_item in values:
+            yield from _format_list_value(list_item, indentation_level + 1)
+
+
+def _format_list_value(item: Any, indentation_level: int) -> Iterator[str]:
+    """Format list item to Markdown."""
+    indent = _get_indentation(indentation_level)
+    if isinstance(item, dict):
+        # we have a list of objects here -- continue recursively with its values
+        if _has_type_definition(item):
+            # if the list items have a "type" definition, use that as the item name
+            item_name = item.pop("type")
+        elif ref := item.pop("$ref", None):
+            # use ref links as item names
+            item_name = _format_ref_link(ref)
+        else:
+            # just in case there are unhandled sub list types
+            item_name = "(object)"
+        yield f"{indent}- *{item_name}*"
+        yield from format_property(item, indentation_level + 1)
+    else:
+        yield f"{indent}- {item}"
 
 
 def _format_atomic_property(name: str, values: Any) -> str:
