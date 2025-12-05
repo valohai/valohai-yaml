@@ -159,7 +159,6 @@ def _format_list_property(name: str, values: list[Any], indentation_level: int =
     - lists of values are formatted as a list of monospaced values.
     - values entered by the user in the actual YAML are monospaced
     - list values may be objects themselves -- continue recursively
-    - TODO: object values now have a clumsy "(option)" marker - improve this
     """
     indent = _get_indentation(indentation_level)
     if name == "enum":
@@ -172,7 +171,17 @@ def _format_list_property(name: str, values: list[Any], indentation_level: int =
         for val in values:
             if isinstance(val, dict):
                 # we have a list of objects here -- continue recursively with its values
-                yield f"{sub_indent}- (option)"
+                if _has_type_definition(val):
+                    # if the list items have a "type" definition, use that as the item name
+                    item_name = val.pop("type")
+                elif ref := val.pop("$ref", None):
+                    # use ref links as item names
+                    ref_name = Path(ref).name
+                    item_name = f"[{ref_name}](#{ref_name})"
+                else:
+                    # just in case there are unhandled sub list types
+                    item_name = "(object)"
+                yield f"{sub_indent}- *{item_name}*"
                 yield from format_property(val, indentation_level + 2)
             else:
                 yield f"{sub_indent}- {val}"
