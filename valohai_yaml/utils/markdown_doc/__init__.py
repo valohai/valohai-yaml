@@ -176,8 +176,7 @@ def _format_list_property(name: str, values: list[Any], indentation_level: int =
                     item_name = val.pop("type")
                 elif ref := val.pop("$ref", None):
                     # use ref links as item names
-                    ref_name = Path(ref).name
-                    item_name = f"[{ref_name}](#{ref_name})"
+                    item_name = _format_ref_link(ref)
                 else:
                     # just in case there are unhandled sub list types
                     item_name = "(object)"
@@ -199,6 +198,11 @@ def _format_atomic_property(name: str, values: Any) -> str:
     if name in ["const"]:
         return f"{name}: `{values}`"
     if name == "$ref":
-        ref_name = Path(values).name
-        return f"[{ref_name}](#{ref_name})"
+        return _format_ref_link(values)
     return f"{name}: {values}"
+
+
+def _format_ref_link(ref: str) -> str:
+    """Format a $ref link to Markdown."""
+    ref_name = Path(ref).name
+    return f"[{ref_name}](#{ref_name})"
