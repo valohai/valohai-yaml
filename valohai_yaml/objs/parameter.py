@@ -89,6 +89,8 @@ class Parameter(Item):
             data["multiple"] = data["multiple"].value
         else:
             data.pop("multiple_separator", None)
+        if self.widget:
+            data["widget"] = self.widget.serialize()
         return data
 
     def _validate_value(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
