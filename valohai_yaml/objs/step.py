@@ -41,6 +41,7 @@ class Step(Item):
         environment_variables: Iterable[EnvironmentVariable] = (),
         environment_variable_groups: Iterable[str] = (),
         environment: Optional[str] = None,
+        runtime_config_preset: Optional[str] = None,  # preset ID or slug
         description: Optional[str] = None,
         upload_store: Optional[str] = None,
         time_limit: Optional[datetime.timedelta] = None,
@@ -57,6 +58,7 @@ class Step(Item):
         self.source_path = source_path
         self.description = description
         self.environment = str(environment) if environment else None
+        self.runtime_config_preset = str(runtime_config_preset) if runtime_config_preset else None
         self.icon = str(icon) if icon else None
         self.category = str(category) if category else None
         self.upload_store = str(upload_store) if upload_store else None
@@ -114,6 +116,7 @@ class Step(Item):
             ("cache-volumes", self.cache_volumes),
             ("outputs", self.outputs),
             ("environment", self.environment),
+            ("runtime-config-preset", self.runtime_config_preset),
             ("environment-variables", self.environment_variables),
             ("environment-variable-groups", self.environment_variable_groups),
             ("description", self.description),
