@@ -1,0 +1,5 @@
+- step:
+    name: preset-id step
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    runtime-config-preset: preset-1234
