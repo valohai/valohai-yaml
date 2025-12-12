@@ -595,6 +595,10 @@ register(
                 },
                 "type": "object",
             },
+            "runtime-config-preset": {
+                "description": "The runtime configuration preset ID to use for this step.",
+                "type": "string",
+            },
             "source-path": {
                 "description": "The original source file that this step comes from, relative to this config file.",
                 "type": "string",
