@@ -623,7 +623,7 @@ register(
                 "type": "object",
             },
             "runtime-config-preset": {
-                "description": "The runtime configuration preset ID to use for this step.",
+                "description": "The runtime configuration preset ID or slug to use for this step.",
                 "type": "string",
             },
             "source-path": {
