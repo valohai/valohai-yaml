@@ -10,7 +10,15 @@ if TYPE_CHECKING:
 
 from valohai_yaml.objs.base import Item
 
-edge_types = {"input", "output", "parameter", "metadata", "file"}
+edge_types = {
+    "input",
+    "output",
+    "parameter",
+    "metadata",
+    "file",
+    "dependency",
+    "environment-variable",
+}
 
 
 class Edge(Item):

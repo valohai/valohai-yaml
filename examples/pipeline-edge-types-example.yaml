@@ -1,0 +1,88 @@
+- step:
+    name: Data preprocessing
+    image: python:3.13
+    command:
+      - python preprocess.py
+    environment-variables:
+      - name: DATA_VERSION
+        default: v1.0
+      - name: PREPROCESS_MODE
+        default: full
+    outputs:
+      - name: processed-data
+
+- step:
+    name: Model training
+    image: python:3.13
+    command:
+      - python train.py
+    environment-variables:
+      - name: DATA_VERSION
+      - name: TRAINING_MODE
+        default: standard
+    inputs:
+      - name: training-data
+    outputs:
+      - name: model
+
+- step:
+    name: Model evaluation
+    image: python:3.13
+    command:
+      - python evaluate.py
+    environment-variables:
+      - name: DATA_VERSION
+      - name: EVAL_METRIC
+        default: accuracy
+    inputs:
+      - name: model
+
+- step:
+    name: Reporting
+    image: python:3.13
+    command:
+      - python generate_report.py
+    inputs:
+      - name: results
+
+- pipeline:
+    name: Edge types showcase
+    nodes:
+      - name: preprocess
+        type: execution
+        step: Data preprocessing
+      - name: train
+        type: execution
+        step: Model training
+      - name: evaluate
+        type: execution
+        step: Model evaluation
+      - name: report
+        type: execution
+        step: Reporting
+    edges:
+      # Copy environment variable from preprocess to train
+      # This ensures both steps use the same DATA_VERSION
+      - [
+          preprocess.environment-variable.DATA_VERSION,
+          train.environment-variable.DATA_VERSION,
+        ]
+
+      # Copy environment variable from preprocess to evaluate
+      - [
+          preprocess.environment-variable.DATA_VERSION,
+          evaluate.environment-variable.DATA_VERSION,
+        ]
+
+      # Pass output data from preprocess to train
+      - [preprocess.output.processed-data*, train.input.training-data]
+
+      # Pass model from train to evaluate
+      - [train.output.model*, evaluate.input.model]
+
+      # Dependency edge: report depends on evaluate completing.
+      # This creates a pure dependency without passing data.
+      # (Generally you'd probably pass an evaluation data file as an input to reporting,
+      # but here we'll assume it's e.g. written to a database.)
+      # The `*` wildcard specifier has no particular meaning for dependency edges.
+      - [evaluate.dependency.*, report.dependency.*]
