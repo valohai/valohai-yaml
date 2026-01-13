@@ -9,6 +9,7 @@ from valohai_yaml.objs import (
     Node,
     Pipeline,
     PipelineParameter,
+    Task,
     TaskNode,
 )
 from valohai_yaml.objs.pipelines.override import Override
@@ -98,7 +99,16 @@ class PipelineConverter:
         node_data = node.serialize()
         node_data.pop("override", None)  # we'll use the actual object, not the serialization
         node_commit = node_data.pop("commit", None)
-        step_name = node_data.pop("step")
+
+        task_name = node_data.pop("task", None)
+        step_name = node_data.pop("step", None)
+        task_blueprint: Task | None = None
+        if task_name and not step_name:
+            task_blueprint = self.config.tasks.get(task_name)
+            if not task_blueprint:  # pragma: no cover
+                raise ValueError(f"Task {task_name} not found in {self.config}")
+            step_name = task_blueprint.step
+
         step_data: MutableMapping[str, Any]
         if not node_commit or node_commit == self.commit_identifier:
             # Local step, let's do validation and merging properly
@@ -130,6 +140,13 @@ class PipelineConverter:
             "step": step_name,
             **step_data,
         }
+
+        if task_blueprint:
+            task_to_template = Task.serialize_to_template(task_blueprint)
+            task_variant_parameters = task_to_template.pop("variant_parameters", None)
+            node_data["template"].update(task_to_template)
+            if task_variant_parameters:
+                node_data["template"].setdefault("parameters", {}).update(task_variant_parameters)
 
         return node_data
 
