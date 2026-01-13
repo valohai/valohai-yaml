@@ -1,0 +1,48 @@
+- step:
+    name: preprocess-dataset
+    image: python:3.12
+    command:
+      - echo "IMAGINE TRAINING DATA HERE" > /valohai/outputs/data.txt
+      - sleep 5
+
+- step:
+    name: train-model
+    image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+    command:
+      - echo "IMAGINE TRAINED MODEL HERE" > /valohai/outputs/model.txt
+      - sleep 5
+    parameters:
+      - name: epochs
+        type: integer
+    inputs:
+      - name: dataset
+
+# Usually, Valohai tasks are configured individually on creation time,
+# like defining ranges for parameters or optimization strategies to test.
+# Here, we are defining "a task blueprint" which can be used as a base
+# configuration for tasks, and show using this pre-configured task as
+# a part of a pipeline below.
+- task:
+    name: my-sweep
+    step: train-model
+    type: grid_search
+    maximum-queued-executions: 2
+    on-child-error: stop-all-and-error
+    parameters:
+      - name: epochs
+        style: multiple
+        rules:
+          items: [30, 40, 50]
+
+- pipeline:
+    name: train-pipeline
+    nodes:
+      - name: preprocess
+        type: execution
+        step: preprocess-dataset
+      - name: train
+        type: task
+        # Here we use the task blueprint by its name.
+        task: my-sweep
+    edges:
+      - [preprocess.output.*, train.input.dataset]

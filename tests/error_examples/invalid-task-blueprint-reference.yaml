@@ -1,0 +1,26 @@
+- step:
+    name: echo-step
+    image: busybox
+    command:
+      - echo hello
+    parameters:
+      - name: count
+        type: integer
+
+- task:
+    name: existing-task
+    step: echo-step
+    type: grid_search
+    parameters:
+      - name: count
+        style: multiple
+        rules:
+          items: [1, 2, 3]
+
+- pipeline:
+    name: invalid-task-pipeline
+    nodes:
+      - name: task-node
+        type: task
+        task: my-non-existent-task
+    edges: []

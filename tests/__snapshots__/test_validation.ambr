@@ -75,6 +75,14 @@
   error: Malformed edge shorthand ['batch1.input.training-labels*']
   '''
 # ---
+# name: test_bad_examples_cli[invalid-task-blueprint-reference.yaml]
+  '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
+  >>> invalid-task-blueprint-reference.yaml
+  error: Pipeline "invalid-task-pipeline" node "task-node" task "my-non-existent-task" does not exist
+  '''
+# ---
 # name: test_bad_examples_cli[invalid-upload-store-value.yaml]
   '''
   *** 1 errors, 0 warnings
