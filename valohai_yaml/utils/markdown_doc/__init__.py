@@ -135,7 +135,7 @@ def _get_type_definition(prop_values: dict[str, Any]) -> str | None:
     return None
 
 
-def _has_type_definition(prop: Any) -> bool:
+def _has_type_definition(prop: dict[str, Any]) -> bool:
     """
     Check if a property has a type definition (that is not just another property called "type").
 
@@ -144,7 +144,7 @@ def _has_type_definition(prop: Any) -> bool:
       "type": { ... }
     }} -> "type" is a property itself, not a type definition
     """
-    return isinstance(prop, dict) and "type" in prop and isinstance(prop["type"], str)
+    return "type" in prop and isinstance(prop["type"], str)
 
 
 def _get_indentation(indentation_level: int) -> str:
