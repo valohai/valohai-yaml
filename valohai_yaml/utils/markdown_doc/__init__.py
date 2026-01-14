@@ -54,10 +54,23 @@ def parse_definitions(definitions: dict[str, dict[str, Any]], top_level_refs: It
 def parse_definition(definition: dict[str, Any]) -> Definition:
     """Parse a single definition from the schema."""
     title = Path(definition["$id"]).name
+    type = definition.get("type")
+
+    # check for anyOf definitions on the main level --
+    # these don't have normal property keys, just the anyOf list
+    if not type and "anyOf" in definition:
+        return Definition(
+            title=title,
+            description=definition.get("description", ""),
+            type="anyOf",
+            properties={"anyOf": definition.get("anyOf", [])},
+            required_properties=[],
+        )
+
     return Definition(
         title=title,
         description=definition.get("description", ""),
-        type=definition.get("type", "–"),  # TODO: log a warning about missing type
+        type=type or "–",  # TODO: log a warning about missing type
         properties=definition.get("properties", {}),
         required_properties=definition.get("required", []),
     )
