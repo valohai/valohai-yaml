@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Iterator, NamedTuple
+from typing import Any, Iterable, Iterator, NamedTuple
 
 # TODO move to types
 
@@ -20,8 +20,8 @@ def generate_doc(schema_dict: dict[str, Any]) -> str:
 
     Based on the configuration JSON schema.
     """
-    top_level_item_refs = parse_top_level_item_refs(schema_dict.get("items", {}))
-    definitions = parse_definitions(schema_dict.get("$defs", {}))
+    top_level_item_refs = list(parse_top_level_item_refs(schema_dict.get("items", {})))
+    definitions = parse_definitions(schema_dict.get("$defs", {}), top_level_item_refs)
 
     return "\n".join(format_doc_content(top_level_item_refs, definitions))
 
@@ -34,10 +34,21 @@ def parse_top_level_item_refs(items: dict[str, Any]) -> Iterator[str]:
         yield prop_values["$ref"]
 
 
-def parse_definitions(definitions: dict[str, dict[str, Any]]) -> Iterator[Definition]:
-    """Parse all definitions from the schema."""
-    for definition in definitions.values():
-        yield parse_definition(definition)
+def parse_definitions(definitions: dict[str, dict[str, Any]], top_level_refs: Iterable[str]) -> Iterator[Definition]:
+    """
+    Parse all definitions from the schema.
+
+    Yield the top-level definitions first (to make the document more readable), then the rest.
+    """
+    top_level_titles = {Path(ref).name for ref in top_level_refs}
+    other_than_top_level = []
+    for def_values in definitions.values():
+        definition = parse_definition(def_values)
+        if definition.title in top_level_titles:
+            yield definition
+        else:
+            other_than_top_level.append(definition)
+    yield from other_than_top_level
 
 
 def parse_definition(definition: dict[str, Any]) -> Definition:
@@ -55,7 +66,7 @@ def parse_definition(definition: dict[str, Any]) -> Definition:
 # TODO move to formatters module
 
 
-def format_doc_content(main_item_refs: Iterator[str], definitions: Iterator[Definition]) -> Iterator[str]:
+def format_doc_content(main_item_refs: Iterable[str], definitions: Iterator[Definition]) -> Iterator[str]:
     """Format the documentation content to Markdown."""
     yield "# Valohai YAML Configuration Documentation\n"
     yield "## Top-level Properties\n"
