@@ -200,7 +200,7 @@ def _format_atomic_property(name: str, values: Any) -> str:
     """
     if name in ["additionalProperties", "type"]:
         return f"{name}: *{values}*"
-    if name in ["const"]:
+    if name in ["const", "pattern"]:
         return f"{name}: `{values}`"
     if name == "$ref":
         return _format_ref_link(values)
