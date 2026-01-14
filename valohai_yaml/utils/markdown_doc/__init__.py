@@ -88,25 +88,38 @@ def format_doc_content(main_item_refs: Iterable[str], definitions: Iterator[Defi
             yield f"- **required properties:** {', '.join(sorted(f'`{prop}`' for prop in d.required_properties))}"
 
 
-def format_property(prop: dict[str, Any], indentation_level: int = 1) -> Iterator[str]:
+def format_property(prop: dict[str, Any], parent_type: str | None = None, indentation_level: int = 1) -> Iterator[str]:
     """
     Format a single property to Markdown.
 
     - nested properties are formatted recursively
     - property types are added to the property name instead of listing them separately
+    - parent type is used for special formatting rules (like "items" -> "array items")
     """
     indent = _get_indentation(indentation_level)
     for prop_name, prop_values in prop.items():
         if isinstance(prop_values, dict):
-            formatted_name = _format_prop_name(prop_name)
-            if _has_type_definition(prop_values):
+            formatted_name = _format_prop_name(prop_name, parent_type)
+            prop_type = _get_type_definition(prop_values)
+            if prop_type:
                 formatted_name += f" *({prop_values.pop('type')})*"
             yield f"{indent}- {formatted_name}"
-            yield from format_property(prop_values, indentation_level + 1)
+            yield from format_property(prop_values, parent_type=prop_type, indentation_level=indentation_level + 1)
         elif isinstance(prop_values, list):
             yield from _format_list_property(prop_name, prop_values, indentation_level)
         else:
             yield f"{indent}- {_format_atomic_property(prop_name, prop_values)}"
+
+
+def _get_type_definition(prop_values: dict[str, Any]) -> str | None:
+    """
+    Get the type definition of a property, if it exists.
+
+    Example: {"prop_name": {"type": "string"}} -> "string"
+    """
+    if "type" in prop_values and isinstance(prop_values["type"], str):
+        return prop_values["type"]
+    return None
 
 
 def _has_type_definition(prop: Any) -> bool:
@@ -125,15 +138,17 @@ def _get_indentation(indentation_level: int) -> str:
     return "    " * indentation_level
 
 
-def _format_prop_name(name: str) -> str:
+def _format_prop_name(name: str, type: str | None) -> str:
     """
     Format a property name to Markdown, with some special rules.
 
     - custom properties in the actual YAML are monospaced
-    - properties part of the schema itself are not
+    - properties/items part of the schema itself are not (and are renamed for clarity)
     """
-    if name in ["items", "properties"]:
-        return name
+    if name == "items" and type == "array":
+        return "array items"
+    if name == "properties" and type == "object":
+        return "object properties"
     return f"`{name}`"
 
 
@@ -171,7 +186,7 @@ def _format_list_value(item: Any, indentation_level: int) -> Iterator[str]:
             # just in case there are unhandled sub list types
             item_name = "(object)"
         yield f"{indent}- *{item_name}*"
-        yield from format_property(item, indentation_level + 1)
+        yield from format_property(item, indentation_level=indentation_level + 1)
     else:
         yield f"{indent}- {item}"
 
