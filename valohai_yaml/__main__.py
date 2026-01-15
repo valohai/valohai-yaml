@@ -4,6 +4,7 @@ import sys
 from typing import List, Optional
 
 from valohai_yaml.lint import LintResult, lint
+from valohai_yaml.utils import generate_schema_doc
 from valohai_yaml.validation import get_json_schema
 
 
@@ -13,6 +14,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         "--output-json-schema",
         action="store_true",
         help="output the JSON schema for the Valohai YAML format, then exit",
+    )
+    ap.add_argument(
+        "--output-schema-doc",
+        action="store_true",
+        help="output the JSON schema documentation in Markdown format, then exit",
     )
     ap.add_argument(
         "--strict-warnings",
@@ -38,6 +44,10 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if args.output_json_schema:
         print(json.dumps(get_json_schema(), indent=2))
+        return 0
+
+    if args.output_schema_doc:
+        print(generate_schema_doc(get_json_schema()))
         return 0
 
     if not args.file:
