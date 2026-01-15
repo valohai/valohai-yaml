@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from valohai_yaml.excs import ValidationError
 from valohai_yaml.lint import LintResult
+from valohai_yaml.objs.pipelines.types import edge_types
 from valohai_yaml.types import EdgeConfigurationDict, LintContext, SerializedDict
 from valohai_yaml.utils.node_socket_utils import split_socket_str
 
@@ -9,16 +10,6 @@ if TYPE_CHECKING:
     from valohai_yaml.objs import Pipeline
 
 from valohai_yaml.objs.base import Item
-
-edge_types = {
-    "input",
-    "output",
-    "parameter",
-    "metadata",
-    "file",
-    "dependency",
-    "environment-variable",
-}
 
 
 class Edge(Item):

@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
+from valohai_yaml.objs.pipelines.types import edge_types
+
 SCHEMATA = {}
+
+edge_types_list = " | ".join(edge_types)
 
 
 def register(schema: dict) -> None:
@@ -477,6 +481,12 @@ register(
                 "items": {
                     "anyOf": [
                         {
+                            "description": (
+                                "A shorthand edge definition as a two-item array: [source, target]. "
+                                "Source and target format: `node-name.edge-type.edge-key`.<br>\n"
+                                f"Allowed edge types: {edge_types_list}.<br>\n"
+                                "Example: `[train-model.output.model.pkl, test-model.input.model]` "
+                            ),
                             "items": False,
                             "prefixItems": [{"type": "string"}, {"type": "string"}],
                             "title": "ShorthandEdge",
@@ -484,6 +494,11 @@ register(
                         },
                         {
                             "additionalProperties": False,
+                            "description": (
+                                "A full edge definition as an object with source, target and optional "
+                                "additional configuration. "
+                                "Same source and target format as in the shorthand edge definition."
+                            ),
                             "properties": {
                                 "configuration": {"type": "object"},
                                 "source": {"type": "string"},
