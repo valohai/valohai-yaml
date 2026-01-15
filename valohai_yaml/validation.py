@@ -1,3 +1,4 @@
+from copy import deepcopy
 from functools import cache
 from typing import List
 
@@ -10,7 +11,7 @@ from valohai_yaml.utils import read_yaml
 
 
 def get_json_schema() -> dict:
-    schemata = schema_data.SCHEMATA.copy()
+    schemata = deepcopy(schema_data.SCHEMATA)
     base = schemata.pop("https://valohai.com/schemas/base")
     return {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
