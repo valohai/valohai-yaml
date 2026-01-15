@@ -1,11 +1,13 @@
-from valohai_yaml.utils.markdown_doc import format_property, generate_doc, parse_definition, parse_top_level_item_refs
+from valohai_yaml.utils import generate_schema_doc
+from valohai_yaml.utils.markdown_doc.formatters import format_property
+from valohai_yaml.utils.markdown_doc.parsers import parse_definition, parse_top_level_item_refs
 from valohai_yaml.validation import get_json_schema
 
 
 def test_parse_generated_schema_doc():
     """The generated markdown documentation is parsable."""
     schema = get_json_schema()
-    assert generate_doc(schema), "Should generate non-empty documentation"
+    assert generate_schema_doc(schema), "Should generate non-empty documentation"
 
 
 def test_parse_top_level_refs():
