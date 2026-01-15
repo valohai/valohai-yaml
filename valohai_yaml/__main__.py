@@ -4,7 +4,7 @@ import sys
 from typing import List, Optional
 
 from valohai_yaml.lint import LintResult, lint
-from valohai_yaml.utils import generate_schema_doc
+from valohai_yaml.utils.markdown_doc import generate_schema_doc
 from valohai_yaml.validation import get_json_schema
 
 

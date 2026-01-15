@@ -3,7 +3,6 @@ from typing import Any, List, Optional, Tuple, TypeVar, Union, overload
 from yaml import safe_load
 
 from valohai_yaml.types import YamlReadable
-from valohai_yaml.utils.markdown_doc.doc_generator import generate_schema_doc as generate_schema_doc
 
 
 def read_yaml(yaml: YamlReadable) -> Any:

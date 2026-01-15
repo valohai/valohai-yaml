@@ -1,4 +1,4 @@
-from valohai_yaml.utils import generate_schema_doc
+from valohai_yaml.utils.markdown_doc import generate_schema_doc
 from valohai_yaml.utils.markdown_doc.formatters import format_property
 from valohai_yaml.utils.markdown_doc.parsers import parse_definition, parse_top_level_item_refs
 from valohai_yaml.validation import get_json_schema
