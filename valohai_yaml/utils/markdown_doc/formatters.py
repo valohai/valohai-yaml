@@ -62,18 +62,6 @@ def _get_type_definition(prop_values: dict[str, Any]) -> str | None:
     return None
 
 
-def _has_type_definition(prop: dict[str, Any]) -> bool:
-    """
-    Check if a property has a type definition (that is not just another property called "type").
-
-    Example: {"prop_name": {"type": "string"}} -> "prop_name" is of type "string"
-    {"properties": {
-      "type": { ... }
-    }} -> "type" is a property itself, not a type definition
-    """
-    return "type" in prop and isinstance(prop["type"], str)
-
-
 def _get_indentation(indentation_level: int) -> str:
     return "    " * indentation_level
 
@@ -116,7 +104,7 @@ def _format_list_value(item: Any, indentation_level: int) -> Iterator[str]:
     indent = _get_indentation(indentation_level)
     if isinstance(item, dict):
         # we have a list of objects here -- continue recursively with its values
-        if _has_type_definition(item):
+        if _get_type_definition(item):
             # if the list items have a "type" definition, use that as the item name
             item_name = item.pop("type")
         elif ref := item.pop("$ref", None):
