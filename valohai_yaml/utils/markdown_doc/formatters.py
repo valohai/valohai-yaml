@@ -43,6 +43,7 @@ def format_property(prop: dict[str, Any], parent_type: str | None = None, indent
             prop_type = _get_type_definition(prop_values)
             if prop_type:
                 formatted_name += f" *({prop_values.pop('type')})*"
+            formatted_name = _inline_title_and_description(formatted_name, prop_values)
             yield f"{indent}- {formatted_name}"
             yield from format_property(prop_values, parent_type=prop_type, indentation_level=indentation_level + 1)
         elif isinstance(prop_values, list):
@@ -113,6 +114,7 @@ def _format_list_value(item: Any, indentation_level: int) -> Iterator[str]:
         else:
             # just in case there are unhandled sub list types
             item_name = "(object)"
+        item_name = _inline_title_and_description(item_name, item)
         yield f"{indent}- *{item_name}*"
         yield from format_property(item, indentation_level=indentation_level + 1)
     else:
@@ -139,3 +141,20 @@ def _format_ref_link(ref: str) -> str:
     """Format a $ref link to Markdown."""
     ref_name = Path(ref).name
     return f"[`{ref_name}`](#{ref_name})"
+
+
+def _inline_title_and_description(item_name: str, item_values: dict[str, Any]) -> str:
+    """
+    Add title and description of a property to its name, if they exist.
+
+    NOTE: Removes the title and description from item_values so they won't be processed again.
+
+    Example: {"title": "My Title", "description": "My Description"} ->
+    - item_name – My Title
+      ➤ My Description
+    """
+    if title := item_values.pop("title", None):
+        item_name = f"{item_name} – {title}"
+    if description := item_values.pop("description", None):
+        item_name = f"{item_name}<br>\n➤ {description}"
+    return item_name
