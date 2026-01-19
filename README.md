@@ -62,3 +62,11 @@ make lint
 # run tests
 make test
 ```
+
+## Snapshots
+
+Update [syrupy](https://github.com/tophat/syrupy) snapshots after making changes to the examples.
+
+```bash
+pytest --snapshot-update
+```
