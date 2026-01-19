@@ -72,6 +72,10 @@ def test_expression_lint_ok(file_path):
             "wrong-edge-merge-mode.yaml",
             "'boo-boo'} is not valid under any of the given schemas",
         ),
+        (
+            "step-preset-without-environment.yaml",
+            'missing "environment"',
+        ),
     ],
 )
 def test_expression_lint_fail(file_path, expected_message):
