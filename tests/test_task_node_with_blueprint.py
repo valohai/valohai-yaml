@@ -182,14 +182,19 @@ BLUEPRINT_WITH_ALL_FIELDS_YAML = """
 
 def test_blueprint_task_nodes_convert_with_all_fields():
     config = parse(BLUEPRINT_WITH_ALL_FIELDS_YAML)
+
+    lint_result = config.lint()
+    assert lint_result.is_valid()
+    assert not list(lint_result.warnings)
+
     pipeline = config.pipelines["test-pipeline"]
     payload = PipelineConverter(
         config=config,
         commit_identifier="abc123",
     ).convert_pipeline(pipeline)
 
-    bayesian_node = next(node for node in payload["nodes"] if node["name"] == "bayesian-node")
-    template = bayesian_node["template"]
+    node = next(node for node in payload["nodes"] if node["name"] == "bayesian-node")
+    template = node["template"]
 
     assert template["type"] == "bayesian_tpe"
     assert template["on_child_error"] == "continue-and-complete"
@@ -227,13 +232,6 @@ BLUEPRINT_WITH_MANY_PARAMETER_SETS = """
     step: train-model
     type: manual_search
     reuse-children: true
-    parameters:
-      - name: epoch
-        style: multiple
-        rules: {}
-      - name: learning_rate
-        style: multiple
-        rules: {}
     parameter-sets:
       - epochs: 10
         learning_rate: 0.01
@@ -252,6 +250,11 @@ BLUEPRINT_WITH_MANY_PARAMETER_SETS = """
 
 def test_blueprint_task_nodes_converts_parameter_sets():
     config = parse(BLUEPRINT_WITH_MANY_PARAMETER_SETS)
+
+    lint_result = config.lint()
+    assert lint_result.is_valid()
+    assert not list(lint_result.warnings)
+
     pipeline = config.pipelines["test-pipeline"]
     payload = PipelineConverter(
         config=config,

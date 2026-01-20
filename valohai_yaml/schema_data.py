@@ -712,7 +712,11 @@ register(
             "stop-condition": {"type": "string"},
             "type": {"type": "string"},
         },
-        "required": ["name", "step", "parameters"],
+        "required": ["name", "step"],
+        "anyOf": [
+            {"required": ["parameters"]},
+            {"required": ["parameter-sets"]},
+        ],
         "type": "object",
     },
 )
