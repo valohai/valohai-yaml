@@ -105,6 +105,14 @@
   error:   Type validation on step.image.type: True is not of type 'string' (0.step.image)
   '''
 # ---
+# name: test_bad_examples_cli[step-preset-without-environment.yaml]
+  '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
+  >>> step-preset-without-environment.yaml
+  error: Step "preset without environment", missing "environment". When specifying a runtime config preset, you must also specify an environment.
+  '''
+# ---
 # name: test_bad_examples_cli[step-stop-condition.yaml]
   '''
   *** 1 errors, 0 warnings

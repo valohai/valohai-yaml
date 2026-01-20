@@ -1,0 +1,5 @@
+- step:
+    name: preset without environment
+    image: tensorflow/tensorflow
+    command: python train.py
+    runtime-config-preset: preset-1234

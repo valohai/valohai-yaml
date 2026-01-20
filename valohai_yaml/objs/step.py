@@ -204,6 +204,12 @@ class Step(Item):
         )
         lint_expression(lint_result, context, "stop-condition", self.stop_condition)
 
+        if self.runtime_config_preset and not self.environment:
+            lint_result.add_error(
+                f'Step "{self.name}", missing "environment". '
+                f"When specifying a runtime config preset, you must also specify an environment.",
+            )
+
     @classmethod
     def default_merge(cls, a: "Step", b: "Step") -> "Step":
         result = merge_simple(a, b)

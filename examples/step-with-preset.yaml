@@ -2,4 +2,5 @@
     name: preset-id step
     image: tensorflow/tensorflow
     command: python -u /tmp/code/my_mnist.py
+    environment: test-environment
     runtime-config-preset: preset-1234
