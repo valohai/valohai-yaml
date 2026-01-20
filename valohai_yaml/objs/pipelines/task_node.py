@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.pipelines.edge_merge_mode import EdgeMergeMode
@@ -57,6 +57,19 @@ class TaskNode(Node):
                 lint_task_reference(self, self.task, lint_result, context)
             if self.step:
                 lint_step_reference(self, self.step, lint_result, context)
+
+    def get_parameter_defaults(self) -> Dict[str, Any]:
+        # this function is not used by us anymore, should it be deprecated?
+        # iiuc, Override.merge_with_step was introduced to replace its usage
+
+        if not self.override or self.override.parameters is None:
+            return {}
+
+        return {
+            name: parameter.default
+            for (name, parameter) in self.override.parameters.items()
+            if parameter.default is not None
+        }
 
     def serialize(self) -> SerializedDict:
         ser = dict(super().serialize())

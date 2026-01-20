@@ -44,6 +44,9 @@ class ExecutionNode(Node):
             lint_step_reference(self, self.step, lint_result, context)
 
     def get_parameter_defaults(self) -> Dict[str, Any]:
+        # this function is not used by us anymore, should it be deprecated?
+        # iiuc, Override.merge_with_step was introduced to replace its usage
+
         if not self.override or self.override.parameters is None:
             return {}
         return {
