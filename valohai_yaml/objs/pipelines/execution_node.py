@@ -5,6 +5,7 @@ from valohai_yaml.objs.pipelines.edge_merge_mode import EdgeMergeMode
 from valohai_yaml.objs.pipelines.node import ErrorAction, Node
 from valohai_yaml.objs.pipelines.node_action import NodeAction
 from valohai_yaml.objs.pipelines.override import Override
+from valohai_yaml.objs.pipelines.validation import lint_step_reference
 from valohai_yaml.types import LintContext, NodeOverrideDict, SerializedDict
 
 
@@ -36,36 +37,16 @@ class ExecutionNode(Node):
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         super().lint(lint_result, context)
-
         if not self.commit:
-            # We can only lint step-related things if the step is defined in this configuration.
-            # If a commit is specified, we can't know that.
-            self._lint_step(lint_result, context)
-
-    def _lint_step(self, lint_result: LintResult, context: LintContext) -> None:
-        config = context["config"]
-        pipeline = context["pipeline"]
-        error_prefix = f'Pipeline "{pipeline.name}" node "{self.name}" step "{self.step}"'
-        step = config.steps.get(self.step)
-        if not step:
-            lint_result.add_error(f"{error_prefix} does not exist")
-            return
-        if self.override is not None:
-            self.override.lint(lint_result, context)
-            step_inputs = step.inputs.keys()
-            step_parameters = step.parameters.keys()
-            for input_name in self.override.inputs:
-                if input_name not in step_inputs:
-                    lint_result.add_error(
-                        f"{error_prefix}: input {input_name} does not exist in step",
-                    )
-            for parameter_name in self.override.parameters:
-                if parameter_name not in step_parameters:
-                    lint_result.add_error(
-                        f"{error_prefix}: parameter {parameter_name} does not exist in step",
-                    )
+            # We can only lint step-related things if the step is defined in
+            # this configuration. If a commit is specified, and thus step comes
+            # from a different YAML, we can't know that.
+            lint_step_reference(self, self.step, lint_result, context)
 
     def get_parameter_defaults(self) -> Dict[str, Any]:
+        # this function is not used by us anymore, should it be deprecated?
+        # iiuc, Override.merge_with_step was introduced to replace its usage
+
         if not self.override or self.override.parameters is None:
             return {}
         return {

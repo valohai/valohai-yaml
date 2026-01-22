@@ -14,20 +14,34 @@ def register(schema: dict) -> None:
 
 
 def _get_execution_and_task_node_props(type: str) -> dict[str, Any]:
-    return {
+    properties = {
+        "actions": {"items": {"$ref": "/schemas/node-action"}, "type": "array"},
+        "commit": {"type": "string"},
+        "edge-merge-mode": {"$ref": "/schemas/node-edge-merge-mode"},
+        "name": {"type": "string"},
+        "on-error": {"enum": ["stop-all", "stop-next", "continue", "retry"], "type": "string"},
+        "override": {"$ref": "/schemas/overridden-properties"},
+        "step": {"type": "string"},
+        "type": {"const": type, "type": "string"},
+    }
+    result: dict[str, Any] = {
         "additionalProperties": False,
-        "properties": {
-            "actions": {"items": {"$ref": "/schemas/node-action"}, "type": "array"},
-            "commit": {"type": "string"},
-            "edge-merge-mode": {"$ref": "/schemas/node-edge-merge-mode"},
-            "name": {"type": "string"},
-            "on-error": {"enum": ["stop-all", "stop-next", "continue", "retry"], "type": "string"},
-            "override": {"$ref": "/schemas/overridden-properties"},
-            "step": {"type": "string"},
-            "type": {"const": type, "type": "string"},
-        },
+        "properties": properties,
         "required": ["name", "step", "type"],
     }
+
+    # task nodes reference either a `step` or a `task` blueprint;
+    # one of which must be present, but not both
+    if type == "task":
+        properties["task"] = {"type": "string"}
+        result["required"] = ["name", "type"]
+        result["oneOf"] = [
+            {"required": ["step"]},
+            {"required": ["task"]},
+        ]
+        result["not"] = {"required": ["step", "task"]}
+
+    return result
 
 
 register(
@@ -698,7 +712,11 @@ register(
             "stop-condition": {"type": "string"},
             "type": {"type": "string"},
         },
-        "required": ["name", "step", "parameters"],
+        "required": ["name", "step"],
+        "anyOf": [
+            {"required": ["parameters"]},
+            {"required": ["parameter-sets"]},
+        ],
         "type": "object",
     },
 )

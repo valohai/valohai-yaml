@@ -73,6 +73,22 @@ class Task(Item):
     engine: str | None
     on_child_error: TaskOnChildError | None
 
+    # which, and with what name, to include task fields in
+    # pipeline node templates
+    PIPELINE_TEMPLATE_FIELD_MAPPING = {
+        "type": ["type"],
+        "maximum_queued_executions": ["maximum_queued_executions"],
+        "on_child_error": ["on_child_error"],
+        "stop_condition": ["stop_expression"],
+        "reuse_children": ["allow_reuse"],
+        # bayesian tasks have their configuration deeper
+        "engine": ["configuration", "engine"],
+        "execution_count": ["configuration", "execution_count"],
+        "execution_batch_size": ["configuration", "execution_batch_size"],
+        "optimization_target_metric": ["configuration", "optimization_target_metric"],
+        "optimization_target_value": ["configuration", "optimization_target_value"],
+    }
+
     def __init__(
         self,
         *,
@@ -125,3 +141,34 @@ class Task(Item):
                     lint_result.add_warning(
                         f"{key} only makes sense for Bayesian TPE tasks",
                     )
+
+    @classmethod
+    def serialize_to_template(cls, task: Task) -> dict[str, Any]:
+        """Serialize a task (blueprint) object to a template for a task node."""
+        template: dict[str, Any] = {"type": task.type.value}
+
+        for task_field_name, template_path in cls.PIPELINE_TEMPLATE_FIELD_MAPPING.items():
+            value = getattr(task, task_field_name)
+            if isinstance(value, Enum):
+                value = value.value
+            if value is not None and value != []:
+                target = template
+                for key in template_path[:-1]:
+                    target = target.setdefault(key, {})
+                target[template_path[-1]] = value
+
+        if task.parameters:
+            template["variant_parameters"] = {
+                vp.name: {"style": vp.style.value, "rules": vp.rules} for vp in task.parameters
+            }
+
+        if task.parameter_sets:
+            variant_parameters = template.setdefault("variant_parameters", {})
+            collected: dict[str, list[Any]] = {}
+            for param_set in task.parameter_sets:
+                for param_name, param_value in param_set.items():
+                    collected.setdefault(param_name, []).append(param_value)
+            for param_name, items in collected.items():
+                variant_parameters[param_name] = {"style": "multiple", "rules": {"items": items}}
+
+        return template

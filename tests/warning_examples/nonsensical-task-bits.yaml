@@ -19,3 +19,7 @@
     # bad: bayesian task configuration on a grid search task
     optimization-target-metric: goodness
     optimization-target-value: 7.2
+    # bad: parameter-sets only make sense with manual search
+    parameter-sets:
+      - A: 1
+      - A: 2
