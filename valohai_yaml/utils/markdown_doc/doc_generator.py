@@ -2,6 +2,7 @@ from typing import Any
 
 from valohai_yaml.utils.markdown_doc.formatters import format_doc_content
 from valohai_yaml.utils.markdown_doc.parsers import parse_definitions, parse_top_level_item_refs
+from valohai_yaml.utils.version import get_current_version
 
 
 def generate_schema_doc(schema_dict: dict[str, Any]) -> str:
@@ -12,5 +13,6 @@ def generate_schema_doc(schema_dict: dict[str, Any]) -> str:
     """
     top_level_item_refs = list(parse_top_level_item_refs(schema_dict.get("items", {})))
     definitions = parse_definitions(schema_dict.get("$defs", {}), top_level_item_refs)
+    version = get_current_version()
 
-    return "\n".join(format_doc_content(top_level_item_refs, definitions))
+    return "\n".join(format_doc_content(top_level_item_refs, definitions, version))
