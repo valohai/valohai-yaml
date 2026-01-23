@@ -6,9 +6,15 @@ from typing import Any, Iterable, Iterator
 from valohai_yaml.utils.markdown_doc.types import Definition
 
 
-def format_doc_content(main_item_refs: Iterable[str], definitions: Iterator[Definition]) -> Iterator[str]:
+def format_doc_content(
+    main_item_refs: Iterable[str],
+    definitions: Iterator[Definition],
+    version: str,
+) -> Iterator[str]:
     """Format the documentation content to Markdown."""
     yield "# Valohai YAML Configuration Documentation\n"
+    yield f"_Valohai YAML version v{version}_\n\n"
+
     yield "## Top-level Properties\n"
 
     for ref in main_item_refs:
