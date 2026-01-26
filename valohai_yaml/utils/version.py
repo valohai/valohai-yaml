@@ -8,10 +8,10 @@ def get_current_version() -> str:
     Get the current version (based on latest release).
 
     If there have been commits after the tagged release version,
-    a '+' is added to the version.
+    a '+dev' is added to the version.
     """
     version = __version__
-    suffix = "+" if _has_changed_after_release(version) else ""
+    suffix = "+dev" if _has_changed_after_release(version) else ""
     return f"{version}{suffix}"
 
 

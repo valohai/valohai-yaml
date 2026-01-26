@@ -13,7 +13,7 @@ def format_doc_content(
 ) -> Iterator[str]:
     """Format the documentation content to Markdown."""
     yield "# Valohai YAML Configuration Documentation\n"
-    yield f"_Valohai YAML version v{version}_\n\n"
+    yield f"_Valohai YAML v{version}_\n\n"
 
     yield "## Top-level Properties\n"
 
