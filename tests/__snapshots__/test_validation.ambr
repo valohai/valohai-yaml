@@ -91,6 +91,14 @@
   error:   Maxlength validation on step.upload-store.maxLength: 'This is a test string exactly with  65 characters long in length.' is too long (0.step.upload-store)
   '''
 # ---
+# name: test_bad_examples_cli[pipeline-with-preset-override-without-environment.yaml]
+  '''
+  *** 1 errors, 0 warnings
+  ------------------------------------------------------------
+  >>> pipeline-with-preset-override-without-environment.yaml
+  error: Pipeline "Training pipeline" node "train-node" step "train": missing "environment". When specifying a runtime config preset, you must also specify an environment.
+  '''
+# ---
 # name: test_bad_examples_cli[step-invalid-resources.yaml]
   '''
   *** 1 errors, 0 warnings

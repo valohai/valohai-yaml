@@ -1,4 +1,4 @@
-from tests.utils import get_warning_example_path
+from tests.utils import get_error_example_path, get_warning_example_path
 from valohai_yaml.lint import lint_file
 from valohai_yaml.objs import Config, DeploymentNode, ExecutionNode
 from valohai_yaml.objs.pipelines.node import ErrorAction
@@ -127,3 +127,46 @@ def test_pipeline_commit(pipeline_with_different_commit_config: Config):
         for n in pipeline_with_different_commit_config.pipelines["Commits Specified"].nodes
         if isinstance(n, ExecutionNode)
     )
+
+
+def test_pipeline_runtime_config_preset_override(pipeline_with_runtime_config_preset: Config):
+    """Runtime config preset can be overridden in pipeline nodes."""
+    assert pipeline_with_runtime_config_preset.lint().is_valid()
+    pl = pipeline_with_runtime_config_preset.pipelines["Training pipeline"]
+    node = pl.get_node_by(name="train-node")
+    assert isinstance(node, ExecutionNode)
+    assert node.override is not None
+    assert node.override.environment == "aws-p3-2xlarge"
+    assert node.override.runtime_config_preset == "preset-xyz789"
+
+    serialized = node.override.serialize()
+    assert serialized["environment"] == "aws-p3-2xlarge"
+    assert serialized["runtime-config-preset"] == "preset-xyz789"
+
+
+def test_pipeline_runtime_config_preset_override_without_step_preset(
+    pipeline_with_runtime_config_preset_override_only: Config,
+):
+    """Runtime config preset can be added via override even if step doesn't define it."""
+    assert pipeline_with_runtime_config_preset_override_only.lint().is_valid()
+    # step does NOT have environment or runtime_config_preset
+    step = pipeline_with_runtime_config_preset_override_only.steps["train"]
+    assert step.environment is None
+    assert step.runtime_config_preset is None
+
+    # add values in node override
+    pl = pipeline_with_runtime_config_preset_override_only.pipelines["Training pipeline with override-only preset"]
+    node = pl.get_node_by(name="train-node")
+    assert isinstance(node, ExecutionNode)
+    assert node.override is not None
+    assert node.override.environment == "aws-p3-2xlarge"
+    assert node.override.runtime_config_preset == "preset-xyz789"
+
+
+def test_pipeline_runtime_config_preset_override_requires_environment():
+    """Lint fails when runtime config preset is overridden without environment."""
+    path = get_error_example_path("pipeline-with-preset-override-without-environment.yaml")
+    lint_result = lint_file(path)
+    assert not lint_result.is_valid()
+    errors = list(lint_result.errors)
+    assert any('missing "environment"' in e["message"] for e in errors)

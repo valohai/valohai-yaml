@@ -1,0 +1,17 @@
+- step:
+    name: train
+    image: tensorflow/tensorflow
+    command: python train.py
+    environment: aws-p3-xlarge
+    runtime-config-preset: preset-abc123
+
+- pipeline:
+    name: Training pipeline
+    nodes:
+      - name: train-node
+        type: execution
+        step: train
+        override:
+          # ERROR: runtime-config-preset without environment in override
+          runtime-config-preset: preset-xyz789
+    edges: []

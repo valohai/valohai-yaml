@@ -1,0 +1,16 @@
+- step:
+    name: train
+    image: tensorflow/tensorflow
+    command: python train.py
+
+- pipeline:
+    name: Training pipeline with override-only preset
+    nodes:
+      - name: train-node
+        type: execution
+        step: train
+        override:
+          # environment and runtime-config-preset can be added via override
+          environment: aws-p3-2xlarge
+          runtime-config-preset: preset-xyz789
+    edges: []
