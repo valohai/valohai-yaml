@@ -92,7 +92,6 @@ class Step(Item):
         kwargs["stop_condition"] = kwargs.pop("stop-condition", None)
         kwargs["upload_store"] = kwargs.pop("upload-store", None)
         kwargs["resources"] = WorkloadResources.parse(kwargs.pop("resources", {}))
-        kwargs["runtime_config_preset"] = kwargs.pop("runtime-config-preset", None)
         kwargs["environment_variable_groups"] = kwargs.pop("environment-variable-groups", ())
         inst = cls(**kwargs)
         inst._original_data = data
@@ -248,4 +247,6 @@ def parse_common_step_properties(data: SerializedDict) -> Dict[str, Any]:
         "environment-variables",
         EnvironmentVariable,
     )
+    if "runtime-config-preset" in kwargs:
+        kwargs["runtime_config_preset"] = kwargs.pop("runtime-config-preset")
     return kwargs

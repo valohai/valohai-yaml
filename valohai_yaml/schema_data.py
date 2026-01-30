@@ -388,6 +388,10 @@ register(
                 "items": {"$ref": "/schemas/param-item"},
                 "type": "array",
             },
+            "runtime-config-preset": {
+                "description": "The runtime configuration preset ID or slug to use for this node.",
+                "type": "string",
+            },
         },
         "type": "object",
     },
