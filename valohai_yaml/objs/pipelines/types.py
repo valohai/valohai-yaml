@@ -4,6 +4,7 @@ edge_types = {
     "parameter",
     "metadata",
     "file",
+    "deployment",
     "dependency",
     "environment-variable",
 }
