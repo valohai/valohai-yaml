@@ -73,3 +73,10 @@ def _lint_override_against_step(
     for param_name in override.parameters:
         if param_name not in step.parameters:
             lint_result.add_error(f"{error_prefix}: parameter {param_name} does not exist in step")
+
+    # when runtime_config_preset is overridden, environment must also be overridden
+    if override.runtime_config_preset and not override.environment:
+        lint_result.add_error(
+            f'{error_prefix}: missing "environment". '
+            f"When specifying a runtime config preset, you must also specify an environment.",
+        )
