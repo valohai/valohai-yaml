@@ -30,6 +30,7 @@ OVERRIDABLE_FIELDS = {
     "inputs",
     "mounts",
     "parameters",
+    "runtime_config_preset",
 }
 
 
@@ -46,10 +47,12 @@ class Override(Item):
         mounts: Iterable[Mount] | None = None,
         environment_variables: Iterable[EnvironmentVariable] | None = None,
         environment: str | None = None,
+        runtime_config_preset: str | None = None,
     ) -> None:
         self.image = image
         self.command = command
         self.environment = str(environment) if environment else None
+        self.runtime_config_preset = str(runtime_config_preset) if runtime_config_preset else None
         self.mounts = check_type_and_listify(mounts, Mount)
         self.inputs = check_type_and_dictify(inputs, Input, "name")
         self.parameters = check_type_and_dictify(parameters, Parameter, "name")
@@ -112,7 +115,8 @@ class Override(Item):
         original_data = getattr(self, "_original_data", {})
         if isinstance(original_data, dict):
             for key in original_data:
-                if key not in OVERRIDABLE_FIELDS:
+                normalized_key = key.replace("-", "_")
+                if normalized_key not in OVERRIDABLE_FIELDS:
                     lint_result.add_warning(
                         f"Unknown field {key!r} in override; should it be nested under `parameters` or `inputs`?",
                     )
@@ -126,6 +130,7 @@ class Override(Item):
             ("inputs", self.inputs),
             ("mounts", self.mounts),
             ("environment", self.environment),
+            ("runtime-config-preset", self.runtime_config_preset),
             ("environment-variables", self.environment_variables),
         ]:
             if source:

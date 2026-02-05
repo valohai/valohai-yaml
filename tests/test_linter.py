@@ -76,6 +76,10 @@ def test_expression_lint_ok(file_path):
             "step-preset-without-environment.yaml",
             'missing "environment"',
         ),
+        (
+            "pipeline-with-preset-override-without-environment.yaml",
+            'missing "environment"',
+        ),
     ],
 )
 def test_expression_lint_fail(file_path, expected_message):
