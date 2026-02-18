@@ -139,3 +139,19 @@ def test_pipeline_commit_conversion(pipeline_with_different_commit_config: Confi
             },
         },
     ]
+
+
+def test_pipeline_conversion_env_vars_are_dict(pipeline_with_env_vars_config: Config):
+    """Pipeline node support for environment-variables."""
+    pipeline = pipeline_with_env_vars_config.pipelines["Edge types showcase"]
+    result = PipelineConverter(config=pipeline_with_env_vars_config, commit_identifier="abc123").convert_pipeline(
+        pipeline,
+    )
+
+    node = result["nodes"][0]  # "preprocess"
+    assert isinstance(
+        node["template"]["environment-variables"],
+        dict,
+    ), "environment-variables should be a dict, not a list, for API compatibility"
+    assert node["template"]["environment-variables"]["DATA_VERSION"] == "v1.0"
+    assert node["template"]["environment-variables"]["PREPROCESS_MODE"] == "full"
