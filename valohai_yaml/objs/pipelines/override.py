@@ -92,6 +92,10 @@ class Override(Item):
         template = override.serialize()
         template["inputs"] = {name: listify(input.default) for name, input in override.inputs.items()}
         template["parameters"] = {name: param.default for name, param in override.parameters.items()}
+        if override.environment_variables:
+            template["environment-variables"] = {
+                name: env_var.default for name, env_var in override.environment_variables.items()
+            }
         return template
 
     @classmethod
