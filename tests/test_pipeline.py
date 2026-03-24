@@ -163,6 +163,33 @@ def test_pipeline_runtime_config_preset_override_without_step_preset(
     assert node.override.runtime_config_preset == "preset-xyz789"
 
 
+def test_default_on_error_not_serialized(pipeline_config: Config):
+    pl = pipeline_config.pipelines["My little pipeline"]
+    node = pl.get_node_by(name="batch1")
+    assert node and node.on_error == ErrorAction.STOP_ALL
+    assert "on-error" not in node.serialize()
+
+
+def test_non_default_on_error_serialized(pipeline_with_retried_execution_config: Config):
+    node = pipeline_with_retried_execution_config.pipelines["pipe"].nodes[0]
+    assert node.on_error == ErrorAction.RETRY
+    assert node.serialize()["on-error"] == "retry"
+
+
+def test_empty_edge_configuration_not_serialized(pipeline_config: Config):
+    pl = pipeline_config.pipelines["My little pipeline"]
+    edge = pl.edges[0]
+    edge.configuration = {}
+    assert "configuration" not in edge.serialize()
+
+
+def test_non_empty_edge_configuration_serialized(pipeline_config: Config):
+    pl = pipeline_config.pipelines["My little pipeline"]
+    edge = pl.edges[0]
+    edge.configuration = {"foo": "bar"}
+    assert edge.serialize()["configuration"] == {"foo": "bar"}
+
+
 def test_pipeline_runtime_config_preset_override_requires_environment():
     """Lint fails when runtime config preset is overridden without environment."""
     path = get_error_example_path("pipeline-with-preset-override-without-environment.yaml")
