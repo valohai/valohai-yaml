@@ -4,10 +4,11 @@ import copy
 from collections import OrderedDict
 from typing import TYPE_CHECKING
 
-from valohai_yaml.objs import Mount, Parameter
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.environment_variable import EnvironmentVariable
 from valohai_yaml.objs.input import Input
+from valohai_yaml.objs.mount import Mount
+from valohai_yaml.objs.parameter import Parameter
 from valohai_yaml.objs.step import Step, parse_common_step_properties
 from valohai_yaml.objs.utils import (
     check_type_and_dictify,
