@@ -86,7 +86,9 @@ class Node(Item):
 
     def get_data(self) -> SerializedDict:
         data = super().get_data()
-        data["on_error"] = data["on_error"].value
+        on_error = data.pop("on_error", ErrorAction.STOP_ALL)
+        if on_error != ErrorAction.STOP_ALL:  # Elide default
+            data["on_error"] = on_error.value
         if data.get("edge_merge_mode") == DEFAULT_EDGE_MERGE_MODE:  # Elide default
             del data["edge_merge_mode"]
         return data

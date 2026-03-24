@@ -65,11 +65,13 @@ class Edge(Item):
         return super().parse(data)
 
     def get_data(self) -> SerializedDict:
-        return {
+        data: SerializedDict = {
             "source": self.source,
             "target": self.target,
-            "configuration": self.configuration,
         }
+        if self.configuration:
+            data["configuration"] = self.configuration
+        return data
 
     def get_expanded(self) -> dict[str, Any]:
         """Get the "expanded" form of this edge."""

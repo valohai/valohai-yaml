@@ -119,13 +119,11 @@ def test_pipeline_commit_conversion(pipeline_with_different_commit_config: Confi
     assert result["nodes"] == [
         {
             "name": "preprocess",
-            "on-error": "stop-all",
             "type": "execution",
             "template": {"commit": "library:generic-preprocessors/csv-into-parquet", "step": "parquetify"},
         },
         {
             "name": "mangle",
-            "on-error": "stop-all",
             "type": "execution",
             "template": {
                 "commit": "102dsgkmr4",
