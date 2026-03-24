@@ -1,12 +1,12 @@
-from typing import IO, Any, Dict, List, Union
+from typing import IO, Any, Union
 
-YamlReadable = Union[Dict[Any, Any], List[Any], bytes, str, IO[bytes], IO[str]]
-SerializedDict = Dict[str, Any]
-LintResultMessage = Dict[str, Any]
-LintContext = Dict[str, Any]
-MountOptions = Dict[str, Any]
-EdgeConfigurationDict = Dict[str, Any]
-EndpointResourcesDict = Dict[str, Any]
-EndpointTolerationDict = Dict[str, Any]
-NodeOverrideDict = Dict[str, Any]
-DeploymentDefaultsDict = Dict[str, Any]
+YamlReadable = Union[dict[Any, Any], list[Any], bytes, str, IO[bytes], IO[str]]
+SerializedDict = dict[str, Any]
+LintResultMessage = dict[str, Any]
+LintContext = dict[str, Any]
+MountOptions = dict[str, Any]
+EdgeConfigurationDict = dict[str, Any]
+EndpointResourcesDict = dict[str, Any]
+EndpointTolerationDict = dict[str, Any]
+NodeOverrideDict = dict[str, Any]
+DeploymentDefaultsDict = dict[str, Any]

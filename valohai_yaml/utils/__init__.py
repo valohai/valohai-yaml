@@ -1,8 +1,11 @@
-from typing import Any, List, Optional, Tuple, TypeVar, Union, overload
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, TypeVar, overload
 
 from yaml import safe_load
 
-from valohai_yaml.types import YamlReadable
+if TYPE_CHECKING:
+    from valohai_yaml.types import YamlReadable
 
 
 def read_yaml(yaml: YamlReadable) -> Any:
@@ -17,18 +20,18 @@ T = TypeVar("T")
 
 
 @overload
-def listify(value: None) -> List[Any]: ...
+def listify(value: None) -> list[Any]: ...
 
 
 @overload
-def listify(value: Union[List[T], Tuple[T]]) -> List[T]: ...
+def listify(value: list[T] | tuple[T]) -> list[T]: ...
 
 
 @overload
-def listify(value: T) -> List[T]: ...
+def listify(value: T) -> list[T]: ...
 
 
-def listify(value: Optional[Union[List[T], Tuple[T], T]]) -> List[T]:
+def listify(value: list[T] | tuple[T] | T | None) -> list[T]:
     """
     Wrap the given value into a list, with provisions outlined below.
 

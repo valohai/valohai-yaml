@@ -1,26 +1,32 @@
-from typing import Any, Callable, Iterator, List, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Callable
 
 import yaml as pyyaml
 from jsonschema.exceptions import relevance
 
 from valohai_yaml.excs import ValidationError
-from valohai_yaml.types import LintResultMessage, YamlReadable
 from valohai_yaml.utils import read_yaml
 from valohai_yaml.utils.terminal import noop_style, style
 from valohai_yaml.validation import get_validator
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from valohai_yaml.types import LintResultMessage, YamlReadable
 
 
 class LintResult:
     """Container for lint results."""
 
     def __init__(self) -> None:
-        self.messages: List[LintResultMessage] = []
+        self.messages: list[LintResultMessage] = []
 
     def add_error(
         self,
         message: str,
         location: None = None,
-        exception: Optional[Exception] = None,
+        exception: Exception | None = None,
     ) -> None:
         self.messages.append(
             {
@@ -35,7 +41,7 @@ class LintResult:
         self,
         message: str,
         location: None = None,
-        exception: Optional[Exception] = None,
+        exception: Exception | None = None,
     ) -> None:
         self.messages.append(
             {
@@ -50,7 +56,7 @@ class LintResult:
         self,
         message: str,
         location: None = None,
-        exception: Optional[Exception] = None,
+        exception: Exception | None = None,
     ) -> None:
         self.messages.append(
             {

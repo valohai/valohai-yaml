@@ -1,12 +1,18 @@
+from __future__ import annotations
+
 from enum import Enum
-from typing import Any, Iterable, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from valohai_yaml.excs import InvalidType, ValidationErrors
-from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.parameter_widget import ParameterWidget
-from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils import listify
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.types import LintContext, SerializedDict
 
 
 class MultipleMode(Enum):
@@ -18,8 +24,8 @@ class MultipleMode(Enum):
     @classmethod
     def cast(
         cls,
-        value: Optional[Union["MultipleMode", str]],
-    ) -> Optional["MultipleMode"]:
+        value: MultipleMode | str | None,
+    ) -> MultipleMode | None:
         if not value:
             return None
         if isinstance(value, MultipleMode):
@@ -31,7 +37,7 @@ class MultipleMode(Enum):
 
 
 ValueAtomType = Union[float, str, int, bool]
-ValueType = Union[List[ValueAtomType], ValueAtomType]
+ValueType = Union[list[ValueAtomType], ValueAtomType]
 
 
 class Parameter(Item):
@@ -43,18 +49,18 @@ class Parameter(Item):
         name: str,
         type: str = "string",
         optional: bool = False,
-        min: Optional[ValueAtomType] = None,
-        max: Optional[ValueAtomType] = None,
-        description: Optional[str] = None,
-        default: Optional[Any] = None,
-        pass_as: Optional[str] = None,
-        pass_true_as: Optional[str] = None,
-        pass_false_as: Optional[str] = None,
-        choices: Optional[Iterable[ValueAtomType]] = None,
-        multiple: Optional[Union[str, MultipleMode]] = None,
+        min: ValueAtomType | None = None,
+        max: ValueAtomType | None = None,
+        description: str | None = None,
+        default: Any | None = None,
+        pass_as: str | None = None,
+        pass_true_as: str | None = None,
+        pass_false_as: str | None = None,
+        choices: Iterable[ValueAtomType] | None = None,
+        multiple: str | MultipleMode | None = None,
         multiple_separator: str = ",",
-        widget: Optional[ParameterWidget] = None,
-        category: Optional[str] = None,
+        widget: ParameterWidget | None = None,
+        category: str | None = None,
     ) -> None:
         self.name = name
         self.type = type
@@ -91,7 +97,7 @@ class Parameter(Item):
             data.pop("multiple_separator", None)
         return data
 
-    def _validate_value(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
+    def _validate_value(self, value: ValueAtomType, errors: list[str]) -> ValueAtomType:
         try:
             if self.min is not None and value < self.min:  # type: ignore
                 errors.append(f"{value} is less than the minimum allowed ({self.min})")
@@ -110,7 +116,7 @@ class Parameter(Item):
             )
         return value
 
-    def _validate_type(self, value: ValueAtomType, errors: List[str]) -> ValueAtomType:
+    def _validate_type(self, value: ValueAtomType, errors: list[str]) -> ValueAtomType:
         if self.type == "integer":
             try:
                 value = int(str(value), 10)
@@ -166,7 +172,7 @@ class Parameter(Item):
             return "--{name}"
         return "--{name}={value}"
 
-    def _get_pass_as_template(self, value: Optional[ValueType]) -> Optional[str]:
+    def _get_pass_as_template(self, value: ValueType | None) -> str | None:
         if self.type == "flag":
             if self.pass_true_as or self.pass_false_as:
                 return (self.pass_true_as if value else self.pass_false_as) or None
@@ -178,7 +184,7 @@ class Parameter(Item):
 
         return str(self.pass_as or self.default_pass_as)
 
-    def format_cli(self, value: Optional[ValueType]) -> Optional[List[str]]:
+    def format_cli(self, value: ValueType | None) -> list[str] | None:
         """
         Build a parameter argument (or multiple, if this is a multi-valued parameter).
 
@@ -190,7 +196,7 @@ class Parameter(Item):
 
         pass_as_bits = pass_as_template.split()
 
-        def _format_atom(value: Optional[ValueAtomType]) -> List[str]:
+        def _format_atom(value: ValueAtomType | None) -> list[str]:
             env = {"name": self.name, "value": value, "v": value}
             return [bit.format_map(env) for bit in pass_as_bits]
 
@@ -223,7 +229,7 @@ class Parameter(Item):
         raise NotImplementedError(f"unknown multiple type {self.multiple!r}")
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> "Parameter":
+    def parse(cls, data: SerializedDict) -> Parameter:
         kwargs = data.copy()
         if "widget" in data:
             kwargs["widget"] = ParameterWidget.parse(data["widget"])

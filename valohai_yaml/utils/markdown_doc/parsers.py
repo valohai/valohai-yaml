@@ -1,5 +1,6 @@
+from collections.abc import Iterable, Iterator
 from pathlib import Path
-from typing import Any, Iterable, Iterator
+from typing import Any
 
 from valohai_yaml.utils.markdown_doc.types import Definition
 

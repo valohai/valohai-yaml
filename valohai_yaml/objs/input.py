@@ -1,8 +1,12 @@
+from __future__ import annotations
+
 from enum import Enum
-from typing import List, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 from valohai_yaml.objs.base import Item
-from valohai_yaml.types import SerializedDict
+
+if TYPE_CHECKING:
+    from valohai_yaml.types import SerializedDict
 
 KeepDirectoriesValue = Union[bool, str, "KeepDirectories"]
 
@@ -15,7 +19,7 @@ class KeepDirectories(Enum):
     FULL = "full"
 
     @classmethod
-    def cast(cls, value: KeepDirectoriesValue) -> "KeepDirectories":
+    def cast(cls, value: KeepDirectoriesValue) -> KeepDirectories:
         if isinstance(value, KeepDirectories):
             return value
         if not value:
@@ -32,7 +36,7 @@ class DownloadIntent(Enum):
     ON_DEMAND = "on-demand"
 
     @classmethod
-    def cast(cls, value: Union[None, str, "DownloadIntent"]) -> "DownloadIntent":
+    def cast(cls, value: None | str | DownloadIntent) -> DownloadIntent:
         if isinstance(value, DownloadIntent):
             return value
         if value is None:
@@ -47,12 +51,12 @@ class Input(Item):
         self,
         *,
         name: str,
-        default: Optional[Union[List[str], str]] = None,
+        default: list[str] | str | None = None,
         optional: bool = False,
-        description: Optional[str] = None,
+        description: str | None = None,
         keep_directories: KeepDirectoriesValue = False,
-        filename: Optional[str] = None,
-        download: Optional[str] = None,
+        filename: str | None = None,
+        download: str | None = None,
     ) -> None:
         self.name = name
         self.default = default  # may be None, a string or a list of strings

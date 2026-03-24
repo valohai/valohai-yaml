@@ -1,12 +1,15 @@
-from typing import TYPE_CHECKING, Any, Iterable, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from leval.rewriter_evaluator import RewriterEvaluator
 from leval.universe.verifier import VerifierUniverse
 
-from valohai_yaml.types import LintContext
-
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from valohai_yaml.lint import LintResult
+    from valohai_yaml.types import LintContext
 
 
 class _KeywordRewriterEvaluator(RewriterEvaluator):
@@ -15,7 +18,7 @@ class _KeywordRewriterEvaluator(RewriterEvaluator):
 
 
 def lint_iterables(
-    lint_result: "LintResult",
+    lint_result: LintResult,
     context: LintContext,
     iterables: Iterable[Iterable[Any]],
 ) -> None:
@@ -28,10 +31,10 @@ def lint_iterables(
 
 
 def lint_expression(
-    lint_result: "LintResult",
+    lint_result: LintResult,
     context: LintContext,
     field_name: str,
-    expression: Optional[str],
+    expression: str | None,
 ) -> None:
     if expression is None:
         return

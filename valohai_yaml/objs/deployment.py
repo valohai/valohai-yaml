@@ -1,8 +1,12 @@
-from typing import Optional
+from __future__ import annotations
 
-from valohai_yaml.lint import LintResult
+from typing import TYPE_CHECKING
+
 from valohai_yaml.objs.base import Item
-from valohai_yaml.types import DeploymentDefaultsDict, LintContext
+
+if TYPE_CHECKING:
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.types import DeploymentDefaultsDict, LintContext
 
 
 class Deployment(Item):
@@ -12,7 +16,7 @@ class Deployment(Item):
         self,
         *,
         name: str,
-        defaults: Optional[DeploymentDefaultsDict] = None,
+        defaults: DeploymentDefaultsDict | None = None,
     ) -> None:
         self.name = name
         self.defaults = defaults

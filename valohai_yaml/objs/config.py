@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import copy
 from itertools import chain
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable
 
 from valohai_yaml.excs import InvalidType
 from valohai_yaml.lint import LintResult
@@ -14,6 +16,9 @@ from valohai_yaml.objs.utils import check_type_and_dictify
 from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.lint import lint_iterables
 from valohai_yaml.utils.merge import merge_dicts, merge_simple
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 ParserFunction = Callable[[SerializedDict], Any]
 
@@ -40,7 +45,7 @@ class Config(Item):
         self.deployments = check_type_and_dictify(deployments, Deployment, "name")
 
     @classmethod
-    def parse(cls, data: Iterable) -> "Config":
+    def parse(cls, data: Iterable) -> Config:
         """
         Parse a Config structure out of a list of Python dicts (that's likely deserialized from YAML).
 
@@ -48,7 +53,7 @@ class Config(Item):
         :return: Config object
         """
         parsers = cls.get_top_level_parsers()
-        parse_warnings: List[str] = []
+        parse_warnings: list[str] = []
         append_warning_if_not_unique = _get_unique_name_checker(parse_warnings)
 
         for datum in data:
@@ -74,14 +79,14 @@ class Config(Item):
         return inst
 
     @classmethod
-    def get_top_level_parsers(cls) -> Dict[str, Tuple[List[Any], ParserFunction]]:
+    def get_top_level_parsers(cls) -> dict[str, tuple[list[Any], ParserFunction]]:
         """
         Get the parsers for top-level elements in a configuration file.
 
         The return value is a little baroque due to the alias for `pipeline`/`blueprint`:
         it's a dict that maps top-level element names to a 2-tuple of target list objects and parse functions.
         """
-        pipelines: List[Pipeline] = []
+        pipelines: list[Pipeline] = []
         return {
             "step": ([], Step.parse),
             "task": ([], Task.parse),
@@ -91,7 +96,7 @@ class Config(Item):
             "deployment": ([], Deployment.parse),
         }
 
-    def serialize(self) -> List[SerializedDict]:
+    def serialize(self) -> list[SerializedDict]:
         return list(
             chain(
                 ({"step": step.serialize()} for (key, step) in self.steps.items()),
@@ -104,8 +109,8 @@ class Config(Item):
 
     def lint(  # type: ignore[override]
         self,
-        lint_result: Optional[LintResult] = None,
-        context: Optional[LintContext] = None,
+        lint_result: LintResult | None = None,
+        context: LintContext | None = None,
     ) -> LintResult:
         """
         Lint the configuration.
@@ -137,7 +142,7 @@ class Config(Item):
         )
         return lint_result
 
-    def get_step_by(self, **kwargs: Any) -> Optional[Step]:
+    def get_step_by(self, **kwargs: Any) -> Step | None:
         """
         Get the first step that matches all the passed named arguments.
 
@@ -161,7 +166,7 @@ class Config(Item):
         return None
 
     @classmethod
-    def default_merge(cls, a: "Config", b: "Config") -> "Config":
+    def default_merge(cls, a: Config, b: Config) -> Config:
         result = merge_simple(a, b)
         result.steps = merge_dicts(
             a.steps,
@@ -198,7 +203,7 @@ class Config(Item):
         )
 
 
-def _get_unique_name_checker(parse_warnings: List[str]) -> Callable:
+def _get_unique_name_checker(parse_warnings: list[str]) -> Callable:
     """
     Return a unique name checker function that records if there is a name clash in the config.
 

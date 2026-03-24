@@ -1,15 +1,19 @@
-from typing import Any, Dict, List, Optional, Union
+from __future__ import annotations
 
-from valohai_yaml.lint import LintResult
+from typing import TYPE_CHECKING, Any
+
 from valohai_yaml.objs.pipelines.edge_merge_mode import EdgeMergeMode
 from valohai_yaml.objs.pipelines.node import ErrorAction, Node
-from valohai_yaml.objs.pipelines.node_action import NodeAction
 from valohai_yaml.objs.pipelines.override import Override
 from valohai_yaml.objs.pipelines.validation import (
     lint_step_reference,
     lint_task_reference,
 )
-from valohai_yaml.types import LintContext, NodeOverrideDict, SerializedDict
+
+if TYPE_CHECKING:
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.objs.pipelines.node_action import NodeAction
+    from valohai_yaml.types import LintContext, NodeOverrideDict, SerializedDict
 
 
 class TaskNode(Node):
@@ -22,18 +26,18 @@ class TaskNode(Node):
     """
 
     type = "task"
-    override: Optional[Override]
+    override: Override | None
 
     def __init__(
         self,
         *,
         name: str,
-        step: Optional[str] = None,
-        task: Optional[str] = None,
-        commit: Optional[str] = None,
-        actions: Optional[List[NodeAction]] = None,
-        override: Optional[Union[Override, NodeOverrideDict]] = None,
-        on_error: Union[str, ErrorAction] = ErrorAction.STOP_ALL,
+        step: str | None = None,
+        task: str | None = None,
+        commit: str | None = None,
+        actions: list[NodeAction] | None = None,
+        override: Override | NodeOverrideDict | None = None,
+        on_error: str | ErrorAction = ErrorAction.STOP_ALL,
         edge_merge_mode: EdgeMergeMode = EdgeMergeMode.REPLACE,
     ) -> None:
         super().__init__(name=name, actions=actions, on_error=on_error)
@@ -58,7 +62,7 @@ class TaskNode(Node):
             if self.step:
                 lint_step_reference(self, self.step, lint_result, context)
 
-    def get_parameter_defaults(self) -> Dict[str, Any]:
+    def get_parameter_defaults(self) -> dict[str, Any]:
         # this function is not used by us anymore, should it be deprecated?
         # iiuc, Override.merge_with_step was introduced to replace its usage
 

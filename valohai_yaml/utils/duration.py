@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import datetime
 import re
-from typing import Optional, Union
 
 suffixes = {
     "s": 1,
@@ -27,8 +28,8 @@ def parse_duration_string(duration_str: str) -> datetime.timedelta:
 
 
 def parse_duration(
-    duration_value: Union[int, str, None],
-) -> Optional[datetime.timedelta]:
+    duration_value: int | str | None,
+) -> datetime.timedelta | None:
     if duration_value is None:
         return None
     if isinstance(duration_value, int):

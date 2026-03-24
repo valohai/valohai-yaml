@@ -1,13 +1,15 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from valohai_yaml.excs import ValidationError
-from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.pipelines.types import edge_types
-from valohai_yaml.types import EdgeConfigurationDict, LintContext, SerializedDict
 from valohai_yaml.utils.node_socket_utils import split_socket_str
 
 if TYPE_CHECKING:
+    from valohai_yaml.lint import LintResult
     from valohai_yaml.objs import Pipeline
+    from valohai_yaml.types import EdgeConfigurationDict, LintContext, SerializedDict
 
 from valohai_yaml.objs.base import Item
 
@@ -20,7 +22,7 @@ class Edge(Item):
         *,
         source: str,
         target: str,
-        configuration: Optional[EdgeConfigurationDict] = None,
+        configuration: EdgeConfigurationDict | None = None,
     ) -> None:
         if configuration is None:
             configuration = {}
@@ -55,7 +57,7 @@ class Edge(Item):
         self.target_node, self.target_type, self.target_key = split
 
     @classmethod
-    def parse(cls, data: Union[SerializedDict, List[Any]]) -> "Edge":
+    def parse(cls, data: SerializedDict | list[Any]) -> Edge:
         if isinstance(data, list):  # Must be a shorthand
             if len(data) != 2:
                 raise ValidationError(f"Malformed edge shorthand {data}")
@@ -69,9 +71,9 @@ class Edge(Item):
             "configuration": self.configuration,
         }
 
-    def get_expanded(self) -> Dict[str, Any]:
+    def get_expanded(self) -> dict[str, Any]:
         """Get the "expanded" form of this edge."""
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             "source_node": self.source_node,
             "source_type": self.source_type,
             "source_key": self.source_key,

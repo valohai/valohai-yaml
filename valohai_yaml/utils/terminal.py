@@ -2,8 +2,9 @@
 #     Click is:
 #     :copyright: (c) 2014 by Armin Ronacher.
 #     :license: BSD, see LICENSE for more details.
+from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 _ansi_colors = (
     "black",
@@ -23,13 +24,13 @@ _ansi_reset_all = "\033[0m"
 def style(  # noqa: C901
     text: str,
     *,
-    fg: Optional[str] = None,
-    bg: Optional[str] = None,
-    bold: Optional[bool] = None,
-    dim: Optional[bool] = None,
-    underline: Optional[bool] = None,
-    blink: Optional[bool] = None,
-    reverse: Optional[bool] = None,
+    fg: str | None = None,
+    bg: str | None = None,
+    bold: bool | None = None,
+    dim: bool | None = None,
+    underline: bool | None = None,
+    blink: bool | None = None,
+    reverse: bool | None = None,
     reset: bool = True,
 ) -> str:
     """Styles a text with ANSI styles and returns the new string."""

@@ -1,5 +1,6 @@
 import copy
-from typing import Any, Callable, List, MutableMapping, TypeVar
+from collections.abc import MutableMapping
+from typing import Any, Callable, TypeVar
 
 MISSING = object()
 
@@ -19,7 +20,7 @@ def merge_dicts(
     out: TD = type(a)()
 
     # Hack to keep the iteration order the same...
-    keys: List[Any] = list(a)
+    keys: list[Any] = list(a)
     key_set = set(keys)
     keys += [k for k in b if k not in key_set]
 

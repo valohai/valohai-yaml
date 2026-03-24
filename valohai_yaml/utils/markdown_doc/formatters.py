@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Iterator
+from typing import TYPE_CHECKING, Any
 
-from valohai_yaml.utils.markdown_doc.types import Definition
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Iterator
+
+    from valohai_yaml.utils.markdown_doc.types import Definition
 
 
 def format_doc_content(

@@ -1,13 +1,17 @@
-from collections import Counter, OrderedDict
-from typing import Any, List, Optional
+from __future__ import annotations
 
-from valohai_yaml.lint import LintResult
+from collections import Counter, OrderedDict
+from typing import TYPE_CHECKING, Any
+
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.pipelines.edge import Edge
 from valohai_yaml.objs.pipelines.node import Node
 from valohai_yaml.objs.pipelines.pipeline_parameter import PipelineParameter
-from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.lint import lint_iterables
+
+if TYPE_CHECKING:
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.types import LintContext, SerializedDict
 
 
 class Pipeline(Item):
@@ -17,9 +21,9 @@ class Pipeline(Item):
         self,
         *,
         name: str,
-        nodes: List[Node],
-        edges: List[Edge],
-        parameters: Optional[List[PipelineParameter]] = None,
+        nodes: list[Node],
+        edges: list[Edge],
+        parameters: list[PipelineParameter] | None = None,
         reuse_executions: bool = False,
     ) -> None:
         self.name = name
@@ -33,7 +37,7 @@ class Pipeline(Item):
         return OrderedDict((node.name, node) for node in self.nodes)
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> "Pipeline":
+    def parse(cls, data: SerializedDict) -> Pipeline:
         data = data.copy()
         data["edges"] = [Edge.parse(e) for e in data.pop("edges", ())]
         data["nodes"] = [Node.parse_qualifying(n) for n in data.pop("nodes", ())]
@@ -61,7 +65,7 @@ class Pipeline(Item):
         context = dict(context, pipeline=self)
         lint_iterables(lint_result, context, (self.nodes, self.edges, self.parameters))
 
-    def get_node_by(self, **kwargs: Any) -> Optional[Node]:
+    def get_node_by(self, **kwargs: Any) -> Node | None:
         """Get the first node that matches all the passed named arguments."""
         if not kwargs:
             return None

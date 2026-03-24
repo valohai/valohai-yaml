@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, MutableMapping, TypedDict, Union
+from typing import TYPE_CHECKING, Any, TypedDict, Union
 
 from valohai_yaml.objs import (
     Config,
@@ -14,7 +14,10 @@ from valohai_yaml.objs import (
 )
 from valohai_yaml.objs.pipelines.override import Override
 
-ConvertedObject = Dict[str, Any]
+if TYPE_CHECKING:
+    from collections.abc import MutableMapping
+
+ConvertedObject = dict[str, Any]
 
 
 class VariantExpression(TypedDict):

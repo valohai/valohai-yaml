@@ -1,9 +1,15 @@
-from typing import Iterable, List, Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.file import File
 from valohai_yaml.objs.utils import check_type_and_listify
-from valohai_yaml.types import EndpointResourcesDict, EndpointTolerationDict, SerializedDict
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from valohai_yaml.types import EndpointResourcesDict, EndpointTolerationDict, SerializedDict
 
 
 class Endpoint(Item):
@@ -14,14 +20,14 @@ class Endpoint(Item):
         *,
         name: str,
         image: str,
-        description: Optional[str] = None,
+        description: str | None = None,
         files: Iterable[File] = (),
-        port: Optional[Union[str, int]] = None,
-        server_command: Optional[str] = None,
-        wsgi: Optional[str] = None,
-        node_selector: Optional[str] = None,
-        resources: Optional[EndpointResourcesDict] = None,
-        tolerations: Optional[List[EndpointTolerationDict]] = None,
+        port: str | int | None = None,
+        server_command: str | None = None,
+        wsgi: str | None = None,
+        node_selector: str | None = None,
+        resources: EndpointResourcesDict | None = None,
+        tolerations: list[EndpointTolerationDict] | None = None,
     ) -> None:
         self.name = name
         self.description = description
@@ -35,7 +41,7 @@ class Endpoint(Item):
         self.tolerations = tolerations
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> "Endpoint":
+    def parse(cls, data: SerializedDict) -> Endpoint:
         data = dict(
             data,
             files=[File.parse(f) for f in data.get("files", ())],

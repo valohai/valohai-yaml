@@ -1,14 +1,15 @@
+from __future__ import annotations
+
 import argparse
 import json
 import sys
-from typing import List, Optional
 
 from valohai_yaml.lint import LintResult, lint
 from valohai_yaml.utils.markdown_doc import generate_schema_doc
 from valohai_yaml.validation import get_json_schema
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument(
         "--output-json-schema",
