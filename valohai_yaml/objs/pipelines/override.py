@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import copy
 from collections import OrderedDict
-from typing import Iterable
+from typing import TYPE_CHECKING
 
-from valohai_yaml.lint import LintResult
 from valohai_yaml.objs import Mount, Parameter
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.environment_variable import EnvironmentVariable
@@ -15,9 +14,14 @@ from valohai_yaml.objs.utils import (
     check_type_and_listify,
     serialize_into,
 )
-from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils import listify
 from valohai_yaml.utils.merge import merge_dicts, merge_simple
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.types import LintContext, SerializedDict
 
 # These are used by `Override.parse()` to cull out fields that are not
 # readable by the constructor, to allow leniently parsing some legacy

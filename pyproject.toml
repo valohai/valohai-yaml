@@ -46,7 +46,6 @@ path = "valohai_yaml/__init__.py"
 norecursedirs = [".git", ".tox", "dist"]
 
 [tool.ruff]
-target-version = "py38"
 line-length = 120
 
 [tool.ruff.lint]
@@ -59,11 +58,13 @@ select = [
     "COM", # trailing commas
     "D", # docstrings
     "E", # pycodestyle
+    "FA", # futuristic annotations
     "F", # pyflakes
     "I", # isort
     "RET", # return
     "SIM", # simplify
     "T", # debugger and print
+    "TC", # imports only used for types
     "TID", # tidy imports
     "UP", # pyupgrade
     "W", # pycodestyle

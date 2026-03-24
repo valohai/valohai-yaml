@@ -1,4 +1,5 @@
-from typing import Iterator, List, Union
+from collections.abc import Iterator
+from typing import Union
 
 import jsonschema
 
@@ -16,7 +17,7 @@ class ValidationError(ValueError):
 class ValidationErrors(ValidationError):
     """Wrapper for multiple validation errors."""
 
-    def __init__(self, errors: List[ErrorType]) -> None:
+    def __init__(self, errors: list[ErrorType]) -> None:
         self.errors = errors
         err_desc = ", ".join(getattr(e, "message", e) for e in self.errors)
         super().__init__(f"{len(errors)} errors: {err_desc}")

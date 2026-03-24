@@ -1,12 +1,15 @@
-from collections import OrderedDict
-from enum import Enum
-from typing import TYPE_CHECKING, Any, Callable, Iterable, List, Optional, Type, TypeVar
-from typing import OrderedDict as OrderedDictType
+from __future__ import annotations
 
-from valohai_yaml.types import SerializedDict
+from collections import OrderedDict
+from collections import OrderedDict as OrderedDictType
+from enum import Enum
+from typing import TYPE_CHECKING, Any, Callable, TypeVar
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from valohai_yaml.objs.base import Item
+    from valohai_yaml.types import SerializedDict
 
 TItem = TypeVar("TItem", bound="Item")
 T = TypeVar("T")
@@ -15,16 +18,16 @@ T = TypeVar("T")
 def consume_array_of(
     source: SerializedDict,
     key: str,
-    type: Type[TItem],
-) -> List[TItem]:
+    type: type[TItem],
+) -> list[TItem]:
     return [type.parse(datum) for datum in source.pop(key, ())]
 
 
 def check_type_and_listify(
-    source: Optional[Iterable[Any]],
-    type: Type[T],
-    parse: Optional[Callable[[Any], T]] = None,
-) -> List[T]:
+    source: Iterable[Any] | None,
+    type: type[T],
+    parse: Callable[[Any], T] | None = None,
+) -> list[T]:
     """
     Check that all items in the `source` iterable are of the type `type`, return a list.
 
@@ -45,8 +48,8 @@ def check_type_and_listify(
 
 
 def check_type_and_dictify(
-    source: Optional[Iterable[Any]],
-    type: Type[T],
+    source: Iterable[Any] | None,
+    type: type[T],
     attr: str,
 ) -> OrderedDictType[str, T]:
     """Check that all items in the `source` iterable are of the type `type` and map them into an OrderedDict."""

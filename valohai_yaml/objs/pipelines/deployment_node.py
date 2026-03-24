@@ -1,9 +1,13 @@
-from typing import List, Optional, Union
+from __future__ import annotations
 
-from valohai_yaml.lint import LintResult
+from typing import TYPE_CHECKING
+
 from valohai_yaml.objs.pipelines.node import ErrorAction, Node
-from valohai_yaml.objs.pipelines.node_action import NodeAction
-from valohai_yaml.types import LintContext
+
+if TYPE_CHECKING:
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.objs.pipelines.node_action import NodeAction
+    from valohai_yaml.types import LintContext
 
 
 class DeploymentNode(Node):
@@ -16,10 +20,10 @@ class DeploymentNode(Node):
         *,
         name: str,
         deployment: str,
-        actions: Optional[List[NodeAction]] = None,
-        endpoints: Optional[List[str]] = None,
-        aliases: Optional[List[str]] = None,
-        on_error: Union[str, ErrorAction] = ErrorAction.STOP_ALL,
+        actions: list[NodeAction] | None = None,
+        endpoints: list[str] | None = None,
+        aliases: list[str] | None = None,
+        on_error: str | ErrorAction = ErrorAction.STOP_ALL,
     ) -> None:
         super().__init__(name=name, actions=actions, on_error=on_error)
         if aliases is None:

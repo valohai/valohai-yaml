@@ -1,13 +1,15 @@
-from typing import TYPE_CHECKING, List, Optional, Union
+from __future__ import annotations
 
-from valohai_yaml.lint import LintResult
+from typing import TYPE_CHECKING
+
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.utils import check_type_and_listify
-from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.node_socket_utils import split_socket_str
 
 if TYPE_CHECKING:
+    from valohai_yaml.lint import LintResult
     from valohai_yaml.objs import Config, Pipeline
+    from valohai_yaml.types import LintContext, SerializedDict
 
 
 class PipelineParameter(Item):
@@ -17,11 +19,11 @@ class PipelineParameter(Item):
         self,
         *,
         name: str,
-        targets: Optional[Union[List[str], str]] = None,
-        value: Optional[str] = None,
-        default: Optional[Union[List[str], str]] = None,
-        category: Optional[str] = None,
-        description: Optional[str] = None,
+        targets: list[str] | str | None = None,
+        value: str | None = None,
+        default: list[str] | str | None = None,
+        category: str | None = None,
+        description: str | None = None,
     ) -> None:
         self.name = name
         self.default = default if value is None else value
@@ -35,7 +37,7 @@ class PipelineParameter(Item):
             self.targets = check_type_and_listify(targets, str)
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> "PipelineParameter":
+    def parse(cls, data: SerializedDict) -> PipelineParameter:
         data = data.copy()
         # targets can be a string or a list of strings
         if "target" in data:

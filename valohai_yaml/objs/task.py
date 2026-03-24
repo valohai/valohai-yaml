@@ -1,17 +1,19 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.utils import (
     check_type_and_listify,
     consume_array_of,
 )
 from valohai_yaml.objs.variant_parameter import VariantParameter
-from valohai_yaml.types import LintContext
 from valohai_yaml.utils.lint import lint_expression
+
+if TYPE_CHECKING:
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.types import LintContext
 
 # Properties that only make sense for Bayesian tasks.
 BAYESIAN_ONLY_PROPS = (

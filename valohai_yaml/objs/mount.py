@@ -1,7 +1,11 @@
-from typing import Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from valohai_yaml.objs.base import Item
-from valohai_yaml.types import MountOptions, SerializedDict
+
+if TYPE_CHECKING:
+    from valohai_yaml.types import MountOptions, SerializedDict
 
 
 class Mount(Item):
@@ -13,8 +17,8 @@ class Mount(Item):
         source: str,
         destination: str,
         readonly: bool = False,
-        type: Optional[str] = None,
-        options: Optional[MountOptions] = None,
+        type: str | None = None,
+        options: MountOptions | None = None,
     ) -> None:
         if options is None:
             options = {}
@@ -25,7 +29,7 @@ class Mount(Item):
         self.options = options
 
     @classmethod
-    def parse(cls, data: Union[SerializedDict, str]) -> "Mount":
+    def parse(cls, data: SerializedDict | str) -> Mount:
         if isinstance(data, str):
             source, destination = str(data).split(":", 1)
             data = {

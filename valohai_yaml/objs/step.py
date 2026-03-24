@@ -1,10 +1,10 @@
+from __future__ import annotations
+
 import copy
-import datetime
 from collections import OrderedDict
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from valohai_yaml.commands import build_command
-from valohai_yaml.lint import LintResult
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.environment_variable import EnvironmentVariable
 from valohai_yaml.objs.input import Input
@@ -18,10 +18,16 @@ from valohai_yaml.objs.utils import (
     serialize_into,
 )
 from valohai_yaml.objs.workload_resources import WorkloadResources
-from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.duration import parse_duration
 from valohai_yaml.utils.lint import lint_expression, lint_iterables
 from valohai_yaml.utils.merge import merge_dicts, merge_simple
+
+if TYPE_CHECKING:
+    import datetime
+    from collections.abc import Iterable
+
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.types import LintContext, SerializedDict
 
 
 class Step(Item):
@@ -32,7 +38,7 @@ class Step(Item):
         *,
         name: str,
         image: str,
-        command: Union[List[str], str],
+        command: list[str] | str,
         parameters: Iterable[Parameter] = (),
         inputs: Iterable[Input] = (),
         outputs: Iterable[Any] = (),
@@ -40,17 +46,17 @@ class Step(Item):
         cache_volumes: Iterable[str] = (),
         environment_variables: Iterable[EnvironmentVariable] = (),
         environment_variable_groups: Iterable[str] = (),
-        environment: Optional[str] = None,
-        runtime_config_preset: Optional[str] = None,  # preset ID or slug
-        description: Optional[str] = None,
-        upload_store: Optional[str] = None,
-        time_limit: Optional[datetime.timedelta] = None,
-        no_output_timeout: Optional[datetime.timedelta] = None,
-        icon: Optional[str] = None,
-        category: Optional[str] = None,
-        source_path: Optional[str] = None,
-        resources: Optional[WorkloadResources] = None,
-        stop_condition: Optional[str] = None,
+        environment: str | None = None,
+        runtime_config_preset: str | None = None,  # preset ID or slug
+        description: str | None = None,
+        upload_store: str | None = None,
+        time_limit: datetime.timedelta | None = None,
+        no_output_timeout: datetime.timedelta | None = None,
+        icon: str | None = None,
+        category: str | None = None,
+        source_path: str | None = None,
+        resources: WorkloadResources | None = None,
+        stop_condition: str | None = None,
     ) -> None:
         self.name = name
         self.image = image
@@ -81,7 +87,7 @@ class Step(Item):
         self.stop_condition = stop_condition
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> "Step":
+    def parse(cls, data: SerializedDict) -> Step:
         kwargs = parse_common_step_properties(data)
         kwargs["cache_volumes"] = kwargs.pop("cache-volumes", ())
         kwargs["time_limit"] = parse_duration(kwargs.pop("time-limit", None))
@@ -144,7 +150,7 @@ class Step(Item):
             )
         return val
 
-    def get_parameter_defaults(self, include_flags: bool = True) -> Dict[str, Any]:
+    def get_parameter_defaults(self, include_flags: bool = True) -> dict[str, Any]:
         """Get a dict mapping parameter names to their defaults (if set)."""
         return {
             name: parameter.default
@@ -154,9 +160,9 @@ class Step(Item):
 
     def build_command(
         self,
-        parameter_values: Dict[str, Optional[ValueType]],
-        command: Optional[Union[List[str], str]] = None,
-    ) -> List[str]:
+        parameter_values: dict[str, ValueType | None],
+        command: list[str] | str | None = None,
+    ) -> list[str]:
         """
         Build the command for this step using the given parameter values.
 
@@ -210,7 +216,7 @@ class Step(Item):
             )
 
     @classmethod
-    def default_merge(cls, a: "Step", b: "Step") -> "Step":
+    def default_merge(cls, a: Step, b: Step) -> Step:
         result = merge_simple(a, b)
         result.parameters = merge_dicts(
             a.parameters,
@@ -236,7 +242,7 @@ class Step(Item):
         return result
 
 
-def parse_common_step_properties(data: SerializedDict) -> Dict[str, Any]:
+def parse_common_step_properties(data: SerializedDict) -> dict[str, Any]:
     """Parse common properties in step and override objects."""
     kwargs = data.copy()
     kwargs["parameters"] = consume_array_of(kwargs, "parameters", Parameter)

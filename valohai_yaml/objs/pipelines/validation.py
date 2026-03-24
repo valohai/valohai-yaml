@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from valohai_yaml.lint import LintResult
-from valohai_yaml.types import LintContext
-
 if TYPE_CHECKING:
+    from valohai_yaml.lint import LintResult
     from valohai_yaml.objs.pipelines.execution_node import ExecutionNode
     from valohai_yaml.objs.pipelines.override import Override
     from valohai_yaml.objs.pipelines.task_node import TaskNode
     from valohai_yaml.objs.step import Step
+    from valohai_yaml.types import LintContext
 
 
 def lint_step_reference(

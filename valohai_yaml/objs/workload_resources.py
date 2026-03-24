@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from valohai_yaml.objs.base import Item
-from valohai_yaml.types import SerializedDict
+
+if TYPE_CHECKING:
+    from valohai_yaml.types import SerializedDict
 
 
 class WorkloadResourceItem(Item):

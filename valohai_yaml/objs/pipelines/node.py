@@ -1,13 +1,17 @@
-from enum import Enum
-from typing import List, Optional, Union
+from __future__ import annotations
 
-from valohai_yaml.lint import LintResult
+from enum import Enum
+from typing import TYPE_CHECKING
+
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.pipelines.edge_merge_mode import DEFAULT_EDGE_MERGE_MODE
 from valohai_yaml.objs.pipelines.node_action import NodeAction
 from valohai_yaml.objs.utils import check_type_and_listify, consume_array_of
-from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils.lint import lint_iterables
+
+if TYPE_CHECKING:
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.types import LintContext, SerializedDict
 
 
 class ErrorAction(Enum):
@@ -19,7 +23,7 @@ class ErrorAction(Enum):
     RETRY = "retry"  # retry the node (if possible)
 
     @classmethod
-    def cast(cls, value: Optional[Union["ErrorAction", str]]) -> "ErrorAction":
+    def cast(cls, value: ErrorAction | str | None) -> ErrorAction:
         if not value:
             return ErrorAction.STOP_ALL
         if isinstance(value, ErrorAction):
@@ -40,7 +44,7 @@ class Node(Item):
     name: str
 
     # `actions` will be set on instance level in subclasses
-    actions: List[NodeAction]
+    actions: list[NodeAction]
 
     # `on_error` what the pipeline should do when this node is erroneous: "stop-all" default, "continue"
     on_error: ErrorAction
@@ -49,8 +53,8 @@ class Node(Item):
         self,
         *,
         name: str,
-        actions: Optional[List[NodeAction]] = None,
-        on_error: Union[str, ErrorAction] = ErrorAction.STOP_ALL,
+        actions: list[NodeAction] | None = None,
+        on_error: str | ErrorAction = ErrorAction.STOP_ALL,
     ) -> None:
         self.name = name
         self.actions = check_type_and_listify(
@@ -61,7 +65,7 @@ class Node(Item):
         self.on_error = ErrorAction.cast(on_error)
 
     @classmethod
-    def parse_qualifying(cls, data: SerializedDict) -> "Node":
+    def parse_qualifying(cls, data: SerializedDict) -> Node:
         node_type_map = {sc.type: sc for sc in cls.__subclasses__() if getattr(sc, "type", None)}
         data = data.copy()
         subcls = node_type_map[data.pop("type")]

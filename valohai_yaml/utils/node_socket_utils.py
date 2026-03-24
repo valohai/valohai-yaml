@@ -1,7 +1,4 @@
-from typing import List
-
-
-def split_socket_str(socket_str: str) -> List[str]:
+def split_socket_str(socket_str: str) -> list[str]:
     """Split str formatted socket into its parts: node, type, key."""
     return socket_str.split(".", 2)
 

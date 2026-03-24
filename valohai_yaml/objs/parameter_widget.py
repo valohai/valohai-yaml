@@ -1,7 +1,11 @@
-from typing import Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from valohai_yaml.objs.base import Item
-from valohai_yaml.types import SerializedDict
+
+if TYPE_CHECKING:
+    from valohai_yaml.types import SerializedDict
 
 
 class ParameterWidget(Item):
@@ -11,12 +15,12 @@ class ParameterWidget(Item):
         self,
         *,
         type: str,
-        settings: Optional[dict] = None,
+        settings: dict | None = None,
     ) -> None:
         self.type = str(type).lower()
         self.settings = dict(settings or {})
 
-    def serialize(self) -> Optional[Union[SerializedDict, str]]:
+    def serialize(self) -> SerializedDict | str | None:
         if self.settings:
             return {
                 "type": self.type,
@@ -25,7 +29,7 @@ class ParameterWidget(Item):
         return self.type
 
     @classmethod
-    def parse(cls, data: Union["ParameterWidget", dict, str]) -> "ParameterWidget":
+    def parse(cls, data: ParameterWidget | dict | str) -> ParameterWidget:
         if isinstance(data, dict):
             return cls(
                 type=data["type"],

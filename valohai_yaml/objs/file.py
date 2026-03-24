@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 from valohai_yaml.objs.base import Item
 
@@ -11,7 +11,7 @@ class File(Item):
         *,
         name: str,
         path: str,
-        description: Optional[str] = None,
+        description: str | None = None,
     ) -> None:
         self.name = name
         self.path = path

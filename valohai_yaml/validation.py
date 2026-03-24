@@ -1,6 +1,5 @@
 from copy import deepcopy
 from functools import cache
-from typing import List
 
 from jsonschema import Draft202012Validator, ValidationError
 
@@ -29,7 +28,7 @@ def get_validator() -> Draft202012Validator:
     return Draft202012Validator(schema)
 
 
-def validate(yaml: YamlReadable, raise_exc: bool = True) -> List[ValidationError]:
+def validate(yaml: YamlReadable, raise_exc: bool = True) -> list[ValidationError]:
     """
     Validate the given YAML document and return a list of errors.
 

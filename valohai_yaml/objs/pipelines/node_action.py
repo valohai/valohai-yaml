@@ -1,9 +1,15 @@
-from typing import Iterable, List, Set, Union
+from __future__ import annotations
 
-from valohai_yaml.lint import LintResult
+from typing import TYPE_CHECKING
+
 from valohai_yaml.objs.base import Item
-from valohai_yaml.types import LintContext, SerializedDict
 from valohai_yaml.utils import listify
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from valohai_yaml.lint import LintResult
+    from valohai_yaml.types import LintContext, SerializedDict
 
 WELL_KNOWN_WHENS = {
     "node-complete",  # Node completed (successfully)
@@ -24,16 +30,16 @@ class NodeAction(Item):
     def __init__(
         self,
         *,
-        when: Union[str, Iterable[str]],
-        if_: Union[None, str, List[str]],
-        then: Union[None, str, List[str]],
+        when: str | Iterable[str],
+        if_: None | str | list[str],
+        then: None | str | list[str],
     ) -> None:
-        self.when: Set[str] = {str(watom).lower() for watom in listify(when)}
-        self.if_: List[str] = listify(if_)
-        self.then: List[str] = listify(then)
+        self.when: set[str] = {str(watom).lower() for watom in listify(when)}
+        self.if_: list[str] = listify(if_)
+        self.then: list[str] = listify(then)
 
     @classmethod
-    def parse(cls, data: SerializedDict) -> "NodeAction":
+    def parse(cls, data: SerializedDict) -> NodeAction:
         data = data.copy()
         data["if_"] = data.pop("if", [])
         return super().parse(data)

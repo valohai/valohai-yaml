@@ -1,6 +1,11 @@
-from typing import List, Mapping, Optional
+from __future__ import annotations
 
-from valohai_yaml.objs.parameter import Parameter, ValueType
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from valohai_yaml.objs.parameter import Parameter, ValueType
 
 
 class ParameterMap:
@@ -10,12 +15,12 @@ class ParameterMap:
         self,
         *,
         parameters: Mapping[str, Parameter],
-        values: Mapping[str, Optional[ValueType]],
+        values: Mapping[str, ValueType | None],
     ) -> None:
         self.parameters = parameters
         self.values = values
 
-    def build_parameters(self) -> List[str]:
+    def build_parameters(self) -> list[str]:
         """
         Build the CLI command line from the parameter values. Omit parameters with None value.
 
@@ -26,7 +31,7 @@ class ParameterMap:
             param_bits.extend(self.build_parameter_by_name(name) or [])
         return param_bits
 
-    def build_parameter_by_name(self, name: str) -> Optional[List[str]]:
+    def build_parameter_by_name(self, name: str) -> list[str] | None:
         param = self.parameters[name]
         value = self.values.get(param.name)
         if value is None:

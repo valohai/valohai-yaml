@@ -1,13 +1,16 @@
+from __future__ import annotations
+
 import re
 import warnings
 from shlex import quote
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING
 
-from valohai_yaml.objs.parameter_map import ParameterMap
 from valohai_yaml.utils import listify
 
 if TYPE_CHECKING:
     from re import Match
+
+    from valohai_yaml.objs.parameter_map import ParameterMap
 
 
 class CommandInterpolationWarning(UserWarning):
@@ -17,7 +20,7 @@ class CommandInterpolationWarning(UserWarning):
 interpolable_re = re.compile(r"{(.+?)}")
 
 
-def quote_multiple(args: Optional[List[str]]) -> str:
+def quote_multiple(args: list[str] | None) -> str:
     if not args:
         return ""
     return " ".join(quote(arg) for arg in args)
@@ -25,8 +28,8 @@ def quote_multiple(args: Optional[List[str]]) -> str:
 
 def _replace_interpolation(
     parameter_map: ParameterMap,
-    match: "Match[str]",
-    special_interpolations: Dict[str, str],
+    match: Match[str],
+    special_interpolations: dict[str, str],
 ) -> str:
     value = match.group(1)
 
@@ -49,10 +52,10 @@ def _replace_interpolation(
 
 
 def build_command(
-    command: Union[str, List[str]],
+    command: str | list[str],
     parameter_map: ParameterMap,
-    special_interpolations: Optional[Dict[str, str]] = None,
-) -> List[str]:
+    special_interpolations: dict[str, str] | None = None,
+) -> list[str]:
     """
     Build command line(s) using the given parameter map.
 
@@ -70,11 +73,11 @@ def build_command(
     if isinstance(parameter_map, list):
         raise TypeError("Passing in lists as ParameterMaps is no longer supported.")
 
-    special: Dict[str, str]
+    special: dict[str, str]
     special = {} if special_interpolations is None else special_interpolations
 
     out_commands = []
-    commands: List[str] = listify(command)
+    commands: list[str] = listify(command)
     for command in commands:
         # Only attempt formatting if the string smells like it should be formatted.
         # This allows the user to include shell syntax in the commands, if required.
@@ -97,7 +100,7 @@ def build_command(
     return out_commands
 
 
-def join_command(commands: List[str], joiner: str) -> str:
+def join_command(commands: list[str], joiner: str) -> str:
     """
     Join a list of commands into a single "script" that could be run using e.g. `sh -c`.
 
