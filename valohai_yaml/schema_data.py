@@ -789,7 +789,7 @@ register(
             "distribution": {"type": "string"},
             "end": {"type": "number"},
             "integerify": {"type": "boolean"},
-            "items": {"items": {"type": "number"}, "type": "array"},
+            "items": {"items": {"type": ["number", "string", "boolean"]}, "type": "array"},
             "max": {"type": "number"},
             "min": {"type": "number"},
             "numberify": {"type": "boolean"},
