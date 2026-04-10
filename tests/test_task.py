@@ -1,3 +1,7 @@
+import pytest
+
+from valohai_yaml import validate
+from valohai_yaml.excs import ValidationErrors
 from valohai_yaml.objs import Config, Task
 from valohai_yaml.objs.task import TaskOnChildError, TaskType
 from valohai_yaml.objs.variant_parameter import VariantParameterStyle
@@ -45,3 +49,54 @@ def test_task_reuse_children(task_config: Config):
     assert task.reuse_children is True
     task2 = task_config.tasks["task 1 single"]
     assert task2.reuse_children is False
+
+
+def generate_variant_multiple_doc(items):
+    return [
+        {
+            "step": {
+                "name": "s",
+                "image": "busybox",
+                "command": "true",
+                "parameters": [{"name": "A", "type": "string"}],
+            },
+        },
+        {
+            "task": {
+                "step": "s",
+                "name": "t",
+                "type": "grid_search",
+                "parameters": [
+                    {"name": "A", "style": "multiple", "rules": {"items": items}},
+                ],
+            },
+        },
+    ]
+
+
+@pytest.mark.parametrize(
+    "items",
+    [
+        pytest.param([25, 26], id="numbers"),
+        pytest.param(["adam", "sgd"], id="strings"),
+        pytest.param([True, False], id="boolean"),
+        pytest.param([1, "sgd", True], id="mixed"),
+    ],
+)
+def test_variant_param_rule_items_accepts_scalars(items):
+    """Test that task blueprints accept various scalars (not just numbers)."""
+    assert validate(generate_variant_multiple_doc(items)) == []
+
+
+@pytest.mark.parametrize(
+    "items",
+    [
+        pytest.param([None], id="null"),
+        pytest.param([[1, 2]], id="list"),
+        pytest.param([{"k": "v"}], id="dict"),
+    ],
+)
+def test_variant_param_rule_items_rejects_non_scalars(items):
+    """Test that task blueprints reject non-scalar items."""
+    with pytest.raises(ValidationErrors):
+        validate(generate_variant_multiple_doc(items))
