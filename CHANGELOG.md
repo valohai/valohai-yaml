@@ -1,5 +1,9 @@
 ### Changelog
 
+#### [v0.57.0](https://github.com/valohai/valohai-yaml/compare/v0.56.0...v0.57.0)
+
+- Allow strings and booleans in variant-param-rule-item items [`#209`](https://github.com/valohai/valohai-yaml/pull/209)
+
 #### [v0.56.0](https://github.com/valohai/valohai-yaml/compare/v0.55.0...v0.56.0)
 
 > 30 March 2026
