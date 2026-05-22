@@ -16,6 +16,10 @@
 - task:
     step: run training
     name: task 1 single
+    description: |
+      A single Bayesian TPE task for demonstration purposes.
+
+      Descriptions can be quite long!
     type: bayesian_tpe
     parameters:
       - name: A

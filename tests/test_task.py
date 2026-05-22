@@ -34,6 +34,17 @@ def test_task_additional_fields_2(task_config: Config):
     assert task.optimization_target_value == 7.2
 
 
+def test_task_description(task_config: Config):
+    # regression test for https://github.com/valohai/valohai-yaml/issues/203
+    task_with_description = task_config.tasks["task 1 single"]
+    assert (
+        task_with_description.description
+        == "A single Bayesian TPE task for demonstration purposes.\n\nDescriptions can be quite long!\n"
+    )
+    task_without_description = task_config.tasks["task 2 linear"]
+    assert task_without_description.description is None
+
+
 def test_task_parameter_sets(task_config: Config):
     task = task_config.tasks["parameter sets"]
     assert task.parameter_sets == [
