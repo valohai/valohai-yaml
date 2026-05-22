@@ -67,6 +67,7 @@ class Task(Item):
     parameters: list[VariantParameter]
     parameter_sets: list[dict[str, Any]]
     name: str
+    description: str | None
     execution_count: int | None
     execution_batch_size: int | None
     maximum_queued_executions: int | None
@@ -99,6 +100,7 @@ class Task(Item):
         type: TaskType | str | None = None,
         parameters: list[VariantParameter] | None = None,
         parameter_sets: list[dict[str, Any]] | None = None,
+        description: str | None = None,
         execution_count: int | None = None,
         execution_batch_size: int | None = None,
         maximum_queued_executions: int | None = None,
@@ -114,6 +116,7 @@ class Task(Item):
         self.type = TaskType.cast(type)
         self.parameters = check_type_and_listify(parameters, VariantParameter)
         self.parameter_sets = [ps for ps in check_type_and_listify(parameter_sets, dict) if ps]
+        self.description = description
         self.execution_count = execution_count
         self.execution_batch_size = execution_batch_size
         self.maximum_queued_executions = maximum_queued_executions
