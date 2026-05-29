@@ -24,8 +24,8 @@
         min: 0.1
         max: 1
       memory:
-        min: 50
-        max: 100
+        min: 50 # in MB
+        max: 100 # in MB
 
 - endpoint:
     name: accelerated-endpoint
@@ -52,7 +52,7 @@
     server-command: python run_server.py
     resources:
       memory:
-        max: 64
+        max: 64 # in MB
       ephemeral-storage:
-        min: 2048
-        max: 4096
+        min: 2048 # in MB
+        max: 4096 # in MB
