@@ -39,3 +39,12 @@ def test_tolerant_endpoint_parse(endpoint_config):
     assert toleration["operator"] == "Equal"
     assert toleration["value"] == "value1"
     assert toleration["effect"] == "NoSchedule"
+
+
+def test_ephemeral_storage_endpoint_parse(endpoint_config):
+    endpoint = endpoint_config.endpoints["ephemeral-storage-endpoint"]
+    assert "cpu" not in endpoint.resources
+    assert "min" not in endpoint.resources["memory"]
+    assert endpoint.resources["memory"]["max"] == 64
+    assert endpoint.resources["ephemeral-storage"]["min"] == 2048
+    assert endpoint.resources["ephemeral-storage"]["max"] == 4096

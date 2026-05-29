@@ -45,3 +45,14 @@
         operator: Equal
         value: value1
         effect: NoSchedule
+
+- endpoint:
+    name: ephemeral-storage-endpoint
+    image: python:3.9
+    server-command: python run_server.py
+    resources:
+      memory:
+        max: 64
+      ephemeral-storage:
+        min: 2048
+        max: 4096

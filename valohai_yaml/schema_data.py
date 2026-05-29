@@ -148,6 +148,7 @@ register(
                 "properties": {
                     "cpu": {"$ref": "/schemas/workflow-resource-cpu"},
                     "devices": {"$ref": "/schemas/workflow-resource-devices"},
+                    "ephemeral-storage": {"$ref": "/schemas/workflow-resource-ephemeral-storage"},
                     "memory": {"$ref": "/schemas/workflow-resource-memory"},
                 },
                 "type": "object",
@@ -815,6 +816,15 @@ register(
         "$id": "https://valohai.com/schemas/workflow-resource-devices",
         "description": "Devices required e.g. 'nvidia.com/gpu: 1' for one NVIDIA GPU.",
         "patternProperties": {"^.+$": {"minimum": 1, "type": "number"}},
+        "type": "object",
+    },
+)
+register(
+    {
+        "$id": "https://valohai.com/schemas/workflow-resource-ephemeral-storage",
+        "additionalProperties": False,
+        "description": "Ephemeral storage requirements and limits in MB e.g. 100 is 100 MB.",
+        "properties": {"max": {"type": "integer"}, "min": {"type": "integer"}},
         "type": "object",
     },
 )
