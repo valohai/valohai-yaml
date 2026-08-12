@@ -1,0 +1,17 @@
+- step:
+    name: train
+    image: tensorflow/tensorflow
+    command: python train.py
+    environment: aws-spot-env
+    autorestart: true
+
+- pipeline:
+    name: Training pipeline
+    nodes:
+      - name: train-node
+        type: execution
+        step: train
+        override:
+          # ERROR: there is no way to unset a step property in an override
+          autorestart: null
+    edges: []

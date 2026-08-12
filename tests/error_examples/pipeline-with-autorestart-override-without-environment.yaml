@@ -1,0 +1,15 @@
+- step:
+    name: train
+    image: tensorflow/tensorflow
+    command: python train.py
+
+- pipeline:
+    name: Training pipeline
+    nodes:
+      - name: train-node
+        type: execution
+        step: train
+        override:
+          # ERROR: neither the override nor the step specifies an environment
+          autorestart: true
+    edges: []
