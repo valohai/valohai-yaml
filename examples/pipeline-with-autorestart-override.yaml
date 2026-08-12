@@ -31,4 +31,10 @@
         step: train
         override:
           autorestart: false
+      - name: inherit-node
+        type: execution
+        step: train
+        override:
+          # an override that does not mention autorestart keeps the step's value
+          image: another/image
     edges: []
