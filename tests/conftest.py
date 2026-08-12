@@ -24,6 +24,7 @@ pipeline_with_runtime_config_preset = config_fixture("pipeline-with-runtime-conf
 pipeline_with_runtime_config_preset_override_only = config_fixture("pipeline-with-override-only-preset.yaml")
 pipeline_with_tasks_config = config_fixture("pipeline-with-tasks-example.yaml")
 shebang_example_config = config_fixture("shebang-example.yaml")
+step_with_autorestart = config_fixture("step-with-autorestart.yaml")
 step_with_cache_volumes = config_fixture("step-with-cache-volumes.yaml")
 step_with_partial_resources = config_fixture("step-with-partial-resources.yaml")
 step_with_preset = config_fixture("step-with-preset.yaml")

@@ -586,6 +586,11 @@ register(
         "$id": "https://valohai.com/schemas/step",
         "additionalProperties": False,
         "properties": {
+            "autorestart": {
+                "description": "Automatically restart executions of this step when they are "
+                "interrupted by the cloud provider. Requires a spot instance environment.",
+                "type": "boolean",
+            },
             "category": {
                 "description": "Category name to group & organize steps in the UI",
                 "type": "string",

@@ -1,0 +1,19 @@
+- step:
+    name: autorestarting step
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    environment: test-environment
+    autorestart: true
+
+- step:
+    name: non-autorestarting step
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    environment: test-environment
+    autorestart: false
+
+- step:
+    name: autorestart-agnostic step
+    image: tensorflow/tensorflow
+    command: python -u /tmp/code/my_mnist.py
+    environment: test-environment

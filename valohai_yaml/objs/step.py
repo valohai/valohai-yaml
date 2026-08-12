@@ -47,6 +47,7 @@ class Step(Item):
         environment_variables: Iterable[EnvironmentVariable] = (),
         environment_variable_groups: Iterable[str] = (),
         environment: str | None = None,
+        autorestart: bool | None = None,  # tri-state; None means "not set in the config"
         runtime_config_preset: str | None = None,  # preset ID or slug
         description: str | None = None,
         upload_store: str | None = None,
@@ -64,6 +65,7 @@ class Step(Item):
         self.source_path = source_path
         self.description = description
         self.environment = str(environment) if environment else None
+        self.autorestart = autorestart
         self.runtime_config_preset = str(runtime_config_preset) if runtime_config_preset else None
         self.icon = str(icon) if icon else None
         self.category = str(category) if category else None
@@ -122,6 +124,7 @@ class Step(Item):
             ("cache-volumes", self.cache_volumes),
             ("outputs", self.outputs),
             ("environment", self.environment),
+            ("autorestart", self.autorestart),
             ("runtime-config-preset", self.runtime_config_preset),
             ("environment-variables", self.environment_variables),
             ("environment-variable-groups", self.environment_variable_groups),
