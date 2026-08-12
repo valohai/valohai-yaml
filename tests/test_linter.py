@@ -75,6 +75,10 @@ def test_expression_lint_ok(file_path):
             "'boo-boo'} is not valid under any of the given schemas",
         ),
         (
+            "step-autorestart-without-environment.yaml",
+            'missing "environment"',
+        ),
+        (
             "step-preset-without-environment.yaml",
             'missing "environment"',
         ),

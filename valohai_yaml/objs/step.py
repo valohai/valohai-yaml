@@ -218,6 +218,12 @@ class Step(Item):
                 f"When specifying a runtime config preset, you must also specify an environment.",
             )
 
+        if self.autorestart and not self.environment:
+            lint_result.add_error(
+                f'Step "{self.name}", missing "environment". '
+                f"When enabling autorestart, you must also specify a spot instance environment.",
+            )
+
     @classmethod
     def default_merge(cls, a: Step, b: Step) -> Step:
         result = merge_simple(a, b)

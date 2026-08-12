@@ -1,0 +1,5 @@
+- step:
+    name: autorestart without environment
+    image: tensorflow/tensorflow
+    command: python train.py
+    autorestart: true
