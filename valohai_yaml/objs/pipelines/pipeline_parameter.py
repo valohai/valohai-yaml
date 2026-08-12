@@ -75,7 +75,7 @@ class PipelineParameter(Item):
                 node = node_map[target_node_name]
                 from valohai_yaml.objs import ExecutionNode
 
-                if isinstance(node, ExecutionNode):
+                if isinstance(node, ExecutionNode) and not node.commit:
                     step = steps[node.step]
                     if target_parameter_name not in step.parameters:
                         lint_result.add_error(

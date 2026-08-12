@@ -1,0 +1,15 @@
+- pipeline:
+    name: commit_pipe
+    edges: []
+    nodes:
+      - name: node_2
+        type: execution
+        step: some_step
+        commit: something-external
+
+    parameters:
+      - name: main_param
+        default: "value"
+        # The existence of this target can't be validated,
+        # since `node_2` refers to a commit we don't know of.
+        targets: [node_2.parameters.main_param]
