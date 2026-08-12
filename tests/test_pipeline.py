@@ -163,6 +163,21 @@ def test_pipeline_runtime_config_preset_override_without_step_preset(
     assert node.override.runtime_config_preset == "preset-xyz789"
 
 
+def test_pipeline_autorestart_override(pipeline_with_autorestart_override: Config):
+    """Autorestart can be overridden to false in pipeline nodes."""
+    assert pipeline_with_autorestart_override.lint().is_valid()
+    assert pipeline_with_autorestart_override.steps["train"].autorestart is True
+
+    pl = pipeline_with_autorestart_override.pipelines["Training pipeline"]
+    node = pl.get_node_by(name="train-node")
+    assert isinstance(node, ExecutionNode)
+    assert node.override is not None
+    assert node.override.autorestart is False
+
+    # an explicit `false` must survive serialization, or it cannot override the step
+    assert node.override.serialize()["autorestart"] is False
+
+
 def test_default_on_error_not_serialized(pipeline_config: Config):
     pl = pipeline_config.pipelines["My little pipeline"]
     node = pl.get_node_by(name="batch1")

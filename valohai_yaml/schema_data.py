@@ -360,6 +360,11 @@ register(
         "$id": "https://valohai.com/schemas/overridden-properties",
         "additionalProperties": False,
         "properties": {
+            "autorestart": {
+                "description": "Automatically restart executions of this node when they are "
+                "interrupted by the cloud provider. Requires a spot instance environment.",
+                "type": "boolean",
+            },
             "command": {
                 "description": "The command or commands to run.",
                 "oneOf": [{"type": "string"}, {"items": {"type": "string"}, "type": "array"}],
