@@ -1,6 +1,18 @@
 ### Changelog
 
+#### [v0.58.0](https://github.com/valohai/valohai-yaml/compare/v0.57.0...v0.58.0)
+
+> 13 August 2026
+
+- Feature: Allow `ephemeral-storage` settings on endpoint definitions [`#213`](https://github.com/valohai/valohai-yaml/pull/213)
+- Feature: Allow task blueprint descriptions [`#212`](https://github.com/valohai/valohai-yaml/pull/212)
+- Fix: Skip linting of pipeline parameters if step references an external commit [`#215`](https://github.com/valohai/valohai-yaml/pull/215)
+
+### Changelog
+
 #### [v0.57.0](https://github.com/valohai/valohai-yaml/compare/v0.56.0...v0.57.0)
+
+> 20 April 2026
 
 - Allow strings and booleans in variant-param-rule-item items [`#209`](https://github.com/valohai/valohai-yaml/pull/209)
 
