@@ -44,7 +44,7 @@ def lint_expression(
     object_type = context["object_type"]
     try:
         evl.evaluate_expression(expression)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 (on purpose!)
         lint_result.add_error(
             f"{object_type.capitalize()} {context[object_type].name}, `{field_name}` is not a valid expression: {e}",
         )

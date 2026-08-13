@@ -103,7 +103,7 @@ def lint_file(file_path: str, *, validate_schema: bool = True) -> LintResult:
     with open(file_path) as yaml:
         try:
             return lint(yaml, validate_schema=validate_schema)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 (any error should be caught)
             lr = LintResult()
             lr.add_error(f"could not parse YAML: {e}", exception=e)
             return lr

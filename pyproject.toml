@@ -51,7 +51,7 @@ line-length = 120
 [tool.ruff.lint]
 mccabe.max-complexity = 10
 flake8-tidy-imports.ban-relative-imports = "all"
-select = [
+extend-select = [
     "ANN", # annotations
     "B", # bugbear
     "C", # complexity & comprehensions

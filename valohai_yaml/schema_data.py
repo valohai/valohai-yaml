@@ -4,7 +4,7 @@ from typing import Any
 
 from valohai_yaml.objs.pipelines.types import edge_types
 
-SCHEMATA = {}
+SCHEMATA: dict[str, dict[str, Any]] = {}
 
 edge_types_list = " | ".join(edge_types)
 

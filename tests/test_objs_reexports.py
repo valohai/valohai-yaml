@@ -11,7 +11,7 @@ def _collect_public_names(package):
     """Collect all public class/enum names defined in a package's submodules."""
     public_names = {}
     package_path = package.__path__
-    package_prefix = package.__name__ + "."
+    package_prefix = f"{package.__name__}."
 
     for _importer, modname, _ispkg in pkgutil.walk_packages(package_path, prefix=package_prefix):
         module = importlib.import_module(modname)

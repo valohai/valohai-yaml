@@ -32,7 +32,7 @@ class Edge(Item):
 
     @property
     def source(self) -> str:
-        return ".".join((self.source_node, self.source_type, self.source_key))
+        return f"{self.source_node}.{self.source_type}.{self.source_key}"
 
     @source.setter
     def source(self, prop: str) -> None:
@@ -45,7 +45,7 @@ class Edge(Item):
 
     @property
     def target(self) -> str:
-        return ".".join((self.target_node, self.target_type, self.target_key))
+        return f"{self.target_node}.{self.target_type}.{self.target_key}"
 
     @target.setter
     def target(self, prop: str) -> None:

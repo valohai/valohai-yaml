@@ -78,7 +78,7 @@ def build_command(
 
     out_commands = []
     commands: list[str] = listify(command)
-    for command in commands:
+    for command in commands:  # noqa: PLR1704 (reassignment is fine)
         # Only attempt formatting if the string smells like it should be formatted.
         # This allows the user to include shell syntax in the commands, if required.
         # (There's still naturally the chance for false-positives, so guard against
