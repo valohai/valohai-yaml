@@ -8,6 +8,7 @@ from valohai_yaml.utils.merge import merge_simple
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+    from typing import Self
 
     from valohai_yaml.lint import LintResult
     from valohai_yaml.types import LintContext, SerializedDict
@@ -46,7 +47,7 @@ class Item:
         return out
 
     @classmethod
-    def parse(cls: type[T], data: SerializedDict) -> T:
+    def parse(cls, data: SerializedDict) -> Self:
         inst = cls(
             **{key.replace("-", "_"): value for (key, value) in data.items() if not key.startswith("_")},
         )
@@ -57,14 +58,14 @@ class Item:
         pass
 
     def merge_with(
-        self: T,
-        other: T,
-        strategy: Callable[[T, T], T] | None = None,
-    ) -> T:
+        self,
+        other: Self,
+        strategy: Callable[[Self, Self], Self] | None = None,
+    ) -> Self:
         if strategy is None:
             strategy = self.default_merge
         return strategy(self, other)
 
     @classmethod
-    def default_merge(cls: type[T], a: T, b: T) -> T:
+    def default_merge(cls, a: Self, b: Self) -> Self:
         return merge_simple(a, b)

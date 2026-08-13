@@ -32,9 +32,11 @@ def test_invalid_parameter_default(file, expected_message):
     [
         (
             "invalid-indentation-with-valid-YAML.yaml",
-            "\x1b[34mFile contains valid YAML but there "
-            "might be an indentation error in following "
-            "configuration: \x1b[1m0.step\x1b",
+            (
+                "\x1b[34mFile contains valid YAML but there "
+                "might be an indentation error in following "
+                "configuration: \x1b[1m0.step\x1b"
+            ),
         ),
         ("invalid-YAML-indentation.yaml", "Indentation Error at line 3, column 10"),
     ],

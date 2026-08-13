@@ -4,7 +4,7 @@ from valohai_yaml.utils.duration import parse_duration_string
 
 
 def test_pipeline_conversion_smoke(pipeline_config: Config):
-    for _name, pipeline in pipeline_config.pipelines.items():
+    for pipeline in pipeline_config.pipelines.values():
         result = PipelineConverter(
             config=pipeline_config,
             commit_identifier="latest",
@@ -56,7 +56,7 @@ def test_pipeline_conversion_override_inputs(pipeline_overridden_config: Config)
 
 
 def test_pipeline_parameter_conversion(pipeline_with_parameters_config):
-    for _name, pipe in pipeline_with_parameters_config.pipelines.items():
+    for pipe in pipeline_with_parameters_config.pipelines.values():
         result = PipelineConverter(
             config=pipeline_with_parameters_config,
             commit_identifier="latest",

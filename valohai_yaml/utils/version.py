@@ -24,6 +24,7 @@ def _has_changed_after_release(version: str) -> bool:
             capture_output=True,
             text=True,
             timeout=3,
+            check=False,  # checked below
         )
         if result.returncode == 0:
             commit_count = int(result.stdout.strip())

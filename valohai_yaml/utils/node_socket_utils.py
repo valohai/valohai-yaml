@@ -4,4 +4,4 @@ def split_socket_str(socket_str: str) -> list[str]:
 
 
 def get_socket_str(node: str, type: str, key: str) -> str:
-    return ".".join((node, type, key))
+    return f"{node}.{type}.{key}"

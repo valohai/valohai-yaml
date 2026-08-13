@@ -24,10 +24,10 @@ Programmatic usage:
 from valohai_yaml import validate, ValidationErrors
 
 try:
-    with open('path/to/valohai.yaml') as f:
+    with open("path/to/valohai.yaml") as f:
         validate(f)
 except ValidationErrors as errors:
-    print('oh no!')
+    print("oh no!")
     for err in errors:
         print(err)
 ```
@@ -44,10 +44,10 @@ echo $?  # 1 if errors, 0 if ok
 ```python
 from valohai_yaml import parse
 
-with open('path/to/valohai.yaml') as f:
+with open("path/to/valohai.yaml") as f:
     config = parse(f)
 
-print(config.steps['cool step'].command)
+print(config.steps["cool step"].command)
 ```
 
 # Development

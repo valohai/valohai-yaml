@@ -18,7 +18,7 @@ from valohai_yaml.__main__ import main
 
 
 def assert_validation_output(capsys, snapshot, yaml_path: str, sort_output: bool = False) -> bool:
-    out, err = capsys.readouterr()
+    out, _err = capsys.readouterr()
     # Replace the path with just the filename,
     # so this is agnostic to where the tests are run from.
     out = out.replace(yaml_path, os.path.basename(yaml_path))

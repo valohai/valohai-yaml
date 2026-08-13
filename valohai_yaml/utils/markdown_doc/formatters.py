@@ -28,7 +28,7 @@ def format_doc_content(
     for d in definitions:
         yield f"\n### `{d.title}`\n"
         if d.description:
-            yield d.description + "\n"
+            yield f"{d.description}\n"
         yield f"- **type:** *{d.type}*"
         if d.properties:
             yield "- **properties:**"

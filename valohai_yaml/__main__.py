@@ -57,7 +57,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.ansi_colors is None:
         try:
             default_ansi_colors = sys.stdout.isatty()
-        except Exception:
+        except Exception:  # noqa: BLE001 (any error here is fine)
             default_ansi_colors = False
         args.ansi_colors = default_ansi_colors
 
