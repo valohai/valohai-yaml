@@ -9,7 +9,6 @@
     name: predict
     image: tensorflow/tensorflow
     command: python predict.py
-    environment: aws-spot-env
 
 - pipeline:
     name: Training pipeline
