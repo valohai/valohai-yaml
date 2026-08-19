@@ -79,11 +79,3 @@ def _lint_override_against_step(
             f'{error_prefix}: missing "environment". '
             f"When specifying a runtime config preset, you must also specify an environment.",
         )
-
-    # the node inherits the step's environment, so either of the two may specify it
-    autorestart = override.autorestart if override.autorestart is not None else step.autorestart
-    if autorestart and not (override.environment or step.environment):
-        lint_result.add_error(
-            f'{error_prefix}: missing "environment". '
-            f"When enabling autorestart, you must also specify a spot instance environment.",
-        )

@@ -91,14 +91,6 @@
   error:   Maxlength validation on step.upload-store.maxLength: 'This is a test string exactly with  65 characters long in length.' is too long (0.step.upload-store)
   '''
 # ---
-# name: test_bad_examples_cli[pipeline-with-autorestart-override-without-environment.yaml]
-  '''
-  *** 1 errors, 0 warnings
-  ------------------------------------------------------------
-  >>> pipeline-with-autorestart-override-without-environment.yaml
-  error: Pipeline "Training pipeline" node "train-node" step "train": missing "environment". When enabling autorestart, you must also specify a spot instance environment.
-  '''
-# ---
 # name: test_bad_examples_cli[pipeline-with-null-autorestart-override.yaml]
   '''
   *** 1 errors, 0 warnings

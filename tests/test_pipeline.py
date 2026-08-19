@@ -198,15 +198,6 @@ def test_pipeline_autorestart_override_in_task_node(pipeline_with_autorestart_ov
     assert node.override.autorestart is False
 
 
-def test_pipeline_autorestart_override_requires_environment():
-    """Lint fails when autorestart is overridden and no environment is specified anywhere."""
-    path = get_error_example_path("pipeline-with-autorestart-override-without-environment.yaml")
-    lint_result = lint_file(path)
-    assert not lint_result.is_valid()
-    errors = list(lint_result.errors)
-    assert any('missing "environment"' in e["message"] for e in errors), errors
-
-
 def test_pipeline_autorestart_override_can_not_be_null():
     """Autorestart can not be unset in an override; there is no way to remove a step property."""
     path = get_error_example_path("pipeline-with-null-autorestart-override.yaml")
