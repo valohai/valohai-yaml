@@ -588,7 +588,7 @@ register(
         "properties": {
             "autorestart": {
                 "description": "Automatically restart executions of this step when they are "
-                "interrupted by the cloud provider. Requires a spot instance environment.",
+                "interrupted by the cloud provider. Only has an effect on spot instance environments.",
                 "type": "boolean",
             },
             "category": {
