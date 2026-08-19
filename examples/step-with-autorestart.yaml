@@ -2,7 +2,6 @@
     name: autorestarting step
     image: tensorflow/tensorflow
     command: python -u /tmp/code/my_mnist.py
-    environment: test-environment
     autorestart: true
 
 - step:
