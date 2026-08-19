@@ -165,10 +165,15 @@ def test_pipeline_conversion_autorestart_override(pipeline_with_autorestart_over
     templates = {node["name"]: node["template"] for node in result["nodes"]}
 
     # step says true, override says false
-    assert templates["train-node"]["autorestart"] is False
+    assert templates["train-node"]["runtime_config"]["autorestart"] is False
     # step does not say anything, override says true
-    assert templates["predict-node"]["autorestart"] is True
+    assert templates["predict-node"]["runtime_config"]["autorestart"] is True
     # task nodes are overridden the same way
-    assert templates["train-task-node"]["autorestart"] is False
+    assert templates["train-task-node"]["runtime_config"]["autorestart"] is False
     # an override that does not mention autorestart keeps the step's value
-    assert templates["inherit-node"]["autorestart"] is True
+    assert templates["inherit-node"]["runtime_config"]["autorestart"] is True
+    # a remote step is not available locally, so only the override folds in
+    assert templates["remote-node"]["runtime_config"]["autorestart"] is True
+
+    # the value only lives in runtime_config, not at the top level of the template
+    assert not any("autorestart" in template for template in templates.values())
