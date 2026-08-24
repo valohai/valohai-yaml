@@ -157,6 +157,13 @@ register(
                 "description": "Command that runs a HTTP server.",
                 "oneOf": [{"type": "string"}, {"items": {"type": "string"}, "type": "array"}],
             },
+            "shared-volumes": {
+                "description": (
+                    "List of existing Kubernetes Persistent Volume Claims to attach and where to mount them."
+                ),
+                "items": {"$ref": "/schemas/endpoint-shared-volume"},
+                "type": "array",
+            },
             "tolerations": {
                 "description": "List of Kubernetes tolerations specifying which node taints the "
                 "endpoint should tolerate.",
@@ -171,6 +178,32 @@ register(
             },
         },
         "required": ["name", "image"],
+        "type": "object",
+    },
+)
+register(
+    {
+        "$id": "https://valohai.com/schemas/endpoint-shared-volume",
+        "additionalProperties": False,
+        "properties": {
+            "pvc-name": {
+                "description": "Name of an existing Kubernetes PVC in the deployment's namespace.",
+                "type": "string",
+            },
+            "mount-path": {
+                "description": "Absolute path where the volume is mounted at runtime.",
+                "type": "string",
+            },
+            "sub-path": {
+                "description": "Optional; relative path within the volume to mount instead of its root.",
+                "type": "string",
+            },
+            "read-only": {
+                "description": "Optional; whether to mount as read-only, defaults to false.",
+                "type": "boolean",
+            },
+        },
+        "required": ["pvc-name", "mount-path"],
         "type": "object",
     },
 )

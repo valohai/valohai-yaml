@@ -9,7 +9,12 @@ from valohai_yaml.objs.utils import check_type_and_listify
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from valohai_yaml.types import EndpointResourcesDict, EndpointTolerationDict, SerializedDict
+    from valohai_yaml.types import (
+        EndpointResourcesDict,
+        EndpointSharedVolumeDict,
+        EndpointTolerationDict,
+        SerializedDict,
+    )
 
 
 class Endpoint(Item):
@@ -28,6 +33,7 @@ class Endpoint(Item):
         node_selector: str | None = None,
         resources: EndpointResourcesDict | None = None,
         tolerations: list[EndpointTolerationDict] | None = None,
+        shared_volumes: list[EndpointSharedVolumeDict] | None = None,
     ) -> None:
         self.name = name
         self.description = description
@@ -39,6 +45,7 @@ class Endpoint(Item):
         self.node_selector = node_selector
         self.resources = resources
         self.tolerations = tolerations
+        self.shared_volumes = shared_volumes
 
     @classmethod
     def parse(cls, data: SerializedDict) -> Endpoint:
