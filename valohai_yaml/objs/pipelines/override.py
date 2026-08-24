@@ -28,6 +28,7 @@ if TYPE_CHECKING:
 # readable by the constructor, to allow leniently parsing some legacy
 # files that aren't technically valid.
 OVERRIDABLE_FIELDS = {
+    "autorestart",
     "command",
     "environment",
     "environment_variables",
@@ -52,11 +53,13 @@ class Override(Item):
         mounts: Iterable[Mount] | None = None,
         environment_variables: Iterable[EnvironmentVariable] | None = None,
         environment: str | None = None,
+        autorestart: bool | None = None,  # tri-state; None means "not set in the config"
         runtime_config_preset: str | None = None,
     ) -> None:
         self.image = image
         self.command = command
         self.environment = str(environment) if environment else None
+        self.autorestart = autorestart
         self.runtime_config_preset = str(runtime_config_preset) if runtime_config_preset else None
         self.mounts = check_type_and_listify(mounts, Mount)
         self.inputs = check_type_and_dictify(inputs, Input, "name")
@@ -139,10 +142,12 @@ class Override(Item):
             ("inputs", self.inputs),
             ("mounts", self.mounts),
             ("environment", self.environment),
+            ("autorestart", self.autorestart),
             ("runtime-config-preset", self.runtime_config_preset),
             ("environment-variables", self.environment_variables),
         ]:
-            if source:
+            # Booleans are serialized even when falsy, so an explicit `false` can override a step
+            if source or isinstance(source, bool):
                 serialize_into(
                     val,
                     key,

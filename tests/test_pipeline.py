@@ -1,6 +1,6 @@
 from tests.utils import get_error_example_path, get_warning_example_path
 from valohai_yaml.lint import lint_file
-from valohai_yaml.objs import Config, DeploymentNode, ExecutionNode
+from valohai_yaml.objs import Config, DeploymentNode, ExecutionNode, TaskNode
 from valohai_yaml.objs.pipelines.node import ErrorAction
 
 
@@ -161,6 +161,48 @@ def test_pipeline_runtime_config_preset_override_without_step_preset(
     assert node.override is not None
     assert node.override.environment == "aws-p3-2xlarge"
     assert node.override.runtime_config_preset == "preset-xyz789"
+
+
+def test_pipeline_autorestart_override(pipeline_with_autorestart_override: Config):
+    """Autorestart can be overridden to false in pipeline nodes."""
+    assert pipeline_with_autorestart_override.lint().is_valid()
+    assert pipeline_with_autorestart_override.steps["train"].autorestart is True
+
+    pl = pipeline_with_autorestart_override.pipelines["Training pipeline"]
+    node = pl.get_node_by(name="train-node")
+    assert isinstance(node, ExecutionNode)
+    assert node.override is not None
+    assert node.override.autorestart is False
+
+    # an explicit `false` must survive serialization, or it cannot override the step
+    assert node.override.serialize()["autorestart"] is False
+
+
+def test_pipeline_autorestart_override_without_step_autorestart(pipeline_with_autorestart_override: Config):
+    """Autorestart can be set in an override even if the step does not define it."""
+    assert pipeline_with_autorestart_override.steps["predict"].autorestart is None
+
+    pl = pipeline_with_autorestart_override.pipelines["Training pipeline"]
+    node = pl.get_node_by(name="predict-node")
+    assert isinstance(node, ExecutionNode)
+    assert node.override is not None
+    assert node.override.autorestart is True
+
+
+def test_pipeline_autorestart_override_in_task_node(pipeline_with_autorestart_override: Config):
+    """Autorestart can be overridden in task nodes too."""
+    pl = pipeline_with_autorestart_override.pipelines["Training pipeline"]
+    node = pl.get_node_by(name="train-task-node")
+    assert isinstance(node, TaskNode)
+    assert node.override is not None
+    assert node.override.autorestart is False
+
+
+def test_pipeline_autorestart_override_can_not_be_null():
+    """Autorestart can not be unset in an override; there is no way to remove a step property."""
+    path = get_error_example_path("pipeline-with-null-autorestart-override.yaml")
+    lint_result = lint_file(path)
+    assert not lint_result.is_valid()
 
 
 def test_default_on_error_not_serialized(pipeline_config: Config):

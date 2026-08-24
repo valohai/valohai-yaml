@@ -153,3 +153,22 @@ def test_pipeline_conversion_env_vars_are_dict(pipeline_with_env_vars_config: Co
     ), "environment-variables should be a dict, not a list, for API compatibility"
     assert node["template"]["environment-variables"]["DATA_VERSION"] == "v1.0"
     assert node["template"]["environment-variables"]["PREPROCESS_MODE"] == "full"
+
+
+def test_pipeline_conversion_autorestart_override(pipeline_with_autorestart_override: Config):
+    """Node overrides decide the autorestart value of the converted template."""
+    pipeline = pipeline_with_autorestart_override.pipelines["Training pipeline"]
+    result = PipelineConverter(
+        config=pipeline_with_autorestart_override,
+        commit_identifier="abc123",
+    ).convert_pipeline(pipeline)
+    templates = {node["name"]: node["template"] for node in result["nodes"]}
+
+    # step says true, override says false
+    assert templates["train-node"]["autorestart"] is False
+    # step does not say anything, override says true
+    assert templates["predict-node"]["autorestart"] is True
+    # task nodes are overridden the same way
+    assert templates["train-task-node"]["autorestart"] is False
+    # an override that does not mention autorestart keeps the step's value
+    assert templates["inherit-node"]["autorestart"] is True
