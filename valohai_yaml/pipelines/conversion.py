@@ -133,6 +133,12 @@ class PipelineConverter:
             # Just add in overrides and hope for the best...
             step_data = node.override.serialize() if node.override else {}
 
+        # Folded in after the override merge, so that a node can override the step's value.
+        # `None` means "not set anywhere"; an explicit `false` is kept.
+        autorestart = step_data.pop("autorestart", None)
+        if autorestart is not None:
+            step_data.setdefault("runtime_config", {})["autorestart"] = autorestart
+
         commit = node_commit or self.commit_identifier
 
         if not commit:  # pragma: no cover

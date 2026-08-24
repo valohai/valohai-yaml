@@ -36,4 +36,11 @@
         override:
           # an override that does not mention autorestart keeps the step's value
           image: another/image
+      - name: remote-node
+        type: execution
+        commit: "library:some-library/train"
+        step: remote-train
+        override:
+          # the step lives in another config, so only the override can set this
+          autorestart: true
     edges: []
