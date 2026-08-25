@@ -82,6 +82,18 @@ def test_expression_lint_ok(file_path):
             "pipeline-with-preset-override-without-environment.yaml",
             'missing "environment"',
         ),
+        (
+            "endpoint-shared-volumes-invalid-paths.yaml",
+            'shared volume mount path "var/cache/app" must start with "/"',
+        ),
+        (
+            "endpoint-shared-volumes-invalid-paths.yaml",
+            'shared volume sub-path "/predict-models" must not start with "/"',
+        ),
+        (
+            "endpoint-shared-volumes-invalid-paths.yaml",
+            'has 2 shared volumes mounted at "/models"',
+        ),
     ],
 )
 def test_expression_lint_fail(file_path, expected_message):
