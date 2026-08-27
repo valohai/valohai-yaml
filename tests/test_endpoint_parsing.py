@@ -48,3 +48,22 @@ def test_ephemeral_storage_endpoint_parse(endpoint_config):
     assert endpoint.resources["memory"]["max"] == 64
     assert endpoint.resources["ephemeral-storage"]["min"] == 2048
     assert endpoint.resources["ephemeral-storage"]["max"] == 4096
+
+
+def test_shared_volume_endpoint_parse(endpoint_config):
+    endpoint = endpoint_config.endpoints["shared-volume-endpoint"]
+    assert len(endpoint.shared_volumes) == 2
+
+    shared_volume_1 = endpoint.shared_volumes[0]
+    assert shared_volume_1 == {
+        "pvc-name": "app-cache-august",
+        "mount-path": "/var/cache/app",
+    }
+
+    shared_volume_2 = endpoint.shared_volumes[1]
+    assert shared_volume_2 == {
+        "pvc-name": "my-shared-models",
+        "mount-path": "/models",
+        "sub-path": "predict-models",
+        "read-only": True,
+    }

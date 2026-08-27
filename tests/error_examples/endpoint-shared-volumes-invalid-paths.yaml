@@ -1,0 +1,14 @@
+- endpoint:
+    name: bad-shared-volume-endpoint
+    image: python:3.14
+    server-command: python run_server.py
+    shared-volumes:
+      - pvc-name: relative-mount-path
+        mount-path: var/cache/app
+
+      - pvc-name: absolute-sub-path
+        mount-path: /models
+        sub-path: /predict-models
+
+      - pvc-name: duplicate-mount-path
+        mount-path: /models

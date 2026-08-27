@@ -13,6 +13,18 @@
   error:   Pattern validation on endpoint.name.pattern: 'wsgi_endpoint' does not match '^[a-z][a-z0-9-]+$' (3.endpoint.name)
   '''
 # ---
+# name: test_bad_examples_cli[endpoint-shared-volumes-invalid-paths.yaml]
+  '''
+  *** 3 errors, 0 warnings
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  >>> endpoint-shared-volumes-invalid-paths.yaml
+  error: Endpoint "bad-shared-volume-endpoint" has 2 shared volumes mounted at "/models"
+  error: Endpoint "bad-shared-volume-endpoint" shared volume mount path "var/cache/app" must start with "/"
+  error: Endpoint "bad-shared-volume-endpoint" shared volume sub-path "/predict-models" must not start with "/"
+  '''
+# ---
 # name: test_bad_examples_cli[input-name-too-long.yaml]
   '''
   *** 1 errors, 0 warnings

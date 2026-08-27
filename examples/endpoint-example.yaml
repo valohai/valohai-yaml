@@ -56,3 +56,16 @@
       ephemeral-storage:
         min: 2048 # in MB
         max: 4096 # in MB
+
+- endpoint:
+    name: shared-volume-endpoint
+    image: python:3.14
+    server-command: python run_server.py
+    shared-volumes:
+      - pvc-name: app-cache-august
+        mount-path: /var/cache/app
+
+      - pvc-name: my-shared-models # the name of the PVC on the cluster
+        mount-path: /models # where to mount the volume during runtime
+        sub-path: predict-models # optional, sub-path on the volume to mount
+        read-only: true # optional, defaults to false
