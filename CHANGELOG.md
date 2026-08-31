@@ -1,5 +1,20 @@
 ### Changelog
 
+#### [v0.60.0](https://github.com/valohai/valohai-yaml/compare/v0.59.0...v0.60.0)
+
+> 31 August 2026
+
+- Allow `shared-volumes` setting on endpoints [`#222`](https://github.com/valohai/valohai-yaml/pull/222)
+
+#### [v0.59.0](https://github.com/valohai/valohai-yaml/compare/v0.58.0...v0.59.0)
+
+> 24 August 2026
+
+- Put 'autorestart' inside 'runtime_config' [`#220`](https://github.com/valohai/valohai-yaml/pull/220)
+- Override autorestart property in node [`#218`](https://github.com/valohai/valohai-yaml/pull/218)
+- Add 'autorestart' step config property [`#216`](https://github.com/valohai/valohai-yaml/pull/216)
+- Renovations (GHA, pre-commit, etc.) [`#217`](https://github.com/valohai/valohai-yaml/pull/217)
+
 #### [v0.58.0](https://github.com/valohai/valohai-yaml/compare/v0.57.0...v0.58.0)
 
 > 13 August 2026
