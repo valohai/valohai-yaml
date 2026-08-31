@@ -1,5 +1,11 @@
 ### Changelog
 
+#### [v0.60.0](https://github.com/valohai/valohai-yaml/compare/v0.59.0...v0.60.0)
+
+> 31 August 2026
+
+- Allow `shared-volumes` setting on endpoints [`#222`](https://github.com/valohai/valohai-yaml/pull/222)
+
 #### [v0.59.0](https://github.com/valohai/valohai-yaml/compare/v0.58.0...v0.59.0)
 
 > 24 August 2026
