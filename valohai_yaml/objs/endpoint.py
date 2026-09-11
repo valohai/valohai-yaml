@@ -15,6 +15,7 @@ if TYPE_CHECKING:
         EndpointResourcesDict,
         EndpointSharedVolumeDict,
         EndpointTolerationDict,
+        EndpointWorkspaceVolumeDict,
         LintContext,
         SerializedDict,
     )
@@ -36,6 +37,7 @@ class Endpoint(Item):
         node_selector: str | None = None,
         resources: EndpointResourcesDict | None = None,
         tolerations: list[EndpointTolerationDict] | None = None,
+        workspace_volume: EndpointWorkspaceVolumeDict | None = None,
         shared_volumes: list[EndpointSharedVolumeDict] | None = None,
     ) -> None:
         self.name = name
@@ -48,6 +50,7 @@ class Endpoint(Item):
         self.node_selector = node_selector
         self.resources = resources
         self.tolerations = tolerations
+        self.workspace_volume = workspace_volume
         self.shared_volumes = shared_volumes
 
     @classmethod

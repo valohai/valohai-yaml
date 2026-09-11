@@ -50,6 +50,15 @@ def test_ephemeral_storage_endpoint_parse(endpoint_config):
     assert endpoint.resources["ephemeral-storage"]["max"] == 4096
 
 
+def test_workspace_volume_endpoint_parse(endpoint_config):
+    endpoint = endpoint_config.endpoints["workspace-volume-endpoint"]
+    assert endpoint.workspace_volume == {
+        "size": 10,
+        "mount-path": "/my/cache",
+        "storage-class-name": "fast-ssd",
+    }
+
+
 def test_shared_volume_endpoint_parse(endpoint_config):
     endpoint = endpoint_config.endpoints["shared-volume-endpoint"]
     assert len(endpoint.shared_volumes) == 2

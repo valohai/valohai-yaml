@@ -58,6 +58,15 @@
         max: 4096 # in MB
 
 - endpoint:
+    name: workspace-volume-endpoint
+    image: python:3.14
+    server-command: python run_server.py
+    workspace-volume:
+      size: 10 # in GiB
+      mount-path: /my/cache # where to mount the volume during runtime
+      storage-class-name: fast-ssd # optional, defaults to the cluster default
+
+- endpoint:
     name: shared-volume-endpoint
     image: python:3.14
     server-command: python run_server.py
