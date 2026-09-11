@@ -1,0 +1,21 @@
+- endpoint:
+    name: relative-workspace-volume-endpoint
+    image: python:3.14
+    server-command: python run_server.py
+    shared-volumes:
+      - pvc-name: my-shared-cache
+        mount-path: my/cache
+    workspace-volume:
+      size: 10
+      mount-path: my/cache
+
+- endpoint:
+    name: clashing-workspace-volume-endpoint
+    image: python:3.14
+    server-command: python run_server.py
+    shared-volumes:
+      - pvc-name: my-shared-models
+        mount-path: /models
+    workspace-volume:
+      size: 10
+      mount-path: /models

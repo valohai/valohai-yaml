@@ -25,6 +25,20 @@
   error: Endpoint "bad-shared-volume-endpoint" shared volume sub-path "/predict-models" must not start with "/"
   '''
 # ---
+# name: test_bad_examples_cli[endpoint-workspace-volume-invalid-paths.yaml]
+  '''
+  *** 4 errors, 0 warnings
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  ------------------------------------------------------------
+  >>> endpoint-workspace-volume-invalid-paths.yaml
+  error: Endpoint "clashing-workspace-volume-endpoint" workspace volume mount path "/models" is already used by a shared volume
+  error: Endpoint "relative-workspace-volume-endpoint" shared volume mount path "my/cache" must start with "/"
+  error: Endpoint "relative-workspace-volume-endpoint" workspace volume mount path "my/cache" is already used by a shared volume
+  error: Endpoint "relative-workspace-volume-endpoint" workspace volume mount path "my/cache" must start with "/"
+  '''
+# ---
 # name: test_bad_examples_cli[input-name-too-long.yaml]
   '''
   *** 1 errors, 0 warnings

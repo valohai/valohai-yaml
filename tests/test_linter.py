@@ -94,6 +94,18 @@ def test_expression_lint_ok(file_path):
             "endpoint-shared-volumes-invalid-paths.yaml",
             'has 2 shared volumes mounted at "/models"',
         ),
+        (
+            "endpoint-workspace-volume-invalid-paths.yaml",
+            'workspace volume mount path "my/cache" must start with "/"',
+        ),
+        (
+            "endpoint-workspace-volume-invalid-paths.yaml",
+            'workspace volume mount path "/models" is already used by a shared volume',
+        ),
+        (
+            "endpoint-workspace-volume-invalid-paths.yaml",
+            'workspace volume mount path "my/cache" is already used by a shared volume',
+        ),
     ],
 )
 def test_expression_lint_fail(file_path, expected_message):

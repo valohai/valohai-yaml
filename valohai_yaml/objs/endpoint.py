@@ -83,3 +83,15 @@ class Endpoint(Item):
                 lint_result.add_error(
                     f'Endpoint "{self.name}" has {times} shared volumes mounted at "{mount_path}"',
                 )
+
+        if self.workspace_volume:
+            workspace_mount_path = self.workspace_volume.get("mount-path", "")
+            if not workspace_mount_path.startswith("/"):
+                lint_result.add_error(
+                    f'Endpoint "{self.name}" workspace volume mount path "{workspace_mount_path}" must start with "/"',
+                )
+            if workspace_mount_path in mount_path_counts:
+                lint_result.add_error(
+                    f'Endpoint "{self.name}" workspace volume mount path "{workspace_mount_path}" '
+                    "is already used by a shared volume",
+                )
