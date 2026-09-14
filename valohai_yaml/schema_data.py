@@ -170,6 +170,12 @@ register(
                 "items": {"$ref": "/schemas/toleration"},
                 "type": "array",
             },
+            "workspace-volume": {
+                "$ref": "/schemas/endpoint-workspace-volume",
+                "description": (
+                    "A Kubernetes volume created for each endpoint replica, living and dying with the replica."
+                ),
+            },
             "wsgi": {
                 "description": "Specifies the WSGI application to serve (e.g. a Flask application). Specify "
                 "the module (i.e. `package.app`) or the module and the WSGI callable (i.e. "
@@ -204,6 +210,30 @@ register(
             },
         },
         "required": ["pvc-name", "mount-path"],
+        "type": "object",
+    },
+)
+register(
+    {
+        "$id": "https://valohai.com/schemas/endpoint-workspace-volume",
+        "additionalProperties": False,
+        "properties": {
+            "mount-path": {
+                "description": "Absolute path where the volume is mounted at runtime.",
+                "type": "string",
+            },
+            "size": {
+                "description": "Size of the volume in gibibytes (GiB).",
+                "minimum": 1,
+                "type": "integer",
+            },
+            "storage-class-name": {
+                "description": "Optional; Kubernetes storage class to create the volume with, "
+                "defaults to the storage class configured as the cluster default.",
+                "type": "string",
+            },
+        },
+        "required": ["mount-path", "size"],
         "type": "object",
     },
 )
