@@ -1,5 +1,11 @@
 ### Changelog
 
+#### [v0.61.0](https://github.com/valohai/valohai-yaml/compare/v0.60.0...v0.61.0)
+
+> 14 September 2026
+
+- Allow `workspace-volume` setting on endpoints [`#224`](https://github.com/valohai/valohai-yaml/pull/224)
+
 #### [v0.60.0](https://github.com/valohai/valohai-yaml/compare/v0.59.0...v0.60.0)
 
 > 31 August 2026
