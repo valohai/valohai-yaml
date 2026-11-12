@@ -6,7 +6,7 @@ from valohai_yaml.objs.pipelines.types import edge_types
 
 SCHEMATA: dict[str, dict[str, Any]] = {}
 
-edge_types_list = " | ".join(edge_types)
+edge_types_list = " | ".join(sorted(edge_types))
 
 
 def register(schema: dict) -> None:
