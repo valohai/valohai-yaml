@@ -13,6 +13,9 @@
       - name: model
         description: Model output file from TensorFlow
         path: model.pb
+      - name: vocabulary
+        path: vocabulary.json
+        optional: true
 
 - endpoint:
     name: limited-endpoint
