@@ -10,11 +10,11 @@ def test_wsgi_endpoint_parse(endpoint_config):
     assert endpoint.description == "predict digits from image inputs"
     assert endpoint.image == "tensorflow/tensorflow:1.3.0-py3"
     assert endpoint.wsgi == "predict_wsgi:predict_wsgi"
-    assert len(endpoint.files) == 1
-    file = endpoint.files[0]
-    assert file.name == "model"
-    assert file.description == "Model output file from TensorFlow"
-    assert file.path == "model.pb"
+    assert [file.serialize() for file in endpoint.files] == [
+        {"name": "model", "description": "Model output file from TensorFlow", "path": "model.pb"},
+        {"name": "vocabulary", "optional": True, "path": "vocabulary.json"},
+    ]
+    assert [file.optional for file in endpoint.files] == [False, True]
 
 
 def test_limited_endpoint_parse(endpoint_config):

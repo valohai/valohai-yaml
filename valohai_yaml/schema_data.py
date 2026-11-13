@@ -284,6 +284,12 @@ register(
         "properties": {
             "description": {"description": "The description of the file.", "type": "string"},
             "name": {"description": "The symbolic name of this file.", "type": "string"},
+            "optional": {
+                "default": False,
+                "description": "Whether this file is optional.\n"
+                "An endpoint may be deployed without a value for an optional file.",
+                "type": "boolean",
+            },
             "path": {
                 "description": "Relative path of the file from the endpoint's working directory. For example "
                 '"data/serialized_model.hdf5".',
