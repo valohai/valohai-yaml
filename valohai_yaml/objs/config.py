@@ -183,7 +183,7 @@ class Config(Item):
         result.pipelines = merge_dicts(
             a.pipelines,
             b.pipelines,
-            merger=merge_simple,
+            merger=Pipeline.default_merge,
             copier=copy.deepcopy,
         )
         result.deployments = merge_dicts(

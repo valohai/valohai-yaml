@@ -632,6 +632,7 @@ register(
                 "(inputs, command, commit hash, parameters, step's configuration).",
                 "type": "boolean",
             },
+            "tags": _tags_prop("Tags to add to runs of this pipeline."),
         },
         "required": ["edges", "name", "nodes"],
         "title": "Pipeline Blueprint",
