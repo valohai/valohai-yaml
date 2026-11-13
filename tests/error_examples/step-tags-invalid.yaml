@@ -1,0 +1,8 @@
+- step:
+    name: train
+    image: python:3.12
+    command: python train.py
+    tags:
+      - this-tag-is-way-too-long-and-will-cause-the-validation-to-fail-yes
+      - ""
+      - "  "

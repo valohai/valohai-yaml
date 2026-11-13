@@ -1,0 +1,22 @@
+- step:
+    name: train
+    image: python:3.12
+    command: python train.py
+    tags: [training, team-vision]
+
+- step:
+    name: evaluate
+    image: python:3.12
+    command: python evaluate.py
+
+- pipeline:
+    name: train-and-evaluate
+    nodes:
+      - name: train
+        type: execution
+        step: train
+      - name: evaluate
+        type: execution
+        step: evaluate
+    edges:
+      - [train.output.*, evaluate.input.model]
