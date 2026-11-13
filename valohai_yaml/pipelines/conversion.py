@@ -37,6 +37,7 @@ class ConvertedPipeline(TypedDict):
     edges: list[ConvertedObject]
     nodes: list[ConvertedObject]
     parameters: dict[str, ConvertedObject]
+    tags: list[str]
 
 
 class PipelineConverter:
@@ -58,6 +59,7 @@ class PipelineConverter:
             "edges": [edge.get_expanded() for edge in pipeline.edges],
             "nodes": [self.convert_node(node) for node in pipeline.nodes],
             "parameters": {parameter.name: self.convert_parameter(parameter) for parameter in pipeline.parameters},
+            "tags": list(pipeline.tags),
         }
 
     def convert_parameter(self, parameter: PipelineParameter) -> ConvertedObject:

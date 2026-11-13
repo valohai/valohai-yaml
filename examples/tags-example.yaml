@@ -11,6 +11,8 @@
 
 - pipeline:
     name: train-and-evaluate
+    tags:
+      - nightly
     nodes:
       - name: train
         type: execution
