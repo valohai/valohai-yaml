@@ -2,12 +2,28 @@
     name: train
     image: python:3.12
     command: python train.py
+    parameters:
+      - name: learning-rate
+        type: float
+        default: 0.01
     tags: [training, team-vision]
 
 - step:
     name: evaluate
     image: python:3.12
     command: python evaluate.py
+
+- task:
+    name: train-sweep
+    step: train
+    type: grid_search
+    tags:
+      - sweep
+    parameters:
+      - name: learning-rate
+        style: multiple
+        rules:
+          items: [0.01, 0.001]
 
 - pipeline:
     name: train-and-evaluate

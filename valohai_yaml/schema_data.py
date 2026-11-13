@@ -803,6 +803,7 @@ register(
             },
             "step": {"description": "The step to run with.", "type": "string"},
             "stop-condition": {"type": "string"},
+            "tags": _tags_prop("Tags to add to executions created during this task."),
             "type": {"type": "string"},
         },
         "required": ["name", "step"],

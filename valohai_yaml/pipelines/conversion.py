@@ -177,6 +177,9 @@ class PipelineConverter:
 def apply_task_blueprint(template: ConvertedObject, task_blueprint: Task) -> None:
     task_to_template = Task.serialize_to_template(task_blueprint)
     task_variant_parameters = task_to_template.pop("variant_parameters", None)
+    task_tags = task_to_template.pop("tags", [])
     template.update(task_to_template)
     if task_variant_parameters:
         template.setdefault("parameters", {}).update(task_variant_parameters)
+    if task_tags:
+        template["tags"] = list(dict.fromkeys([*template.get("tags", []), *task_tags]))
