@@ -179,8 +179,8 @@
   ------------------------------------------------------------
   >>> step-tags-invalid.yaml
   error:   Maxlength validation on step.tags.maxLength: 'this-tag-is-way-too-long-and-will-cause-the-validation-to-fail-yes' is too long (0.step.tags.0)
-  error:   Pattern validation on step.tags.pattern: '  ' does not match '\\S' (0.step.tags.2)
-  error:   Pattern validation on step.tags.pattern: '' does not match '\\S' (0.step.tags.1)
+  error:   Pattern validation on step.tags.pattern: '  ' must contain a non-whitespace character (0.step.tags.2)
+  error:   Pattern validation on step.tags.pattern: '' must contain a non-whitespace character (0.step.tags.1)
   '''
 # ---
 # name: test_bad_examples_cli[step-with-error-tasks.yaml]

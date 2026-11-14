@@ -8,7 +8,7 @@ from jsonschema.exceptions import relevance
 from valohai_yaml.excs import ValidationError
 from valohai_yaml.utils import read_yaml
 from valohai_yaml.utils.terminal import noop_style, style
-from valohai_yaml.validation import get_validator
+from valohai_yaml.validation import iter_validation_errors
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -116,7 +116,7 @@ def _validate_json_schema(
 ) -> int:
     """Validate against the JSON schema; add errors to `lr` and return the number of errors."""
     errors = sorted(
-        get_validator().iter_errors(data),
+        iter_validation_errors(data),
         key=lambda error: (relevance(error), repr(error.path)),
     )
     for error in errors:

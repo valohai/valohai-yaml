@@ -16,7 +16,12 @@ def register(schema: dict) -> None:
 def _tags_prop(description: str) -> dict[str, Any]:
     return {
         "description": description,
-        "items": {"maxLength": 64, "pattern": "\\S", "type": "string"},
+        "items": {
+            "maxLength": 64,
+            "pattern": "\\S",
+            "pattern-description": "must contain a non-whitespace character",
+            "type": "string",
+        },
         "type": "array",
     }
 

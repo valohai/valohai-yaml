@@ -99,3 +99,15 @@ def test_error_list():
     assert any(("Additional properties are not allowed" in err) for err in errs)  # pragma: no branch
     assert any(("required property" in err) for err in errs)  # pragma: no branch
     assert any(("0 is not of type 'string'" in err) for err in errs)
+
+
+def test_pattern_description_replaces_pattern_message():
+    with open(os.path.join(error_examples_path, "step-tags-invalid.yaml")) as fp:
+        errors = validate(fp, raise_exc=False)
+    assert sorted(error.message for error in errors) == sorted(
+        [
+            "'this-tag-is-way-too-long-and-will-cause-the-validation-to-fail-yes' is too long",
+            "'' must contain a non-whitespace character",
+            "'  ' must contain a non-whitespace character",
+        ],
+    )
