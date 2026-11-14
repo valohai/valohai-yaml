@@ -13,7 +13,7 @@ from valohai_yaml.utils.lint import lint_expression
 
 if TYPE_CHECKING:
     from valohai_yaml.lint import LintResult
-    from valohai_yaml.types import LintContext
+    from valohai_yaml.types import LintContext, SerializedDict
 
 # Properties that only make sense for Bayesian tasks.
 BAYESIAN_ONLY_PROPS = (
@@ -67,6 +67,7 @@ PIPELINE_TEMPLATE_FIELD_MAPPING = {
     "on_child_error": ["on_child_error"],
     "stop_condition": ["stop_expression"],
     "reuse_children": ["allow_reuse"],
+    "tags": ["tags"],
     # bayesian tasks have their configuration deeper
     "engine": ["configuration", "engine"],
     "execution_count": ["configuration", "execution_count"],
@@ -111,6 +112,7 @@ class Task(Item):
         on_child_error: TaskOnChildError | None = None,
         stop_condition: str | None = None,
         reuse_children: bool = False,
+        tags: list[str] | None = None,
     ) -> None:
         self.name = name
         self.step = step
@@ -127,6 +129,7 @@ class Task(Item):
         self.on_child_error = TaskOnChildError.cast(on_child_error)
         self.stop_condition = stop_condition
         self.reuse_children = reuse_children
+        self.tags = [str(tag) for tag in tags or ()]
 
     @classmethod
     def parse(cls, data: Any) -> Task:
@@ -135,6 +138,12 @@ class Task(Item):
         inst = cls(**{key.replace("-", "_"): value for key, value in kwargs.items()})
         inst._original_data = data
         return inst
+
+    def get_data(self) -> SerializedDict:
+        data = super().get_data()
+        if not data["tags"]:
+            del data["tags"]
+        return data
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
         context = dict(context, task=self, object_type="task")

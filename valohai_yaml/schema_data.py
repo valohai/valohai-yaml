@@ -13,6 +13,19 @@ def register(schema: dict) -> None:
     SCHEMATA[schema["$id"]] = schema
 
 
+def _tags_prop(description: str) -> dict[str, Any]:
+    return {
+        "description": description,
+        "items": {
+            "maxLength": 64,
+            "pattern": "\\S",
+            "pattern-description": "must contain a non-whitespace character",
+            "type": "string",
+        },
+        "type": "array",
+    }
+
+
 def _get_execution_and_task_node_props(type: str) -> dict[str, Any]:
     properties = {
         "actions": {"items": {"$ref": "/schemas/node-action"}, "type": "array"},
@@ -619,6 +632,7 @@ register(
                 "(inputs, command, commit hash, parameters, step's configuration).",
                 "type": "boolean",
             },
+            "tags": _tags_prop("Tags to add to runs of this pipeline."),
         },
         "required": ["edges", "name", "nodes"],
         "title": "Pipeline Blueprint",
@@ -738,6 +752,7 @@ register(
                 "type": "string",
             },
             "stop-condition": {"type": "string"},
+            "tags": _tags_prop("Tags to add to executions of this step."),
             "time-limit": {
                 "description": 'The time limit for the step (in seconds or as a string, e.g. "1h 30m 5s"). '
                 'An unspecified value means "no timeout".',
@@ -788,6 +803,7 @@ register(
             },
             "step": {"description": "The step to run with.", "type": "string"},
             "stop-condition": {"type": "string"},
+            "tags": _tags_prop("Tags to add to executions created during this task."),
             "type": {"type": "string"},
         },
         "required": ["name", "step"],

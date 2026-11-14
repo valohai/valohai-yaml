@@ -58,6 +58,7 @@ class Step(Item):
         source_path: str | None = None,
         resources: WorkloadResources | None = None,
         stop_condition: str | None = None,
+        tags: Iterable[str] = (),
     ) -> None:
         self.name = name
         self.image = image
@@ -87,6 +88,7 @@ class Step(Item):
         self.no_output_timeout = no_output_timeout
         self.resources = resources if resources else WorkloadResources.parse({})
         self.stop_condition = stop_condition
+        self.tags = [str(tag) for tag in tags]
 
     @classmethod
     def parse(cls, data: SerializedDict) -> Step:
@@ -143,6 +145,7 @@ class Step(Item):
             ("resources", self.resources.get_data() or None),
             ("stop-condition", self.stop_condition),
             ("upload-store", self.upload_store),
+            ("tags", self.tags),
         ]:
             serialize_into(
                 val,
@@ -242,6 +245,7 @@ class Step(Item):
         )
         result.environment_variable_groups = a.environment_variable_groups + b.environment_variable_groups
         result.cache_volumes = a.cache_volumes + b.cache_volumes
+        result.tags = list(dict.fromkeys(a.tags + b.tags))
         return result
 
 

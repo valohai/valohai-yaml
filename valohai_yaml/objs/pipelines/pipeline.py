@@ -8,6 +8,7 @@ from valohai_yaml.objs.pipelines.edge import Edge
 from valohai_yaml.objs.pipelines.node import Node
 from valohai_yaml.objs.pipelines.pipeline_parameter import PipelineParameter
 from valohai_yaml.utils.lint import lint_iterables
+from valohai_yaml.utils.merge import merge_simple
 
 if TYPE_CHECKING:
     from valohai_yaml.lint import LintResult
@@ -25,12 +26,14 @@ class Pipeline(Item):
         edges: list[Edge],
         parameters: list[PipelineParameter] | None = None,
         reuse_executions: bool = False,
+        tags: list[str] | None = None,
     ) -> None:
         self.name = name
         self.nodes = nodes
         self.edges = edges
         self.parameters = parameters or []
         self.reuse_executions = reuse_executions
+        self.tags = [str(tag) for tag in tags or ()]
 
     @property
     def node_map(self) -> OrderedDict:  # type: ignore[type-arg]
@@ -50,6 +53,8 @@ class Pipeline(Item):
             del data["parameters"]
         if not data.get("reuse_executions"):  # elide default "False"
             del data["reuse_executions"]
+        if not data.get("tags"):
+            del data["tags"]
         return data
 
     def lint(self, lint_result: LintResult, context: LintContext) -> None:
@@ -64,6 +69,12 @@ class Pipeline(Item):
         # lint each node, edge and parameter
         context = dict(context, pipeline=self)
         lint_iterables(lint_result, context, (self.nodes, self.edges, self.parameters))
+
+    @classmethod
+    def default_merge(cls, a: Pipeline, b: Pipeline) -> Pipeline:
+        result = merge_simple(a, b)
+        result.tags = list(dict.fromkeys(a.tags + b.tags))
+        return result
 
     def get_node_by(self, **kwargs: Any) -> Node | None:
         """Get the first node that matches all the passed named arguments."""

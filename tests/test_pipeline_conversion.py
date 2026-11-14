@@ -32,6 +32,22 @@ def test_pipeline_conversion_no_output_timeout(pipeline_config: Config):
     assert train_node["template"]["runtime_config"]["no_output_timeout"] == parse_duration_string("6h").total_seconds()
 
 
+def test_pipeline_conversion_tags(tags_config: Config, pipeline_config: Config):
+    result = PipelineConverter(
+        config=tags_config,
+        commit_identifier="latest",
+    ).convert_pipeline(tags_config.pipelines["train-and-evaluate"])
+    templates = {node["name"]: node["template"] for node in result["nodes"]}
+    assert templates["train"]["tags"] == ["training", "team-vision"]
+    assert "tags" not in templates["evaluate"]
+    assert result["tags"] == ["nightly"]
+    untagged = PipelineConverter(
+        config=pipeline_config,
+        commit_identifier="latest",
+    ).convert_pipeline(pipeline_config.pipelines["My little pipeline"])
+    assert "tags" not in untagged
+
+
 def test_pipeline_conversion_override_inputs(pipeline_overridden_config: Config):
     result = PipelineConverter(
         config=pipeline_overridden_config,

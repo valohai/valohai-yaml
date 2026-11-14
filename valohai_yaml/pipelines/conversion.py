@@ -30,12 +30,19 @@ class VariantExpression(TypedDict):
 ExpressionValue = Union[str, int, bool, float, VariantExpression]
 
 
-class ConvertedPipeline(TypedDict):
-    """TypedDict for converted Pipeline object."""
-
+class _RequiredConvertedPipeline(TypedDict):
     edges: list[ConvertedObject]
     nodes: list[ConvertedObject]
     parameters: dict[str, ConvertedObject]
+
+
+# `NotRequired` needs Python 3.11, so optional keys live in a `total=False` subclass
+class ConvertedPipeline(_RequiredConvertedPipeline, total=False):
+    """TypedDict for converted Pipeline object."""
+
+    # left out when empty, since valohai-cli releases before pipeline tags
+    # spread this after their `--tag` values, and an empty list would replace them
+    tags: list[str]
 
 
 class PipelineConverter:
@@ -53,11 +60,14 @@ class PipelineConverter:
         self.parameter_arguments = parameter_arguments or {}
 
     def convert_pipeline(self, pipeline: Pipeline) -> ConvertedPipeline:
-        return {
+        converted: ConvertedPipeline = {
             "edges": [edge.get_expanded() for edge in pipeline.edges],
             "nodes": [self.convert_node(node) for node in pipeline.nodes],
             "parameters": {parameter.name: self.convert_parameter(parameter) for parameter in pipeline.parameters},
         }
+        if pipeline.tags:
+            converted["tags"] = list(pipeline.tags)
+        return converted
 
     def convert_parameter(self, parameter: PipelineParameter) -> ConvertedObject:
         """Convert a pipeline parameter to a config-expression payload."""
@@ -151,11 +161,7 @@ class PipelineConverter:
         }
 
         if task_blueprint:
-            task_to_template = Task.serialize_to_template(task_blueprint)
-            task_variant_parameters = task_to_template.pop("variant_parameters", None)
-            node_data["template"].update(task_to_template)
-            if task_variant_parameters:
-                node_data["template"].setdefault("parameters", {}).update(task_variant_parameters)
+            apply_task_blueprint(node_data["template"], task_blueprint)
 
         return node_data
 
@@ -166,3 +172,14 @@ class PipelineConverter:
                 rules={"value": expression},
             )
         return expression
+
+
+def apply_task_blueprint(template: ConvertedObject, task_blueprint: Task) -> None:
+    task_to_template = Task.serialize_to_template(task_blueprint)
+    task_variant_parameters = task_to_template.pop("variant_parameters", None)
+    task_tags = task_to_template.pop("tags", [])
+    template.update(task_to_template)
+    if task_variant_parameters:
+        template.setdefault("parameters", {}).update(task_variant_parameters)
+    if task_tags:
+        template["tags"] = list(dict.fromkeys([*template.get("tags", []), *task_tags]))
