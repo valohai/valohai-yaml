@@ -146,6 +146,7 @@ BLUEPRINT_WITH_ALL_FIELDS_YAML = """
     name: train-model
     image: python:3.12
     command: echo "training..."
+    tags: [training, team-vision]
     parameters:
       - name: learning_rate
         type: float
@@ -164,6 +165,7 @@ BLUEPRINT_WITH_ALL_FIELDS_YAML = """
     engine: optuna
     stop-condition: execution.duration > 3600
     reuse-children: true
+    tags: [sweep, team-vision]
     parameters:
       - name: learning_rate
         style: multiple
@@ -201,6 +203,7 @@ def test_blueprint_task_nodes_convert_with_all_fields():
     assert template["maximum_queued_executions"] == 3
     assert template["stop_expression"] == "execution.duration > 3600"
     assert template["allow_reuse"] is True
+    assert template["tags"] == ["training", "team-vision", "sweep"]
     assert template["configuration"]["execution_count"] == 100
     assert template["configuration"]["execution_batch_size"] == 10
     assert template["configuration"]["optimization_target_metric"] == "val_loss"

@@ -1,5 +1,7 @@
+from collections.abc import Iterator
 from copy import deepcopy
 from functools import cache
+from typing import Any
 
 from jsonschema import Draft202012Validator, ValidationError
 
@@ -28,6 +30,15 @@ def get_validator() -> Draft202012Validator:
     return Draft202012Validator(schema)
 
 
+def iter_validation_errors(data: Any) -> Iterator[ValidationError]:
+    for error in get_validator().iter_errors(data):
+        # jsonschema has no custom messages, and a plain regex might not be user-friendly
+        # so we support specifying optional "descriptions" for patterns which can be shown instead
+        if error.validator == "pattern" and isinstance(error.schema, dict) and "pattern-description" in error.schema:
+            error.message = f"{error.instance!r} {error.schema['pattern-description']}"
+        yield error
+
+
 def validate(yaml: YamlReadable, raise_exc: bool = True) -> list[ValidationError]:
     """
     Validate the given YAML document and return a list of errors.
@@ -37,11 +48,10 @@ def validate(yaml: YamlReadable, raise_exc: bool = True) -> list[ValidationError
     :return: A list of errors encountered.
     """
     data = read_yaml(yaml)
-    validator = get_validator()
     # Nb: this uses a list instead of being a generator function in order to be
     # easier to call correctly. (Were it a generator function, a plain
     # `validate(..., raise_exc=True)` would not do anything.
-    errors = list(validator.iter_errors(data))
+    errors = list(iter_validation_errors(data))
     if errors and raise_exc:
         raise ValidationErrors(errors)
     return errors
