@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 import pytest
 
@@ -12,7 +12,7 @@ from valohai_yaml import parse
 
 
 def _load_config(filename, roundtrip):
-    with open(os.path.join(examples_path, filename)) as infp:
+    with (examples_path / filename).open() as infp:
         config = parse(infp)
     if roundtrip:
         config = parse(config.serialize())
@@ -27,13 +27,13 @@ def config_fixture(name):
     return _config_fixture
 
 
-def get_error_example_path(filename):
-    return os.path.join(error_examples_path, filename)
+def get_error_example_path(filename: str) -> Path:
+    return error_examples_path / filename
 
 
-def get_warning_example_path(filename):
-    return os.path.join(warning_examples_path, filename)
+def get_warning_example_path(filename: str) -> Path:
+    return warning_examples_path / filename
 
 
-def get_valid_example_path(filename):
-    return os.path.join(valid_examples_path, filename)
+def get_valid_example_path(filename: str) -> Path:
+    return valid_examples_path / filename

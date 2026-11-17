@@ -1,17 +1,16 @@
-import os
+from pathlib import Path
 
-examples_path = os.path.realpath(
-    os.path.join(os.path.dirname(__file__), "..", "examples"),
-)
-error_examples_path = os.path.realpath(
-    os.path.join(os.path.dirname(__file__), "error_examples"),
-)
-warning_examples_path = os.path.realpath(
-    os.path.join(os.path.dirname(__file__), "warning_examples"),
-)
-valid_examples_path = os.path.realpath(
-    os.path.join(os.path.dirname(__file__), "valid_examples"),
-)
+_tests_dir = Path(__file__).resolve().parent
+
+examples_path = _tests_dir.parent / "examples"
+error_examples_path = _tests_dir / "error_examples"
+warning_examples_path = _tests_dir / "warning_examples"
+valid_examples_path = _tests_dir / "valid_examples"
+
+example_paths = sorted(examples_path.glob("*.yaml"))
+error_example_paths = sorted(error_examples_path.glob("*.yaml"))
+warning_example_paths = sorted(warning_examples_path.glob("*.yaml"))
+valid_example_paths = sorted(valid_examples_path.glob("*.yaml"))
 
 valid_bytes = b"""
 - step:
