@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 from collections import OrderedDict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from valohai_yaml.objs.base import Item
 from valohai_yaml.objs.environment_variable import EnvironmentVariable
@@ -15,7 +15,7 @@ from valohai_yaml.objs.utils import (
     check_type_and_listify,
     serialize_into,
 )
-from valohai_yaml.utils import listify
+from valohai_yaml.utils import listify, snake_case_keys
 from valohai_yaml.utils.merge import merge_dicts, merge_simple
 
 if TYPE_CHECKING:
@@ -95,13 +95,13 @@ class Override(Item):
         return override
 
     @classmethod
-    def serialize_to_template(cls, override: Override) -> OrderedDict:
-        """Serialize an override object to a template for a node."""
-        template = override.serialize()
+    def serialize_to_template(cls, override: Override) -> dict[str, Any]:
+        """Serialize an override object to a template (with API-style snake_case keys) for a node."""
+        template = snake_case_keys(override.serialize())
         template["inputs"] = {name: listify(input.default) for name, input in override.inputs.items()}
         template["parameters"] = {name: param.default for name, param in override.parameters.items()}
         if override.environment_variables:
-            template["environment-variables"] = {
+            template["environment_variables"] = {
                 name: env_var.default for name, env_var in override.environment_variables.items()
             }
         return template
