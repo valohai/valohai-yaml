@@ -13,6 +13,7 @@ from valohai_yaml.objs import (
     TaskNode,
 )
 from valohai_yaml.objs.pipelines.override import Override
+from valohai_yaml.utils import snake_case_keys
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
@@ -79,10 +80,10 @@ class PipelineConverter:
             return self.convert_executionlike_node(node)
         if isinstance(node, DeploymentNode):
             return self.convert_deployment_node(node)
-        return node.serialize()  # Assume default serialization works
+        return snake_case_keys(node.serialize())  # Assume default serialization works
 
     def convert_deployment_node(self, node: DeploymentNode) -> ConvertedObject:
-        node_data = node.serialize()
+        node_data = snake_case_keys(node.serialize())
         node_data["commit"] = self.commit_identifier
         node_data["endpoint_configurations"] = {
             f"{name}": {
@@ -99,7 +100,7 @@ class PipelineConverter:
         self,
         node: ExecutionNode | TaskNode,
     ) -> ConvertedObject:
-        node_data = node.serialize()
+        node_data = snake_case_keys(node.serialize())
         node_data.pop("override", None)  # we'll use the actual object, not the serialization
         node_commit = node_data.pop("commit", None)
 
@@ -118,12 +119,12 @@ class PipelineConverter:
             step = self.config.get_step_by(name=step_name)
             if not step:  # pragma: no cover
                 raise ValueError(f"Step {step_name} not found in {self.config}")
-            step_data = step.serialize()
+            step_data = snake_case_keys(step.serialize())
             runtime_config = step_data.setdefault("runtime_config", {})
-            if "no-output-timeout" in step_data:
+            if "no_output_timeout" in step_data:
                 runtime_config.setdefault(
                     "no_output_timeout",
-                    step_data.pop("no-output-timeout"),
+                    step_data.pop("no_output_timeout"),
                 )
             override = Override.merge_with_step(node.override, step)
             overridden_to_template = Override.serialize_to_template(override)
@@ -131,7 +132,7 @@ class PipelineConverter:
         else:
             # This is a remote step reference.
             # Just add in overrides and hope for the best...
-            step_data = node.override.serialize() if node.override else {}
+            step_data = snake_case_keys(node.override.serialize()) if node.override else {}
 
         # Folded in after the override merge, so that a node can override the step's value.
         # `None` means "not set anywhere"; an explicit `false` is kept.
