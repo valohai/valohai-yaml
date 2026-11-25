@@ -1,6 +1,20 @@
-from valohai_yaml.objs import Config
+from __future__ import annotations
+
+import re
+from typing import TYPE_CHECKING, Any
+
+import pytest
+
+from tests.consts import example_paths, valid_example_paths
+from valohai_yaml import parse
 from valohai_yaml.pipelines.conversion import PipelineConverter
 from valohai_yaml.utils.duration import parse_duration_string
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from pathlib import Path
+
+    from valohai_yaml.objs import Config
 
 
 def test_pipeline_conversion_smoke(pipeline_config: Config):
@@ -147,12 +161,10 @@ def test_pipeline_conversion_env_vars_are_dict(pipeline_with_env_vars_config: Co
     )
 
     node = result["nodes"][0]  # "preprocess"
-    assert isinstance(
-        node["template"]["environment-variables"],
-        dict,
-    ), "environment-variables should be a dict, not a list, for API compatibility"
-    assert node["template"]["environment-variables"]["DATA_VERSION"] == "v1.0"
-    assert node["template"]["environment-variables"]["PREPROCESS_MODE"] == "full"
+    env_vars = node["template"]["environment_variables"]
+    assert isinstance(env_vars, dict), "environment-variables should be a dict, not a list, for API compatibility"
+    assert env_vars["DATA_VERSION"] == "v1.0"
+    assert env_vars["PREPROCESS_MODE"] == "full"
 
 
 def test_pipeline_conversion_autorestart_override(pipeline_with_autorestart_override: Config):
@@ -177,3 +189,88 @@ def test_pipeline_conversion_autorestart_override(pipeline_with_autorestart_over
 
     # the value only lives in runtime_config, not at the top level of the template
     assert not any("autorestart" in template for template in templates.values())
+
+
+def test_pipeline_conversion_emits_snake_case_keys(pipeline_api_keys_config: Config):
+    """The converted payload is for the API, so YAML's kebab-case keys must become snake_case."""
+    assert pipeline_api_keys_config.lint().is_valid()
+    result = PipelineConverter(
+        config=pipeline_api_keys_config,
+        commit_identifier="abc123",
+    ).convert_pipeline(pipeline_api_keys_config.pipelines["api-keys"])
+    assert not list(find_kebab_case_keys(result))
+    nodes = {node["name"]: node for node in result["nodes"]}
+
+    local = nodes["local-node"]
+    assert local["on_error"] == "continue"
+    assert local["edge_merge_mode"] == "append"
+    template = local["template"]
+    assert template["runtime_config_preset"] == "other-preset"
+    assert template["environment_variables"] == {"SOME_VAR": "some-value", "OTHER_VAR": "other-value"}
+    assert template["environment_variable_groups"] == ["some-group"]
+    assert template["time_limit"] == 300
+    assert template["upload_store"] == "some-store"
+    assert template["runtime_config"]["no_output_timeout"] == 3600
+    # User-defined names are not mangled
+    assert template["parameters"] == {"kebab-param": 1}
+    assert template["inputs"] == {"kebab-input": ["s3://foo/bar.txt"]}
+
+    # Free-form user data is passed through untouched
+    assert template["resources"]["devices"] == {"vendor.com/some-device": 1}
+    assert template["mounts"][0]["options"] == {"some-option": "x"}
+    assert result["edges"][0]["configuration"] == {"some-key": "x"}
+
+    remote_template = nodes["remote-node"]["template"]
+    assert remote_template["runtime_config_preset"] == "other-preset"
+    assert "environment_variables" in remote_template
+
+    assert nodes["task-node"]["on_error"] == "stop-next"
+
+
+# Mappings in the converted payload that are keyed by user-defined names
+# (which may well contain dashes), rather than by API field names.
+NAME_KEYED_MAPPINGS = {
+    "endpoint_configurations",
+    "environment_variables",
+    "inputs",
+    "parameters",
+    "variant_parameters",
+}
+
+# Opaque user data passed through to the API as-is, so keys anywhere within can be anything.
+OPAQUE_PATH_RE = re.compile(r"\.edges\[\d+\]\.configuration$|\.mounts\[\d+\]\.options$|\.resources\.devices$")
+
+
+def find_kebab_case_keys(obj: Any, path: str = "") -> Iterator[str]:
+    """Yield the paths of all kebab-case API field keys in a converted payload."""
+    if OPAQUE_PATH_RE.search(path):
+        return
+    if isinstance(obj, dict):
+        parent_key = path.rsplit(".", 1)[-1]
+        for key, value in obj.items():
+            if "-" in key and parent_key not in NAME_KEYED_MAPPINGS:
+                yield f"{path}.{key}"
+            yield from find_kebab_case_keys(value, f"{path}.{key}")
+    elif isinstance(obj, list):
+        for i, item in enumerate(obj):
+            yield from find_kebab_case_keys(item, f"{path}[{i}]")
+
+
+def _get_pipeline_example_paths() -> list[Path]:
+    return [path for path in sorted([*example_paths, *valid_example_paths]) if "pipeline:" in path.read_text()]
+
+
+@pytest.mark.parametrize("roundtrip", [False, True], ids=["direct", "roundtrip"])
+@pytest.mark.parametrize("example_path", _get_pipeline_example_paths(), ids=lambda p: p.name)
+def test_pipeline_conversion_never_emits_kebab_case_keys(example_path: Path, roundtrip: bool):
+    """Regression test: converted pipelines are API payloads, so must use snake_case keys."""
+    # The YAML side uses kebab-case (and `.serialize()` emits it), so it's easy to leak those
+    # into the payload by accident; this checks every example pipeline we have.
+    with example_path.open() as infp:
+        config = parse(infp)
+    if roundtrip:
+        config = parse(config.serialize())
+    assert config.pipelines, "Missä ovat yksisarviset?"
+    for pipeline in config.pipelines.values():
+        result = PipelineConverter(config=config, commit_identifier="abc123").convert_pipeline(pipeline)
+        assert not list(find_kebab_case_keys(result)), f"kebab-case keys in converted pipeline {pipeline.name!r}"

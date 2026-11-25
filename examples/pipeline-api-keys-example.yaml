@@ -1,0 +1,66 @@
+- step:
+    name: kitchen
+    image: busybox
+    command: echo hello
+    environment: some-environment
+    runtime-config-preset: some-preset
+    time-limit: 5m
+    no-output-timeout: 1h
+    upload-store: some-store
+    stop-condition: loss < 0.1
+    source-path: kitchen.py
+    cache-volumes:
+      - some-cache
+    resources:
+      devices:
+        vendor.com/some-device: 1
+    mounts:
+      - source: /some-source
+        destination: /some-destination
+        options:
+          some-option: x
+    environment-variables:
+      - name: SOME_VAR
+        default: some-value
+    environment-variable-groups:
+      - some-group
+    parameters:
+      - name: kebab-param
+        type: integer
+        default: 1
+    inputs:
+      - name: kebab-input
+        default: s3://foo/bar.txt
+- pipeline:
+    name: api-keys
+    nodes:
+      - name: local-node
+        type: execution
+        step: kitchen
+        on-error: continue
+        edge-merge-mode: append
+        override:
+          environment: other-environment
+          runtime-config-preset: other-preset
+          environment-variables:
+            - name: OTHER_VAR
+              default: other-value
+      - name: remote-node
+        type: execution
+        step: kitchen
+        commit: some-other-commit
+        override:
+          environment: other-environment
+          runtime-config-preset: other-preset
+          environment-variables:
+            - name: OTHER_VAR
+              default: other-value
+      - name: task-node
+        type: task
+        step: kitchen
+        on-error: stop-next
+    edges:
+      - source: local-node.parameter.kebab-param
+        target: task-node.parameter.kebab-param
+        configuration:
+          some-key: x

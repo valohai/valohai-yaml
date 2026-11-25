@@ -10,10 +10,10 @@ def test_edge_override_mode(edge_merge_mode_config):
     nodes = converted_pipeline["nodes"]
 
     # override-mode not defined, so it's elided
-    assert "edge-merge-mode" not in nodes[0]
+    assert "edge_merge_mode" not in nodes[0]
 
     # override-mode = replace, but that's the default so not included
-    assert "edge-merge-mode" not in nodes[1]
+    assert "edge_merge_mode" not in nodes[1]
 
     # override-mode = append
-    assert nodes[2]["edge-merge-mode"] == EdgeMergeMode.APPEND.value
+    assert nodes[2]["edge_merge_mode"] == EdgeMergeMode.APPEND.value

@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, Any, TypeVar, overload
 from yaml import safe_load
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from valohai_yaml.types import YamlReadable
 
 
@@ -47,3 +49,8 @@ def listify(value: list[T] | tuple[T] | T | None) -> list[T]:
     if isinstance(value, (list, tuple)):
         return list(value)
     return [value]
+
+
+def snake_case_keys(data: Mapping[str, Any]) -> dict[str, Any]:
+    """Convert the top-level keys of a YAML-style (kebab-case) mapping to API-style (snake_case) keys."""
+    return {key.replace("-", "_"): value for key, value in data.items()}
