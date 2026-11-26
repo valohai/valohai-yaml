@@ -33,6 +33,21 @@ if TYPE_CHECKING:
 class Step(Item):
     """Represents an execution step definition."""
 
+    # Fields that describe the step itself rather than how to run it,
+    # that are never read by the backend from the API.
+    METADATA_FIELDS = frozenset(
+        {
+            "cache_volumes",
+            "category",
+            "description",
+            "icon",
+            "name",
+            "outputs",
+            "resources",
+            "source_path",
+        },
+    )
+
     def __init__(
         self,
         *,

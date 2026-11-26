@@ -179,7 +179,8 @@ def finalize_template_data(step_data: ConvertedObject) -> ConvertedObject:
     autorestart = step_data.pop("autorestart", None)
     if autorestart is not None:
         step_data.setdefault("runtime_config", {})["autorestart"] = autorestart
-    return {STEP_TO_TEMPLATE_FIELD_RENAMES.get(key, key): value for key, value in step_data.items()}
+    step_data = {STEP_TO_TEMPLATE_FIELD_RENAMES.get(key, key): value for key, value in step_data.items()}
+    return {key: value for key, value in step_data.items() if key not in Step.METADATA_FIELDS}
 
 
 def apply_task_blueprint(template: ConvertedObject, task_blueprint: Task) -> None:
