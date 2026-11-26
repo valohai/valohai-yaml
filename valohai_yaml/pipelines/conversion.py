@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, TypedDict, Union
+from typing import Any, TypedDict, Union
 
 from valohai_yaml.objs import (
     Config,
@@ -9,14 +9,12 @@ from valohai_yaml.objs import (
     Node,
     Pipeline,
     PipelineParameter,
+    Step,
     Task,
     TaskNode,
 )
 from valohai_yaml.objs.pipelines.override import Override
 from valohai_yaml.utils import snake_case_keys
-
-if TYPE_CHECKING:
-    from collections.abc import MutableMapping
 
 ConvertedObject = dict[str, Any]
 
@@ -115,32 +113,15 @@ class PipelineConverter:
                 raise ValueError(f"Task {task_name} not found in {self.config}")
             step_name = task_blueprint.step
 
-        step_data: MutableMapping[str, Any]
         if not node_commit or node_commit == self.commit_identifier:
             # Local step, let's do validation and merging properly
             step = self.config.get_step_by(name=step_name)
             if not step:  # pragma: no cover
                 raise ValueError(f"Step {step_name} not found in {self.config}")
-            step_data = snake_case_keys(step.serialize())
-            runtime_config = step_data.setdefault("runtime_config", {})
-            if "no_output_timeout" in step_data:
-                runtime_config.setdefault(
-                    "no_output_timeout",
-                    step_data.pop("no_output_timeout"),
-                )
-            override = Override.merge_with_step(node.override, step)
-            overridden_to_template = Override.serialize_to_template(override)
-            step_data.update(overridden_to_template)
+            step_data = get_local_step_template_data(step, node.override)
         else:
-            # This is a remote step reference.
-            # Just add in overrides and hope for the best...
-            step_data = snake_case_keys(node.override.serialize()) if node.override else {}
-
-        # Folded in after the override merge, so that a node can override the step's value.
-        # `None` means "not set anywhere"; an explicit `false` is kept.
-        autorestart = step_data.pop("autorestart", None)
-        if autorestart is not None:
-            step_data.setdefault("runtime_config", {})["autorestart"] = autorestart
+            # This is a remote step reference, so we can't merge with the step
+            step_data = get_remote_step_template_data(node.override)
 
         commit = node_commit or self.commit_identifier
 
@@ -165,6 +146,32 @@ class PipelineConverter:
                 rules={"value": expression},
             )
         return expression
+
+
+def get_local_step_template_data(step: Step, override: Override | None) -> ConvertedObject:
+    """Build template data for a step available locally, merging the node's overrides into it."""
+    step_data = snake_case_keys(step.serialize())
+    runtime_config = step_data.setdefault("runtime_config", {})
+    if "no_output_timeout" in step_data:
+        runtime_config.setdefault("no_output_timeout", step_data.pop("no_output_timeout"))
+    step_data.update(Override.serialize_to_template(Override.merge_with_step(override, step)))
+    return finalize_template_data(step_data)
+
+
+def get_remote_step_template_data(override: Override | None) -> ConvertedObject:
+    """Build template data for a step not available locally; only the node's overrides are known."""
+    # Just add in overrides and hope for the best...
+    step_data = snake_case_keys(override.serialize()) if override else {}
+    return finalize_template_data(step_data)
+
+
+def finalize_template_data(step_data: ConvertedObject) -> ConvertedObject:
+    # Folded in after the override merge, so that a node can override the step's value.
+    # `None` means "not set anywhere"; an explicit `false` is kept.
+    autorestart = step_data.pop("autorestart", None)
+    if autorestart is not None:
+        step_data.setdefault("runtime_config", {})["autorestart"] = autorestart
+    return step_data
 
 
 def apply_task_blueprint(template: ConvertedObject, task_blueprint: Task) -> None:
