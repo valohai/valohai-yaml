@@ -216,3 +216,11 @@ def test_environment_variable_group(environment_variable_group_example_config: C
         "aaa",
         "356845b3-f298-4386-b6ae-1f45ab72f637",
     ]
+
+
+def test_tags(tags_config: Config) -> None:
+    step = tags_config.steps["train"]
+    assert step.tags == ["training", "team-vision"]
+    assert tags_config.steps["evaluate"].tags == []
+    step2 = Step(name="yes", image="hello", command="", tags=["team-vision", "nightly"])
+    assert step.merge_with(step2).tags == ["training", "team-vision", "nightly"]

@@ -115,6 +115,11 @@ def test_pipeline_allow_reuse(pipeline_config: Config):
     assert pl2.reuse_executions is False
 
 
+def test_pipeline_tags(tags_config: Config, pipeline_config: Config):
+    assert tags_config.pipelines["train-and-evaluate"].tags == ["nightly"]
+    assert pipeline_config.pipelines["My little pipeline"].tags == []
+
+
 def test_pipeline_execution_retry(pipeline_with_retried_execution_config: Config):
     assert pipeline_with_retried_execution_config.lint().is_valid()
     assert pipeline_with_retried_execution_config.pipelines["pipe"].nodes[0].on_error == ErrorAction.RETRY

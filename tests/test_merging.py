@@ -4,7 +4,7 @@ from tests.config_data import (
     complex_steps_merged,
     echo_step,
 )
-from valohai_yaml.objs import Config
+from valohai_yaml.objs import Config, Pipeline
 
 
 def test_merging():
@@ -22,3 +22,11 @@ def test_merging_conflict():
     c = a.merge_with(b)
     expected = Config.parse([complex_steps_merged])
     assert c.serialize() == expected.serialize()
+
+
+def test_merging_keeps_pipeline_tags(tags_config: Config):
+    # simulate `vh yaml pipeline`, which merges in a pipeline generated without tags
+    regenerated = Config(pipelines=[Pipeline(name="train-and-evaluate", nodes=[], edges=[])])
+    merged = tags_config.merge_with(regenerated)
+    assert merged.pipelines["train-and-evaluate"].tags == ["nightly"]
+    assert merged.pipelines["train-and-evaluate"].nodes == []
