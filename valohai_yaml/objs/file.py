@@ -17,11 +17,13 @@ class File(Item):
         name: str,
         path: str,
         description: str | None = None,
+        default: str | None = None,
         optional: bool = False,
     ) -> None:
         self.name = name
         self.path = path
         self.description = description
+        self.default = default
         self.optional = bool(optional)
 
     def get_data(self) -> SerializedDict:

@@ -290,6 +290,10 @@ register(
         "$id": "https://valohai.com/schemas/file-item",
         "additionalProperties": False,
         "properties": {
+            "default": {
+                "description": "The default URL for the file, e.g. a `datum://`, `model://` or `dataset://` URI.",
+                "type": "string",
+            },
             "description": {"description": "The description of the file.", "type": "string"},
             "name": {"description": "The symbolic name of this file.", "type": "string"},
             "optional": {

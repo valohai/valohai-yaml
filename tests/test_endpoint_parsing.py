@@ -11,7 +11,12 @@ def test_wsgi_endpoint_parse(endpoint_config):
     assert endpoint.image == "tensorflow/tensorflow:1.3.0-py3"
     assert endpoint.wsgi == "predict_wsgi:predict_wsgi"
     assert [file.serialize() for file in endpoint.files] == [
-        {"name": "model", "description": "Model output file from TensorFlow", "path": "model.pb"},
+        {
+            "name": "model",
+            "default": "model://mnist-classifier/latest",
+            "description": "Model output file from TensorFlow",
+            "path": "model.pb",
+        },
         {"name": "vocabulary", "optional": True, "path": "vocabulary.json"},
     ]
     assert [file.optional for file in endpoint.files] == [False, True]
