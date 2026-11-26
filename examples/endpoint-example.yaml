@@ -13,6 +13,7 @@
       - name: model
         description: Model output file from TensorFlow
         path: model.pb
+        default: model://mnist-classifier/latest
       - name: vocabulary
         path: vocabulary.json
         optional: true
