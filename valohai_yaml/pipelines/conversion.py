@@ -28,6 +28,11 @@ class VariantExpression(TypedDict):
 
 ExpressionValue = Union[str, int, bool, float, VariantExpression]
 
+# Step fields that are named differently in the API's execution template.
+STEP_TO_TEMPLATE_FIELD_RENAMES = {
+    "stop_condition": "stop_expression",
+}
+
 
 class ConvertedPipeline(TypedDict):
     """TypedDict for converted Pipeline object."""
@@ -174,7 +179,7 @@ def finalize_template_data(step_data: ConvertedObject) -> ConvertedObject:
     autorestart = step_data.pop("autorestart", None)
     if autorestart is not None:
         step_data.setdefault("runtime_config", {})["autorestart"] = autorestart
-    return step_data
+    return {STEP_TO_TEMPLATE_FIELD_RENAMES.get(key, key): value for key, value in step_data.items()}
 
 
 def apply_task_blueprint(template: ConvertedObject, task_blueprint: Task) -> None:

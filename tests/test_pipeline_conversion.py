@@ -231,6 +231,9 @@ def test_pipeline_conversion_emits_snake_case_keys(pipeline_api_keys_config: Con
     assert template["parameters"] == {"kebab-param": 1}
     assert template["inputs"] == {"kebab-input": ["s3://foo/bar.txt"]}
 
+    # The step's stop condition goes by another name in the API
+    assert template["stop_expression"] == "loss < 0.1"
+    assert "stop_condition" not in template
     # Free-form user data is passed through untouched
     assert template["resources"]["devices"] == {"vendor.com/some-device": 1}
     assert template["mounts"][0]["options"] == {"some-option": "x"}
