@@ -236,9 +236,12 @@ def test_pipeline_conversion_emits_snake_case_keys(pipeline_api_keys_config: Con
     assert template["mounts"][0]["options"] == {"some-option": "x"}
     assert result["edges"][0]["configuration"] == {"some-key": "x"}
 
+    # Remote nodes can't be merged with their step, but overrides are still converted to the API's shape
     remote_template = nodes["remote-node"]["template"]
     assert remote_template["runtime_config_preset"] == "other-preset"
-    assert "environment_variables" in remote_template
+    assert remote_template["environment_variables"] == {"OTHER_VAR": "other-value"}
+    assert remote_template["parameters"] == {"kebab-param": 2}
+    assert remote_template["inputs"] == {"kebab-input": ["s3://foo/baz.txt"]}
 
     assert nodes["task-node"]["on_error"] == "stop-next"
 

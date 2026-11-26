@@ -55,6 +55,12 @@
           environment-variables:
             - name: OTHER_VAR
               default: other-value
+          parameters:
+            - name: kebab-param
+              default: 2
+          inputs:
+            - name: kebab-input
+              default: s3://foo/baz.txt
       - name: task-node
         type: task
         step: kitchen

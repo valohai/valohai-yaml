@@ -160,8 +160,11 @@ def get_local_step_template_data(step: Step, override: Override | None) -> Conve
 
 def get_remote_step_template_data(override: Override | None) -> ConvertedObject:
     """Build template data for a step not available locally; only the node's overrides are known."""
-    # Just add in overrides and hope for the best...
-    step_data = snake_case_keys(override.serialize()) if override else {}
+    step_data = Override.serialize_to_template(override) if override else {}
+    # Don't send empty mappings, to not override a remote step's defaults with nothing
+    for key in ("inputs", "parameters"):
+        if not step_data.get(key):
+            step_data.pop(key, None)
     return finalize_template_data(step_data)
 
 
