@@ -158,7 +158,6 @@ def test_pipeline_commit_conversion(pipeline_with_different_commit_config: Confi
             "template": {
                 "commit": "102dsgkmr4",
                 "step": "mangle",
-                "name": "mangle",
                 "image": "python:3.13",
                 "command": "false",
                 "inputs": {"mangles": []},
@@ -231,14 +230,23 @@ def test_pipeline_conversion_emits_snake_case_keys(pipeline_api_keys_config: Con
     assert template["parameters"] == {"kebab-param": 1}
     assert template["inputs"] == {"kebab-input": ["s3://foo/bar.txt"]}
 
+    # The step's stop condition goes by another name in the API
+    assert template["stop_expression"] == "loss < 0.1"
+    assert "stop_condition" not in template
+    # Step-only metadata is not part of an execution template
+    for key in ("name", "source_path", "cache_volumes", "resources", "outputs", "description"):
+        assert key not in template
+
     # Free-form user data is passed through untouched
-    assert template["resources"]["devices"] == {"vendor.com/some-device": 1}
     assert template["mounts"][0]["options"] == {"some-option": "x"}
     assert result["edges"][0]["configuration"] == {"some-key": "x"}
 
+    # Remote nodes can't be merged with their step, but overrides are still converted to the API's shape
     remote_template = nodes["remote-node"]["template"]
     assert remote_template["runtime_config_preset"] == "other-preset"
-    assert "environment_variables" in remote_template
+    assert remote_template["environment_variables"] == {"OTHER_VAR": "other-value"}
+    assert remote_template["parameters"] == {"kebab-param": 2}
+    assert remote_template["inputs"] == {"kebab-input": ["s3://foo/baz.txt"]}
 
     assert nodes["task-node"]["on_error"] == "stop-next"
 
