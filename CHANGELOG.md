@@ -1,5 +1,15 @@
 ### Changelog
 
+#### [v0.62.0](https://github.com/valohai/valohai-yaml/compare/v0.61.0...v0.62.0)
+
+> 27 November 2026
+
+- Fix: Ensure edge types are sorted in schema data [`#228`](https://github.com/valohai/valohai-yaml/pull/228)
+- Fix: Fix some pipeline conversion issues: [`#235`](https://github.com/valohai/valohai-yaml/pull/235), [`#237`](https://github.com/valohai/valohai-yaml/pull/237)
+- Fix: Treat bare duration numbers as seconds and support month units [`#230`](https://github.com/valohai/valohai-yaml/pull/230)
+- New: Allowtags on steps, tasks and pipelines [`#232`](https://github.com/valohai/valohai-yaml/pull/232)
+- New: Allow marking endpoint files as optional and default: [`#231`](https://github.com/valohai/valohai-yaml/pull/231), [`#236`](https://github.com/valohai/valohai-yaml/pull/236)
+
 #### [v0.61.0](https://github.com/valohai/valohai-yaml/compare/v0.60.0...v0.61.0)
 
 > 14 September 2026
